@@ -263,19 +263,14 @@
 
                         <!-- Pemegang -->
                         <div>
-                            <label for="pemegang_id" class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">
+                            <label for="pemegang_nama" class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">
                                 Pemegang
                             </label>
-                            <select name="pemegang_id" id="pemegang_id"
-                                class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('pemegang_id') border-error-300 @enderror">
-                                <option value="">- Tidak Ada Pemegang -</option>
-                                @foreach($pemegang as $p)
-                                    <option value="{{ $p->id }}" {{ old('pemegang_id') == $p->id ? 'selected' : '' }}>
-                                        {{ $p->name }} ({{ $p->organization_name ?? ucfirst($p->user_type) }})
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('pemegang_id')
+                            <input type="text" name="pemegang_nama" id="pemegang_nama"
+                                value="{{ old('pemegang_nama') }}"
+                                placeholder="Nama pemegang kendaraan..."
+                                class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('pemegang_nama') border-error-300 @enderror">
+                            @error('pemegang_nama')
                                 <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
                             @enderror
                         </div>

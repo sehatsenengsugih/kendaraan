@@ -8,7 +8,6 @@ use App\Models\Kendaraan;
 use App\Models\Lembaga;
 use App\Models\Merk;
 use App\Models\Paroki;
-use App\Models\Pengguna;
 use App\Models\RiwayatPemakai;
 use App\Models\StatusBpkb;
 use Illuminate\Http\Request;
@@ -73,10 +72,6 @@ class KendaraanController extends Controller
     {
         $merk = Merk::orderBy('nama')->get();
         $garasi = Garasi::with('kevikepan')->orderBy('nama')->get();
-        $pemegang = Pengguna::where('role', 'user')
-            ->where('status', 'active')
-            ->orderBy('name')
-            ->get();
         $paroki = Paroki::with('kevikepan')->where('is_active', true)->orderBy('nama')->get();
         $lembaga = Lembaga::where('is_active', true)->orderBy('nama')->get();
         $statusBpkb = StatusBpkb::active()->ordered()->get();
@@ -85,7 +80,7 @@ class KendaraanController extends Controller
         $selectedMerkId = $request->merk_id;
         $selectedGarasiId = $request->garasi_id;
 
-        return view('kendaraan.create', compact('merk', 'garasi', 'pemegang', 'paroki', 'lembaga', 'statusBpkb', 'selectedMerkId', 'selectedGarasiId'));
+        return view('kendaraan.create', compact('merk', 'garasi', 'paroki', 'lembaga', 'statusBpkb', 'selectedMerkId', 'selectedGarasiId'));
     }
 
     /**
@@ -105,7 +100,7 @@ class KendaraanController extends Controller
             'warna' => 'required|string|max:50',
             'jenis' => 'required|in:mobil,motor',
             'garasi_id' => 'nullable|exists:garasi,id',
-            'pemegang_id' => 'nullable|exists:pengguna,id',
+            'pemegang_nama' => 'nullable|string|max:255',
             'status' => 'required|in:aktif,nonaktif,dihibahkan,dijual',
             'status_kepemilikan' => 'required|in:milik_kas,milik_lembaga_lain',
             'pemilik_lembaga_id' => 'nullable|exists:lembaga,id',
@@ -274,15 +269,11 @@ class KendaraanController extends Controller
 
         $merk = Merk::orderBy('nama')->get();
         $garasi = Garasi::with('kevikepan')->orderBy('nama')->get();
-        $pemegang = Pengguna::where('role', 'user')
-            ->where('status', 'active')
-            ->orderBy('name')
-            ->get();
         $paroki = Paroki::with('kevikepan')->where('is_active', true)->orderBy('nama')->get();
         $lembaga = Lembaga::where('is_active', true)->orderBy('nama')->get();
         $statusBpkb = StatusBpkb::active()->ordered()->get();
 
-        return view('kendaraan.edit', compact('kendaraan', 'merk', 'garasi', 'pemegang', 'paroki', 'lembaga', 'statusBpkb'));
+        return view('kendaraan.edit', compact('kendaraan', 'merk', 'garasi', 'paroki', 'lembaga', 'statusBpkb'));
     }
 
     /**
@@ -302,7 +293,7 @@ class KendaraanController extends Controller
             'warna' => 'required|string|max:50',
             'jenis' => 'required|in:mobil,motor',
             'garasi_id' => 'nullable|exists:garasi,id',
-            'pemegang_id' => 'nullable|exists:pengguna,id',
+            'pemegang_nama' => 'nullable|string|max:255',
             'status' => 'required|in:aktif,nonaktif,dihibahkan,dijual',
             'status_kepemilikan' => 'required|in:milik_kas,milik_lembaga_lain',
             'pemilik_lembaga_id' => 'nullable|exists:lembaga,id',

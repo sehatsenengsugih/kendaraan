@@ -58,13 +58,74 @@ class DashboardController extends Controller
         // Penugasan aktif
         $penugasanAktif = Penugasan::aktif()->count();
 
+        // Umur kendaraan distribution
+        $currentYear = (int) date('Y');
+        $umurKendaraan = Kendaraan::selectRaw("
+                CASE
+                    WHEN (? - tahun_pembuatan) <= 5 THEN '0-5 tahun'
+                    WHEN (? - tahun_pembuatan) <= 10 THEN '6-10 tahun'
+                    WHEN (? - tahun_pembuatan) <= 15 THEN '11-15 tahun'
+                    WHEN (? - tahun_pembuatan) <= 20 THEN '16-20 tahun'
+                    ELSE '> 20 tahun'
+                END as rentang_umur,
+                COUNT(*) as jumlah
+            ", [$currentYear, $currentYear, $currentYear, $currentYear])
+            ->whereNotNull('tahun_pembuatan')
+            ->groupBy('rentang_umur')
+            ->orderByRaw('MIN(? - tahun_pembuatan)', [$currentYear])
+            ->get();
+
+        // Ensure all ranges exist with proper order
+        $orderedRanges = ['0-5 tahun', '6-10 tahun', '11-15 tahun', '16-20 tahun', '> 20 tahun'];
+        $umurData = [];
+        foreach ($orderedRanges as $range) {
+            $found = $umurKendaraan->firstWhere('rentang_umur', $range);
+            $umurData[$range] = $found ? $found->jumlah : 0;
+        }
+
+        // Pajak reminder - grouped by urgency
+        $today = now()->startOfDay();
+
+        // Terlambat (overdue)
+        $pajakTerlambat = Pajak::with(['kendaraan.merk'])
+            ->where('status', '!=', 'lunas')
+            ->where('tanggal_jatuh_tempo', '<', $today)
+            ->orderBy('tanggal_jatuh_tempo', 'asc')
+            ->get();
+
+        // 7 hari ke depan
+        $pajak7Hari = Pajak::with(['kendaraan.merk'])
+            ->where('status', '!=', 'lunas')
+            ->whereBetween('tanggal_jatuh_tempo', [$today, $today->copy()->addDays(7)])
+            ->orderBy('tanggal_jatuh_tempo', 'asc')
+            ->get();
+
+        // 8-30 hari ke depan
+        $pajak30Hari = Pajak::with(['kendaraan.merk'])
+            ->where('status', '!=', 'lunas')
+            ->whereBetween('tanggal_jatuh_tempo', [$today->copy()->addDays(8), $today->copy()->addDays(30)])
+            ->orderBy('tanggal_jatuh_tempo', 'asc')
+            ->get();
+
+        // 31 hari - 6 bulan ke depan
+        $pajak6Bulan = Pajak::with(['kendaraan.merk'])
+            ->where('status', '!=', 'lunas')
+            ->whereBetween('tanggal_jatuh_tempo', [$today->copy()->addDays(31), $today->copy()->addMonths(6)])
+            ->orderBy('tanggal_jatuh_tempo', 'asc')
+            ->get();
+
         return view('dashboard', compact(
             'kendaraanStats',
             'pajakStats',
             'servisStats',
             'pajakJatuhTempo',
             'kendaraanPerGarasi',
-            'penugasanAktif'
+            'penugasanAktif',
+            'umurData',
+            'pajakTerlambat',
+            'pajak7Hari',
+            'pajak30Hari',
+            'pajak6Bulan'
         ));
     }
 }

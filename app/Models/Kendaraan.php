@@ -28,6 +28,7 @@ class Kendaraan extends Model
         'jenis',
         'garasi_id',
         'pemegang_id',
+        'pemegang_nama',
         'status',
         'status_kepemilikan',
         'nama_pemilik_lembaga',

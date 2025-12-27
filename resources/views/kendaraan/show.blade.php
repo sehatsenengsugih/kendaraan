@@ -418,21 +418,33 @@
                     <div>
                         <dt class="text-sm text-bgray-500 dark:text-bgray-50">Garasi</dt>
                         <dd class="font-medium text-bgray-900 dark:text-white">
-                            <a href="{{ route('garasi.show', $kendaraan->garasi) }}" class="hover:text-success-300">
-                                {{ $kendaraan->garasi->nama ?? '-' }}
-                            </a>
+                            @if($kendaraan->garasi)
+                                <a href="{{ route('garasi.show', $kendaraan->garasi) }}" class="hover:text-success-300">
+                                    {{ $kendaraan->garasi->nama }}
+                                </a>
+                            @else
+                                <span class="text-bgray-400">-</span>
+                            @endif
                         </dd>
                     </div>
                     <div>
                         <dt class="text-sm text-bgray-500 dark:text-bgray-50">Kevikepan</dt>
                         <dd class="font-medium text-bgray-900 dark:text-white">
-                            {{ $kendaraan->garasi->kevikepan->nama ?? '-' }}
+                            @if($kendaraan->garasi && $kendaraan->garasi->kevikepan)
+                                {{ $kendaraan->garasi->kevikepan->nama }}
+                            @else
+                                <span class="text-bgray-400">-</span>
+                            @endif
                         </dd>
                     </div>
                     <div>
                         <dt class="text-sm text-bgray-500 dark:text-bgray-50">Kota</dt>
                         <dd class="font-medium text-bgray-900 dark:text-white">
-                            {{ $kendaraan->garasi->kota ?? '-' }}
+                            @if($kendaraan->garasi)
+                                {{ $kendaraan->garasi->kota }}
+                            @else
+                                <span class="text-bgray-400">-</span>
+                            @endif
                         </dd>
                     </div>
                 </dl>
@@ -441,16 +453,20 @@
             <!-- Pemegang -->
             <div class="rounded-lg bg-white p-6 dark:bg-darkblack-600">
                 <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">Pemegang</h3>
-                @if($kendaraan->pemegang)
+                @if($kendaraan->pemegang_nama || $kendaraan->pemegang)
                     <div class="flex items-center gap-3">
                         <div class="flex h-12 w-12 items-center justify-center rounded-full bg-success-50 text-success-400">
                             <i class="fa fa-user"></i>
                         </div>
                         <div>
-                            <p class="font-medium text-bgray-900 dark:text-white">{{ $kendaraan->pemegang->name }}</p>
-                            <p class="text-sm text-bgray-500 dark:text-bgray-50">
-                                {{ $kendaraan->pemegang->organization_name ?? ucfirst($kendaraan->pemegang->user_type) }}
+                            <p class="font-medium text-bgray-900 dark:text-white">
+                                {{ $kendaraan->pemegang_nama ?? $kendaraan->pemegang->name }}
                             </p>
+                            @if($kendaraan->pemegang)
+                                <p class="text-sm text-bgray-500 dark:text-bgray-50">
+                                    {{ $kendaraan->pemegang->organization_name ?? ucfirst($kendaraan->pemegang->user_type) }}
+                                </p>
+                            @endif
                         </div>
                     </div>
                 @else

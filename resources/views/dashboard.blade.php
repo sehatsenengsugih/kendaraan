@@ -88,66 +88,360 @@
         </a>
     </div>
 
-    <!-- Content Grid -->
-    <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
-        <!-- Pajak Jatuh Tempo Table -->
-        <div class="card xl:col-span-2">
-            <div class="mb-4 flex items-center justify-between">
-                <h3 class="text-lg font-bold text-bgray-900 dark:text-white">Pajak Akan Jatuh Tempo</h3>
-                <a href="{{ route('pajak.index', ['due_soon' => 1]) }}" class="text-sm font-medium text-success-300 hover:underline">Lihat Semua</a>
+    <!-- Chart: Umur Kendaraan -->
+    <div class="mb-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
+        <!-- Bar Chart -->
+        <div class="card">
+            <h3 class="mb-4 text-lg font-bold text-bgray-900 dark:text-white">
+                <i class="fa fa-chart-bar mr-2 text-success-300"></i>
+                Distribusi Umur Kendaraan
+            </h3>
+            <div class="relative h-64">
+                <canvas id="umurKendaraanChart"></canvas>
             </div>
-            <div class="table-wrapper">
-                <table class="table">
-                    <thead class="bg-bgray-50 dark:bg-darkblack-500">
-                        <tr>
-                            <th>No. Plat</th>
-                            <th>Kendaraan</th>
-                            <th>Jatuh Tempo</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-bgray-200 dark:divide-darkblack-400">
-                        @forelse($pajakJatuhTempo as $pajak)
-                            <tr class="hover:bg-bgray-50 dark:hover:bg-darkblack-500">
-                                <td>
-                                    <a href="{{ route('pajak.show', $pajak) }}" class="font-medium text-bgray-900 hover:text-success-300 dark:text-white">
-                                        {{ $pajak->kendaraan->plat_nomor }}
-                                    </a>
-                                </td>
-                                <td class="text-bgray-600 dark:text-bgray-300">
-                                    {{ $pajak->kendaraan->merk->nama ?? '' }} {{ $pajak->kendaraan->nama_model }}
-                                </td>
-                                <td>
-                                    <span class="text-bgray-900 dark:text-white">{{ $pajak->tanggal_jatuh_tempo->format('d M Y') }}</span>
-                                    @if($pajak->days_until_due < 0)
-                                        <p class="text-xs text-error-300">{{ abs($pajak->days_until_due) }} hari terlambat</p>
-                                    @else
-                                        <p class="text-xs text-warning-400">{{ $pajak->days_until_due }} hari lagi</p>
-                                    @endif
-                                </td>
-                                <td>
-                                    @if($pajak->isOverdue())
-                                        <span class="inline-flex rounded-full bg-error-50 px-2 py-1 text-xs font-medium text-error-300">
-                                            Terlambat
-                                        </span>
-                                    @else
-                                        <span class="inline-flex rounded-full bg-warning-50 px-2 py-1 text-xs font-medium text-warning-400">
-                                            Menunggu
-                                        </span>
-                                    @endif
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="py-8 text-center text-bgray-500">
-                                    Tidak ada pajak yang akan jatuh tempo dalam 30 hari ke depan
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+            <div class="mt-4 text-center text-sm text-bgray-500">
+                Total: {{ array_sum($umurData) }} kendaraan
             </div>
         </div>
+
+        <!-- Summary Cards -->
+        <div class="card">
+            <h3 class="mb-4 text-lg font-bold text-bgray-900 dark:text-white">
+                <i class="fa fa-clock mr-2 text-warning-300"></i>
+                Ringkasan Umur Kendaraan
+            </h3>
+            <div class="space-y-3">
+                @php
+                    $colors = [
+                        '0-5 tahun' => ['bg' => 'bg-success-100', 'text' => 'text-success-500', 'bar' => 'bg-success-400'],
+                        '6-10 tahun' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-500', 'bar' => 'bg-blue-400'],
+                        '11-15 tahun' => ['bg' => 'bg-warning-100', 'text' => 'text-warning-500', 'bar' => 'bg-warning-400'],
+                        '16-20 tahun' => ['bg' => 'bg-orange-100', 'text' => 'text-orange-500', 'bar' => 'bg-orange-400'],
+                        '> 20 tahun' => ['bg' => 'bg-error-100', 'text' => 'text-error-400', 'bar' => 'bg-error-300'],
+                    ];
+                    $total = array_sum($umurData) ?: 1;
+                @endphp
+                @foreach($umurData as $range => $count)
+                    @php $pct = round(($count / $total) * 100); @endphp
+                    <div class="rounded-lg {{ $colors[$range]['bg'] ?? 'bg-bgray-100' }} p-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium {{ $colors[$range]['text'] ?? 'text-bgray-700' }}">{{ $range }}</span>
+                            <span class="font-bold {{ $colors[$range]['text'] ?? 'text-bgray-900' }}">{{ $count }} unit</span>
+                        </div>
+                        <div class="h-2 w-full rounded-full bg-white/50">
+                            <div class="h-2 rounded-full {{ $colors[$range]['bar'] ?? 'bg-bgray-400' }}" style="width: {{ $pct }}%"></div>
+                        </div>
+                        <div class="text-right text-xs mt-1 {{ $colors[$range]['text'] ?? 'text-bgray-500' }}">{{ $pct }}%</div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+    <!-- Reminder Pajak Section -->
+    <div class="mb-6">
+        <div class="mb-4 flex items-center justify-between">
+            <h3 class="text-xl font-bold text-bgray-900 dark:text-white">
+                <i class="fa fa-bell mr-2 text-warning-400"></i>
+                Pengingat Pajak Kendaraan
+            </h3>
+            <a href="{{ route('pajak.index') }}" class="text-sm font-medium text-success-300 hover:underline">Lihat Semua Pajak</a>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="mb-4 grid grid-cols-2 gap-4 md:grid-cols-4">
+            <div class="rounded-lg bg-error-50 p-4 border-l-4 border-error-400">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-error-600">TERLAMBAT</p>
+                        <p class="text-2xl font-bold text-error-500">{{ $pajakTerlambat->count() }}</p>
+                    </div>
+                    <i class="fa fa-exclamation-circle text-2xl text-error-300"></i>
+                </div>
+            </div>
+            <div class="rounded-lg bg-orange-50 p-4 border-l-4 border-orange-400">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-orange-600">7 HARI</p>
+                        <p class="text-2xl font-bold text-orange-500">{{ $pajak7Hari->count() }}</p>
+                    </div>
+                    <i class="fa fa-clock text-2xl text-orange-300"></i>
+                </div>
+            </div>
+            <div class="rounded-lg bg-warning-50 p-4 border-l-4 border-warning-400">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-warning-600">30 HARI</p>
+                        <p class="text-2xl font-bold text-warning-500">{{ $pajak30Hari->count() }}</p>
+                    </div>
+                    <i class="fa fa-calendar-alt text-2xl text-warning-300"></i>
+                </div>
+            </div>
+            <div class="rounded-lg bg-blue-50 p-4 border-l-4 border-blue-400">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-blue-600">6 BULAN</p>
+                        <p class="text-2xl font-bold text-blue-500">{{ $pajak6Bulan->count() }}</p>
+                    </div>
+                    <i class="fa fa-calendar text-2xl text-blue-300"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="card" x-data="{ activeTab: '{{ $pajakTerlambat->count() > 0 ? 'terlambat' : ($pajak7Hari->count() > 0 ? '7hari' : '30hari') }}' }">
+            <div class="border-b border-bgray-200 dark:border-darkblack-400">
+                <nav class="flex flex-wrap gap-2 -mb-px">
+                    <button @click="activeTab = 'terlambat'"
+                        :class="activeTab === 'terlambat' ? 'border-error-400 text-error-500 bg-error-50' : 'border-transparent text-bgray-500 hover:text-bgray-700 hover:border-bgray-300'"
+                        class="px-4 py-3 text-sm font-medium border-b-2 rounded-t-lg transition-all">
+                        <i class="fa fa-exclamation-triangle mr-1"></i>
+                        Terlambat
+                        @if($pajakTerlambat->count() > 0)
+                            <span class="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-error-400 rounded-full">{{ $pajakTerlambat->count() }}</span>
+                        @endif
+                    </button>
+                    <button @click="activeTab = '7hari'"
+                        :class="activeTab === '7hari' ? 'border-orange-400 text-orange-500 bg-orange-50' : 'border-transparent text-bgray-500 hover:text-bgray-700 hover:border-bgray-300'"
+                        class="px-4 py-3 text-sm font-medium border-b-2 rounded-t-lg transition-all">
+                        <i class="fa fa-bolt mr-1"></i>
+                        7 Hari
+                        @if($pajak7Hari->count() > 0)
+                            <span class="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-orange-400 rounded-full">{{ $pajak7Hari->count() }}</span>
+                        @endif
+                    </button>
+                    <button @click="activeTab = '30hari'"
+                        :class="activeTab === '30hari' ? 'border-warning-400 text-warning-500 bg-warning-50' : 'border-transparent text-bgray-500 hover:text-bgray-700 hover:border-bgray-300'"
+                        class="px-4 py-3 text-sm font-medium border-b-2 rounded-t-lg transition-all">
+                        <i class="fa fa-calendar-week mr-1"></i>
+                        30 Hari
+                        @if($pajak30Hari->count() > 0)
+                            <span class="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-warning-400 rounded-full">{{ $pajak30Hari->count() }}</span>
+                        @endif
+                    </button>
+                    <button @click="activeTab = '6bulan'"
+                        :class="activeTab === '6bulan' ? 'border-blue-400 text-blue-500 bg-blue-50' : 'border-transparent text-bgray-500 hover:text-bgray-700 hover:border-bgray-300'"
+                        class="px-4 py-3 text-sm font-medium border-b-2 rounded-t-lg transition-all">
+                        <i class="fa fa-calendar mr-1"></i>
+                        6 Bulan
+                        @if($pajak6Bulan->count() > 0)
+                            <span class="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-blue-400 rounded-full">{{ $pajak6Bulan->count() }}</span>
+                        @endif
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="mt-4">
+                <!-- Terlambat Tab -->
+                <div x-show="activeTab === 'terlambat'" x-cloak>
+                    @if($pajakTerlambat->count() > 0)
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-error-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-error-700">Plat Nomor</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-error-700">Kendaraan</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-error-700">Jenis Pajak</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-error-700">Jatuh Tempo</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-error-700">Terlambat</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-bgray-100">
+                                    @foreach($pajakTerlambat as $pajak)
+                                        <tr class="hover:bg-error-50/50">
+                                            <td class="px-4 py-3">
+                                                <a href="{{ route('kendaraan.show', $pajak->kendaraan) }}" class="font-mono font-medium text-bgray-900 hover:text-error-500">
+                                                    {{ $pajak->kendaraan->plat_nomor }}
+                                                </a>
+                                            </td>
+                                            <td class="px-4 py-3 text-sm text-bgray-600">
+                                                {{ $pajak->kendaraan->merk->nama ?? '' }} {{ $pajak->kendaraan->nama_model }}
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                <span class="inline-flex rounded-full bg-bgray-100 px-2 py-1 text-xs font-medium text-bgray-700">
+                                                    {{ ucfirst($pajak->jenis) }}
+                                                </span>
+                                            </td>
+                                            <td class="px-4 py-3 text-sm text-bgray-900">
+                                                {{ $pajak->tanggal_jatuh_tempo->format('d M Y') }}
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                <span class="inline-flex rounded-full bg-error-100 px-2 py-1 text-xs font-bold text-error-600">
+                                                    {{ abs($pajak->days_until_due) }} hari
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="py-8 text-center">
+                            <i class="fa fa-check-circle text-4xl text-success-300 mb-2"></i>
+                            <p class="text-bgray-500">Tidak ada pajak yang terlambat</p>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- 7 Hari Tab -->
+                <div x-show="activeTab === '7hari'" x-cloak>
+                    @if($pajak7Hari->count() > 0)
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-orange-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-orange-700">Plat Nomor</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-orange-700">Kendaraan</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-orange-700">Jenis Pajak</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-orange-700">Jatuh Tempo</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-orange-700">Sisa Waktu</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-bgray-100">
+                                    @foreach($pajak7Hari as $pajak)
+                                        <tr class="hover:bg-orange-50/50">
+                                            <td class="px-4 py-3">
+                                                <a href="{{ route('kendaraan.show', $pajak->kendaraan) }}" class="font-mono font-medium text-bgray-900 hover:text-orange-500">
+                                                    {{ $pajak->kendaraan->plat_nomor }}
+                                                </a>
+                                            </td>
+                                            <td class="px-4 py-3 text-sm text-bgray-600">
+                                                {{ $pajak->kendaraan->merk->nama ?? '' }} {{ $pajak->kendaraan->nama_model }}
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                <span class="inline-flex rounded-full bg-bgray-100 px-2 py-1 text-xs font-medium text-bgray-700">
+                                                    {{ ucfirst($pajak->jenis) }}
+                                                </span>
+                                            </td>
+                                            <td class="px-4 py-3 text-sm text-bgray-900">
+                                                {{ $pajak->tanggal_jatuh_tempo->format('d M Y') }}
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                <span class="inline-flex rounded-full bg-orange-100 px-2 py-1 text-xs font-bold text-orange-600">
+                                                    {{ $pajak->days_until_due }} hari lagi
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="py-8 text-center">
+                            <i class="fa fa-calendar-check text-4xl text-success-300 mb-2"></i>
+                            <p class="text-bgray-500">Tidak ada pajak jatuh tempo dalam 7 hari ke depan</p>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- 30 Hari Tab -->
+                <div x-show="activeTab === '30hari'" x-cloak>
+                    @if($pajak30Hari->count() > 0)
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-warning-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-warning-700">Plat Nomor</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-warning-700">Kendaraan</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-warning-700">Jenis Pajak</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-warning-700">Jatuh Tempo</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-warning-700">Sisa Waktu</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-bgray-100">
+                                    @foreach($pajak30Hari as $pajak)
+                                        <tr class="hover:bg-warning-50/50">
+                                            <td class="px-4 py-3">
+                                                <a href="{{ route('kendaraan.show', $pajak->kendaraan) }}" class="font-mono font-medium text-bgray-900 hover:text-warning-500">
+                                                    {{ $pajak->kendaraan->plat_nomor }}
+                                                </a>
+                                            </td>
+                                            <td class="px-4 py-3 text-sm text-bgray-600">
+                                                {{ $pajak->kendaraan->merk->nama ?? '' }} {{ $pajak->kendaraan->nama_model }}
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                <span class="inline-flex rounded-full bg-bgray-100 px-2 py-1 text-xs font-medium text-bgray-700">
+                                                    {{ ucfirst($pajak->jenis) }}
+                                                </span>
+                                            </td>
+                                            <td class="px-4 py-3 text-sm text-bgray-900">
+                                                {{ $pajak->tanggal_jatuh_tempo->format('d M Y') }}
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                <span class="inline-flex rounded-full bg-warning-100 px-2 py-1 text-xs font-bold text-warning-600">
+                                                    {{ $pajak->days_until_due }} hari lagi
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="py-8 text-center">
+                            <i class="fa fa-calendar-check text-4xl text-success-300 mb-2"></i>
+                            <p class="text-bgray-500">Tidak ada pajak jatuh tempo dalam 8-30 hari ke depan</p>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- 6 Bulan Tab -->
+                <div x-show="activeTab === '6bulan'" x-cloak>
+                    @if($pajak6Bulan->count() > 0)
+                        <div class="overflow-x-auto max-h-96 overflow-y-auto">
+                            <table class="w-full">
+                                <thead class="bg-blue-50 sticky top-0">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-blue-700">Plat Nomor</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-blue-700">Kendaraan</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-blue-700">Jenis Pajak</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-blue-700">Jatuh Tempo</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-blue-700">Sisa Waktu</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-bgray-100">
+                                    @foreach($pajak6Bulan as $pajak)
+                                        <tr class="hover:bg-blue-50/50">
+                                            <td class="px-4 py-3">
+                                                <a href="{{ route('kendaraan.show', $pajak->kendaraan) }}" class="font-mono font-medium text-bgray-900 hover:text-blue-500">
+                                                    {{ $pajak->kendaraan->plat_nomor }}
+                                                </a>
+                                            </td>
+                                            <td class="px-4 py-3 text-sm text-bgray-600">
+                                                {{ $pajak->kendaraan->merk->nama ?? '' }} {{ $pajak->kendaraan->nama_model }}
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                <span class="inline-flex rounded-full bg-bgray-100 px-2 py-1 text-xs font-medium text-bgray-700">
+                                                    {{ ucfirst($pajak->jenis) }}
+                                                </span>
+                                            </td>
+                                            <td class="px-4 py-3 text-sm text-bgray-900">
+                                                {{ $pajak->tanggal_jatuh_tempo->format('d M Y') }}
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                <span class="inline-flex rounded-full bg-blue-100 px-2 py-1 text-xs font-bold text-blue-600">
+                                                    {{ $pajak->days_until_due }} hari lagi
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="py-8 text-center">
+                            <i class="fa fa-calendar-check text-4xl text-success-300 mb-2"></i>
+                            <p class="text-bgray-500">Tidak ada pajak jatuh tempo dalam 6 bulan ke depan</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
 
         <!-- Quick Stats -->
         <div class="space-y-6">
@@ -217,4 +511,83 @@
             </a>
         </div>
     </div>
+@push('scripts')
+<script src="{{ asset('assets/js/chart.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('umurKendaraanChart');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {!! json_encode(array_keys($umurData)) !!},
+                datasets: [{
+                    label: 'Jumlah Kendaraan',
+                    data: {!! json_encode(array_values($umurData)) !!},
+                    backgroundColor: [
+                        'rgba(34, 197, 94, 0.8)',   // green - 0-5 tahun
+                        'rgba(59, 130, 246, 0.8)', // blue - 6-10 tahun
+                        'rgba(250, 204, 21, 0.8)', // yellow - 11-15 tahun
+                        'rgba(249, 115, 22, 0.8)', // orange - 16-20 tahun
+                        'rgba(239, 68, 68, 0.8)',  // red - > 20 tahun
+                    ],
+                    borderColor: [
+                        'rgb(34, 197, 94)',
+                        'rgb(59, 130, 246)',
+                        'rgb(250, 204, 21)',
+                        'rgb(249, 115, 22)',
+                        'rgb(239, 68, 68)',
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 13 },
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.raw / total) * 100).toFixed(1);
+                                return context.raw + ' kendaraan (' + percentage + '%)';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 10,
+                            font: { size: 12 }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: { size: 11 }
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+@endpush
 </x-app-layout>

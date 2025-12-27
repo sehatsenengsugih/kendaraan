@@ -114,7 +114,7 @@
                                 {{ $k->garasi->nama ?? '-' }}
                             </td>
                             <td class="px-6 py-4 text-bgray-900 dark:text-white">
-                                {{ $k->pemegang->name ?? '-' }}
+                                {{ $k->pemegang_nama ?? $k->pemegang->name ?? '-' }}
                             </td>
                             <td class="px-6 py-4">
                                 @if($k->status === 'aktif')
