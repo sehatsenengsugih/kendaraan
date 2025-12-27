@@ -138,6 +138,92 @@
         </div>
     </div>
 
+    <!-- Chart: Kendaraan per Merk -->
+    <div class="mb-6">
+        <h3 class="mb-4 text-xl font-bold text-bgray-900 dark:text-white">
+            <i class="fa fa-car-side mr-2 text-purple"></i>
+            Kendaraan Berdasarkan Merk
+        </h3>
+        <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
+            <!-- Mobil Chart -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-lg font-semibold text-bgray-900 dark:text-white">
+                        <i class="fa fa-car mr-2 text-blue-500"></i>
+                        Mobil
+                    </h4>
+                    <span class="rounded-full bg-blue-100 px-3 py-1 text-sm font-bold text-blue-600">
+                        {{ $merkMobil->sum('jumlah') }} unit
+                    </span>
+                </div>
+                <div class="relative h-72">
+                    <canvas id="merkMobilChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Motor Chart -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-lg font-semibold text-bgray-900 dark:text-white">
+                        <i class="fa fa-motorcycle mr-2 text-orange-500"></i>
+                        Motor
+                    </h4>
+                    <span class="rounded-full bg-orange-100 px-3 py-1 text-sm font-bold text-orange-600">
+                        {{ $merkMotor->sum('jumlah') }} unit
+                    </span>
+                </div>
+                <div class="relative h-72">
+                    <canvas id="merkMotorChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detail Table -->
+        <div class="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
+            <!-- Mobil Table -->
+            <div class="card">
+                <h4 class="mb-4 font-semibold text-bgray-900 dark:text-white">Detail Mobil per Merk</h4>
+                <div class="space-y-2">
+                    @php $totalMobil = $merkMobil->sum('jumlah') ?: 1; @endphp
+                    @foreach($merkMobil as $item)
+                        @php $pct = round(($item['jumlah'] / $totalMobil) * 100); @endphp
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 text-sm font-medium text-bgray-700 dark:text-bgray-300">{{ $item['merk'] }}</div>
+                            <div class="flex-1 h-6 bg-bgray-100 dark:bg-darkblack-500 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-end pr-2"
+                                     style="width: {{ max($pct, 8) }}%">
+                                    <span class="text-xs font-bold text-white">{{ $item['jumlah'] }}</span>
+                                </div>
+                            </div>
+                            <div class="w-12 text-right text-sm text-bgray-500">{{ $pct }}%</div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Motor Table -->
+            <div class="card">
+                <h4 class="mb-4 font-semibold text-bgray-900 dark:text-white">Detail Motor per Merk</h4>
+                <div class="space-y-2">
+                    @php $totalMotor = $merkMotor->sum('jumlah') ?: 1; @endphp
+                    @foreach($merkMotor as $item)
+                        @php $pct = round(($item['jumlah'] / $totalMotor) * 100); @endphp
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 text-sm font-medium text-bgray-700 dark:text-bgray-300">{{ $item['merk'] }}</div>
+                            <div class="flex-1 h-6 bg-bgray-100 dark:bg-darkblack-500 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-orange-400 to-orange-600 rounded-full flex items-center justify-end pr-2"
+                                     style="width: {{ max($pct, 8) }}%">
+                                    <span class="text-xs font-bold text-white">{{ $item['jumlah'] }}</span>
+                                </div>
+                            </div>
+                            <div class="w-12 text-right text-sm text-bgray-500">{{ $pct }}%</div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Reminder Pajak Section -->
     <div class="mb-6">
         <div class="mb-4 flex items-center justify-between">
@@ -515,6 +601,7 @@
 <script src="{{ asset('assets/js/chart.js') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Umur Kendaraan Chart
     const ctx = document.getElementById('umurKendaraanChart');
     if (ctx) {
         new Chart(ctx, {
@@ -581,6 +668,134 @@ document.addEventListener('DOMContentLoaded', function() {
                         },
                         grid: {
                             display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Merk Mobil Chart (Doughnut)
+    const mobilCtx = document.getElementById('merkMobilChart');
+    if (mobilCtx) {
+        const mobilData = {!! json_encode($merkMobil->values()) !!};
+        const mobilLabels = mobilData.map(item => item.merk);
+        const mobilValues = mobilData.map(item => item.jumlah);
+
+        // Color palette untuk mobil (blue tones)
+        const mobilColors = [
+            'rgba(59, 130, 246, 0.9)',   // blue-500
+            'rgba(99, 102, 241, 0.9)',   // indigo-500
+            'rgba(139, 92, 246, 0.9)',   // violet-500
+            'rgba(168, 85, 247, 0.9)',   // purple-500
+            'rgba(37, 99, 235, 0.9)',    // blue-600
+            'rgba(79, 70, 229, 0.9)',    // indigo-600
+            'rgba(124, 58, 237, 0.9)',   // violet-600
+            'rgba(147, 51, 234, 0.9)',   // purple-600
+            'rgba(29, 78, 216, 0.9)',    // blue-700
+            'rgba(67, 56, 202, 0.9)',    // indigo-700
+        ];
+
+        new Chart(mobilCtx, {
+            type: 'doughnut',
+            data: {
+                labels: mobilLabels,
+                datasets: [{
+                    data: mobilValues,
+                    backgroundColor: mobilColors.slice(0, mobilLabels.length),
+                    borderColor: '#ffffff',
+                    borderWidth: 2,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '55%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            font: { size: 11 }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                        padding: 12,
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 13 },
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.raw / total) * 100).toFixed(1);
+                                return context.label + ': ' + context.raw + ' unit (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Merk Motor Chart (Doughnut)
+    const motorCtx = document.getElementById('merkMotorChart');
+    if (motorCtx) {
+        const motorData = {!! json_encode($merkMotor->values()) !!};
+        const motorLabels = motorData.map(item => item.merk);
+        const motorValues = motorData.map(item => item.jumlah);
+
+        // Color palette untuk motor (orange/warm tones)
+        const motorColors = [
+            'rgba(249, 115, 22, 0.9)',   // orange-500
+            'rgba(245, 158, 11, 0.9)',   // amber-500
+            'rgba(234, 88, 12, 0.9)',    // orange-600
+            'rgba(217, 119, 6, 0.9)',    // amber-600
+            'rgba(251, 146, 60, 0.9)',   // orange-400
+            'rgba(252, 211, 77, 0.9)',   // amber-300
+            'rgba(194, 65, 12, 0.9)',    // orange-700
+            'rgba(180, 83, 9, 0.9)',     // amber-700
+        ];
+
+        new Chart(motorCtx, {
+            type: 'doughnut',
+            data: {
+                labels: motorLabels,
+                datasets: [{
+                    data: motorValues,
+                    backgroundColor: motorColors.slice(0, motorLabels.length),
+                    borderColor: '#ffffff',
+                    borderWidth: 2,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '55%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            font: { size: 11 }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                        padding: 12,
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 13 },
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.raw / total) * 100).toFixed(1);
+                                return context.label + ': ' + context.raw + ' unit (' + percentage + '%)';
+                            }
                         }
                     }
                 }

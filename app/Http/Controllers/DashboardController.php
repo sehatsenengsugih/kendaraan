@@ -114,6 +114,24 @@ class DashboardController extends Controller
             ->orderBy('tanggal_jatuh_tempo', 'asc')
             ->get();
 
+        // Kendaraan per Merk dan Jenis
+        $kendaraanPerMerk = Kendaraan::selectRaw('merk_id, jenis, COUNT(*) as jumlah')
+            ->whereNotNull('merk_id')
+            ->groupBy('merk_id', 'jenis')
+            ->with('merk:id,nama')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'merk' => $item->merk->nama ?? 'Unknown',
+                    'jenis' => $item->jenis,
+                    'jumlah' => $item->jumlah,
+                ];
+            });
+
+        // Group by jenis for chart
+        $merkMobil = $kendaraanPerMerk->where('jenis', 'mobil')->sortByDesc('jumlah')->values();
+        $merkMotor = $kendaraanPerMerk->where('jenis', 'motor')->sortByDesc('jumlah')->values();
+
         return view('dashboard', compact(
             'kendaraanStats',
             'pajakStats',
@@ -125,7 +143,9 @@ class DashboardController extends Controller
             'pajakTerlambat',
             'pajak7Hari',
             'pajak30Hari',
-            'pajak6Bulan'
+            'pajak6Bulan',
+            'merkMobil',
+            'merkMotor'
         ));
     }
 }
