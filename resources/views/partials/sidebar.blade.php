@@ -45,6 +45,7 @@
                         </a>
                     </li>
 
+                    @can('access-main-menu')
                     <!-- Kendaraan -->
                     <li class="item py-[11px] text-bgray-900 dark:text-white {{ request()->routeIs('kendaraan.*') ? 'active' : '' }}">
                         <a href="{{ route('kendaraan.index') }}">
@@ -80,7 +81,9 @@
                             </div>
                         </a>
                     </li>
+                    @endcan
 
+                    @can('manage-servis')
                     <!-- Servis -->
                     <li class="item py-[11px] text-bgray-900 dark:text-white {{ request()->routeIs('servis.*') ? 'active' : '' }}">
                         <a href="{{ route('servis.index') }}">
@@ -97,10 +100,12 @@
                             </div>
                         </a>
                     </li>
+                    @endcan
                 </ul>
             </div>
 
             <!-- Master Data -->
+            @can('access-master-data')
             <div class="item-wrapper mb-5">
                 <h4 class="border-b border-bgray-200 text-sm font-medium leading-7 text-bgray-700 dark:border-darkblack-400 dark:text-bgray-50">
                     Master Data
@@ -177,6 +182,7 @@
                     </li>
                 </ul>
             </div>
+            @endcan
 
             <!-- Pengaturan -->
             @can('manage-users')
