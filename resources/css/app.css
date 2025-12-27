@@ -1,0 +1,312 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Urbanist:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base Styles */
+html {
+    background: #fafafa;
+}
+
+body {
+    font-family: "Urbanist", sans-serif;
+}
+
+/* Scrollbar Styles */
+.overflow-style-none::-webkit-scrollbar {
+    display: none;
+}
+
+.overflow-style-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scroll-style-1::-webkit-scrollbar {
+    width: 2px;
+}
+
+.scroll-style-1::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.scroll-style-1::-webkit-scrollbar-thumb {
+    background: #8e8e8e;
+}
+
+/* Layout Wrapper */
+.layout-wrapper .sidebar-wrapper {
+    left: -308px;
+    transition: left 0.5s ease-in-out;
+}
+
+.layout-wrapper.active .sidebar-wrapper {
+    left: 0;
+}
+
+.layout-wrapper .body-wrapper {
+    transition: margin-left 0.5s ease-in-out;
+}
+
+.layout-wrapper.active .body-wrapper {
+    margin-left: 208px;
+}
+
+.layout-wrapper.active .body-wrapper .drawer-btn {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.layout-wrapper .body-wrapper .drawer-btn {
+    opacity: 100;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.layout-wrapper.active .body-wrapper .header-wrapper {
+    width: calc(100% - 308px);
+    transition: width 0.5s ease-in-out;
+}
+
+.layout-wrapper .body-wrapper .header-wrapper {
+    width: calc(100% - 96px);
+    transition: width 0.5s ease-in-out;
+}
+
+/* Modal Styles */
+body.modal-open {
+    overflow: hidden;
+}
+
+.modal {
+    z-index: 9999;
+}
+
+.modal-overlay {
+    z-index: -1;
+}
+
+/* Sidebar Navigation */
+:is(.sidebar-wrapper, .sidebar-wrapper-collapse)
+    .sidebar-body
+    .item-wrapper
+    ul
+    li.item,
+:is(.sidebar-wrapper, .sidebar-wrapper-collapse)
+    .sidebar-body
+    .item-wrapper
+    ul
+    li.item
+    .item-ico
+    svg
+    .path-1,
+:is(.sidebar-wrapper, .sidebar-wrapper-collapse)
+    .sidebar-body
+    .item-wrapper
+    ul
+    li.item
+    .item-ico
+    svg
+    .path-2 {
+    transition: all 0.3s ease-in-out;
+}
+
+:is(.sidebar-wrapper, .sidebar-wrapper-collapse)
+    .sidebar-body
+    .item-wrapper
+    ul
+    li.item:hover
+    .item-ico
+    svg
+    .path-1,
+:is(.sidebar-wrapper, .sidebar-wrapper-collapse)
+    .sidebar-body
+    .item-wrapper
+    ul
+    li.item:hover {
+    fill: #22c55e;
+    color: #22c55e;
+}
+
+:is(.sidebar-wrapper, .sidebar-wrapper-collapse)
+    .sidebar-body
+    .item-wrapper
+    ul
+    li.item:hover
+    .item-ico
+    svg
+    .path-2 {
+    fill: #b7ffd1;
+}
+
+.sidebar-wrapper .sidebar-body .nav-wrapper ul li.item .sub-menu {
+    display: none;
+    animation: tabFade 1s;
+}
+
+.sidebar-wrapper .sidebar-body .nav-wrapper ul li.item .sub-menu.active {
+    display: block;
+}
+
+@keyframes tabFade {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* Dark Mode Sidebar */
+:is(.dark .sidebar-wrapper, .dark .sidebar-wrapper-collapse)
+    .sidebar-body
+    .item-wrapper
+    ul
+    li.item
+    .item-ico
+    svg
+    .path-1,
+:is(.dark .sidebar-wrapper, .dark .sidebar-wrapper-collapse)
+    .sidebar-body
+    .item-wrapper
+    ul
+    li.item {
+    fill: #FFFFFF;
+    color: #FFFFFF;
+}
+
+:is(.dark .sidebar-wrapper, .dark .sidebar-wrapper-collapse)
+    .sidebar-body
+    .item-wrapper
+    ul
+    li.item:hover
+    .item-ico
+    svg
+    .path-1,
+:is(.dark .sidebar-wrapper, .dark .sidebar-wrapper-collapse)
+    .sidebar-body
+    .item-wrapper
+    ul
+    li.item:hover {
+    fill: #27DA68;
+    color: #27DA68;
+}
+
+/* Component Layer */
+@layer components {
+    /* Buttons */
+    .btn-primary {
+        @apply px-4 py-2 bg-success-300 text-white rounded-lg hover:bg-success-400 transition-all font-medium;
+    }
+
+    .btn-secondary {
+        @apply px-4 py-2 bg-bgray-200 text-bgray-800 rounded-lg hover:bg-bgray-300 transition-all font-medium;
+    }
+
+    .btn-danger {
+        @apply px-4 py-2 bg-error-200 text-white rounded-lg hover:bg-error-300 transition-all font-medium;
+    }
+
+    /* Form Inputs */
+    .form-input {
+        @apply w-full px-4 py-3 border border-bgray-300 rounded-lg focus:ring-2 focus:ring-success-300 focus:border-transparent dark:bg-darkblack-500 dark:border-darkblack-400 dark:text-white;
+    }
+
+    .form-select {
+        @apply w-full px-4 py-3 border border-bgray-300 rounded-lg focus:ring-2 focus:ring-success-300 focus:border-transparent dark:bg-darkblack-500 dark:border-darkblack-400 dark:text-white;
+    }
+
+    .form-label {
+        @apply block text-sm font-medium text-bgray-700 dark:text-bgray-50 mb-2;
+    }
+
+    /* Cards */
+    .card {
+        @apply bg-white rounded-xl shadow-sm border border-bgray-100 p-6 dark:bg-darkblack-600 dark:border-darkblack-400;
+    }
+
+    /* Status Badges - sesuai PRD */
+    .badge {
+        @apply px-2.5 py-0.5 rounded-full text-xs font-medium;
+    }
+
+    .badge-success {
+        @apply bg-success-50 text-success-400;
+    }
+
+    .badge-warning {
+        @apply bg-warning-100 text-warning-300;
+    }
+
+    .badge-danger {
+        @apply bg-error-50 text-error-300;
+    }
+
+    .badge-dark {
+        @apply bg-bgray-800 text-white;
+    }
+
+    /* Status Pajak Badges - sesuai PRD */
+    .badge-belum-jatuh-tempo {
+        @apply bg-green-100 text-green-800;
+    }
+
+    .badge-akan-jatuh-tempo {
+        @apply bg-yellow-100 text-yellow-800;
+    }
+
+    .badge-jatuh-tempo {
+        @apply bg-red-100 text-red-800;
+    }
+
+    .badge-terlambat {
+        @apply bg-gray-800 text-white;
+    }
+
+    /* Table */
+    .table-wrapper {
+        @apply overflow-x-auto;
+    }
+
+    .table {
+        @apply min-w-full divide-y divide-bgray-200 dark:divide-darkblack-400;
+    }
+
+    .table th {
+        @apply px-6 py-3 text-left text-xs font-semibold text-bgray-600 dark:text-bgray-300 uppercase tracking-wider;
+    }
+
+    .table td {
+        @apply px-6 py-4 whitespace-nowrap text-sm text-bgray-800 dark:text-white;
+    }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .layout-wrapper.active .body-wrapper {
+        margin-left: 0;
+    }
+
+    .layout-wrapper.active .body-wrapper .header-wrapper {
+        width: calc(100% - 96px);
+        transition: all 0.5s ease-in-out;
+    }
+}
+
+@media (max-width: 426px) {
+    .layout-wrapper.active .body-wrapper {
+        margin-left: 0;
+    }
+
+    .layout-wrapper.active .body-wrapper .drawer-btn {
+        opacity: 1;
+    }
+
+    .layout-wrapper .body-wrapper {
+        margin-left: 0;
+    }
+
+    .layout-wrapper.active .sidebar-wrapper {
+        left: -308px;
+    }
+
+    .layout-wrapper .sidebar-wrapper {
+        left: 0;
+    }
+}
