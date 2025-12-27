@@ -12,18 +12,18 @@ use Illuminate\Http\Request;
 class DashboardController extends Controller
 {
     /**
-     * Show the dashboard.
+     * Menampilkan halaman dashboard.
      */
     public function index()
     {
-        // Kendaraan stats
+        // Statistik kendaraan (total, mobil, motor)
         $kendaraanStats = [
             'total' => Kendaraan::count(),
             'mobil' => Kendaraan::where('jenis', 'mobil')->count(),
             'motor' => Kendaraan::where('jenis', 'motor')->count(),
         ];
 
-        // Pajak stats
+        // Statistik pajak (akan jatuh tempo & terlambat)
         $pajakStats = [
             'due_soon' => Pajak::where('status', '!=', 'lunas')
                 ->whereBetween('tanggal_jatuh_tempo', [now(), now()->addDays(30)])
@@ -33,7 +33,7 @@ class DashboardController extends Controller
                 ->count(),
         ];
 
-        // Servis stats - next service due soon
+        // Statistik servis - servis berikutnya dalam 30 hari
         $servisStats = [
             'due_soon' => Servis::where('status', 'selesai')
                 ->whereNotNull('servis_berikutnya')
@@ -41,7 +41,7 @@ class DashboardController extends Controller
                 ->count(),
         ];
 
-        // Pajak jatuh tempo list (top 5)
+        // Daftar pajak jatuh tempo (5 teratas)
         $pajakJatuhTempo = Pajak::with(['kendaraan.merk'])
             ->where('status', '!=', 'lunas')
             ->where('tanggal_jatuh_tempo', '<=', now()->addDays(30))
@@ -49,16 +49,16 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        // Kendaraan per garasi/kevikepan
+        // Jumlah kendaraan per garasi/kevikepan
         $kendaraanPerGarasi = Garasi::withCount('kendaraan')
             ->orderBy('kendaraan_count', 'desc')
             ->limit(6)
             ->get();
 
-        // Penugasan aktif
+        // Jumlah penugasan aktif
         $penugasanAktif = Penugasan::aktif()->count();
 
-        // Umur kendaraan distribution
+        // Distribusi umur kendaraan berdasarkan tahun pembuatan
         $currentYear = (int) date('Y');
         $umurKendaraan = Kendaraan::selectRaw("
                 CASE
@@ -75,7 +75,7 @@ class DashboardController extends Controller
             ->orderByRaw('MIN(? - tahun_pembuatan)', [$currentYear])
             ->get();
 
-        // Ensure all ranges exist with proper order
+        // Pastikan semua rentang umur ada dengan urutan yang benar
         $orderedRanges = ['0-5 tahun', '6-10 tahun', '11-15 tahun', '16-20 tahun', '> 20 tahun'];
         $umurData = [];
         foreach ($orderedRanges as $range) {
@@ -83,38 +83,38 @@ class DashboardController extends Controller
             $umurData[$range] = $found ? $found->jumlah : 0;
         }
 
-        // Pajak reminder - grouped by urgency
+        // Pengingat pajak - dikelompokkan berdasarkan urgensi
         $today = now()->startOfDay();
 
-        // Terlambat (overdue)
+        // Pajak terlambat (sudah lewat jatuh tempo)
         $pajakTerlambat = Pajak::with(['kendaraan.merk'])
             ->where('status', '!=', 'lunas')
             ->where('tanggal_jatuh_tempo', '<', $today)
             ->orderBy('tanggal_jatuh_tempo', 'asc')
             ->get();
 
-        // 7 hari ke depan
+        // Pajak jatuh tempo dalam 7 hari ke depan
         $pajak7Hari = Pajak::with(['kendaraan.merk'])
             ->where('status', '!=', 'lunas')
             ->whereBetween('tanggal_jatuh_tempo', [$today, $today->copy()->addDays(7)])
             ->orderBy('tanggal_jatuh_tempo', 'asc')
             ->get();
 
-        // 8-30 hari ke depan
+        // Pajak jatuh tempo dalam 8-30 hari ke depan
         $pajak30Hari = Pajak::with(['kendaraan.merk'])
             ->where('status', '!=', 'lunas')
             ->whereBetween('tanggal_jatuh_tempo', [$today->copy()->addDays(8), $today->copy()->addDays(30)])
             ->orderBy('tanggal_jatuh_tempo', 'asc')
             ->get();
 
-        // 31 hari - 6 bulan ke depan
+        // Pajak jatuh tempo dalam 31 hari - 6 bulan ke depan
         $pajak6Bulan = Pajak::with(['kendaraan.merk'])
             ->where('status', '!=', 'lunas')
             ->whereBetween('tanggal_jatuh_tempo', [$today->copy()->addDays(31), $today->copy()->addMonths(6)])
             ->orderBy('tanggal_jatuh_tempo', 'asc')
             ->get();
 
-        // Kendaraan per Merk dan Jenis
+        // Jumlah kendaraan per merk dan jenis (mobil/motor)
         $kendaraanPerMerk = Kendaraan::selectRaw('merk_id, jenis, COUNT(*) as jumlah')
             ->whereNotNull('merk_id')
             ->groupBy('merk_id', 'jenis')
@@ -128,7 +128,7 @@ class DashboardController extends Controller
                 ];
             });
 
-        // Group by jenis for chart
+        // Kelompokkan berdasarkan jenis untuk grafik
         $merkMobil = $kendaraanPerMerk->where('jenis', 'mobil')->sortByDesc('jumlah')->values();
         $merkMotor = $kendaraanPerMerk->where('jenis', 'motor')->sortByDesc('jumlah')->values();
 

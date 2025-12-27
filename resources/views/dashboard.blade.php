@@ -601,7 +601,7 @@
 <script src="{{ asset('assets/js/chart.js') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Umur Kendaraan Chart
+    // Grafik Distribusi Umur Kendaraan (Bar Chart)
     const ctx = document.getElementById('umurKendaraanChart');
     if (ctx) {
         new Chart(ctx, {
@@ -612,11 +612,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     label: 'Jumlah Kendaraan',
                     data: {!! json_encode(array_values($umurData)) !!},
                     backgroundColor: [
-                        'rgba(34, 197, 94, 0.8)',   // green - 0-5 tahun
-                        'rgba(59, 130, 246, 0.8)', // blue - 6-10 tahun
-                        'rgba(250, 204, 21, 0.8)', // yellow - 11-15 tahun
-                        'rgba(249, 115, 22, 0.8)', // orange - 16-20 tahun
-                        'rgba(239, 68, 68, 0.8)',  // red - > 20 tahun
+                        'rgba(34, 197, 94, 0.8)',   // hijau - 0-5 tahun
+                        'rgba(59, 130, 246, 0.8)', // biru - 6-10 tahun
+                        'rgba(250, 204, 21, 0.8)', // kuning - 11-15 tahun
+                        'rgba(249, 115, 22, 0.8)', // oranye - 16-20 tahun
+                        'rgba(239, 68, 68, 0.8)',  // merah - > 20 tahun
                     ],
                     borderColor: [
                         'rgb(34, 197, 94)',
@@ -675,24 +675,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Merk Mobil Chart (Doughnut)
+    // Grafik Merk Mobil (Doughnut Chart)
     const mobilCtx = document.getElementById('merkMobilChart');
     if (mobilCtx) {
         const mobilData = {!! json_encode($merkMobil->values()) !!};
         const mobilLabels = mobilData.map(item => item.merk);
         const mobilValues = mobilData.map(item => item.jumlah);
 
-        // Color palette untuk mobil (blue tones)
+        // Palet warna untuk mobil (nuansa biru)
         const mobilColors = [
-            'rgba(59, 130, 246, 0.9)',   // blue-500
+            'rgba(59, 130, 246, 0.9)',   // biru-500
             'rgba(99, 102, 241, 0.9)',   // indigo-500
             'rgba(139, 92, 246, 0.9)',   // violet-500
-            'rgba(168, 85, 247, 0.9)',   // purple-500
-            'rgba(37, 99, 235, 0.9)',    // blue-600
+            'rgba(168, 85, 247, 0.9)',   // ungu-500
+            'rgba(37, 99, 235, 0.9)',    // biru-600
             'rgba(79, 70, 229, 0.9)',    // indigo-600
             'rgba(124, 58, 237, 0.9)',   // violet-600
-            'rgba(147, 51, 234, 0.9)',   // purple-600
-            'rgba(29, 78, 216, 0.9)',    // blue-700
+            'rgba(147, 51, 234, 0.9)',   // ungu-600
+            'rgba(29, 78, 216, 0.9)',    // biru-700
             'rgba(67, 56, 202, 0.9)',    // indigo-700
         ];
 
@@ -740,23 +740,23 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Merk Motor Chart (Doughnut)
+    // Grafik Merk Motor (Doughnut Chart)
     const motorCtx = document.getElementById('merkMotorChart');
     if (motorCtx) {
         const motorData = {!! json_encode($merkMotor->values()) !!};
         const motorLabels = motorData.map(item => item.merk);
         const motorValues = motorData.map(item => item.jumlah);
 
-        // Color palette untuk motor (orange/warm tones)
+        // Palet warna untuk motor (nuansa oranye/hangat)
         const motorColors = [
-            'rgba(249, 115, 22, 0.9)',   // orange-500
-            'rgba(245, 158, 11, 0.9)',   // amber-500
-            'rgba(234, 88, 12, 0.9)',    // orange-600
-            'rgba(217, 119, 6, 0.9)',    // amber-600
-            'rgba(251, 146, 60, 0.9)',   // orange-400
-            'rgba(252, 211, 77, 0.9)',   // amber-300
-            'rgba(194, 65, 12, 0.9)',    // orange-700
-            'rgba(180, 83, 9, 0.9)',     // amber-700
+            'rgba(249, 115, 22, 0.9)',   // oranye-500
+            'rgba(245, 158, 11, 0.9)',   // kuning-500
+            'rgba(234, 88, 12, 0.9)',    // oranye-600
+            'rgba(217, 119, 6, 0.9)',    // kuning-600
+            'rgba(251, 146, 60, 0.9)',   // oranye-400
+            'rgba(252, 211, 77, 0.9)',   // kuning-300
+            'rgba(194, 65, 12, 0.9)',    // oranye-700
+            'rgba(180, 83, 9, 0.9)',     // kuning-700
         ];
 
         new Chart(motorCtx, {
