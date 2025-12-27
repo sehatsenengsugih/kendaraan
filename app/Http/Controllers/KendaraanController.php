@@ -161,7 +161,7 @@ class KendaraanController extends Controller
             $tarikDari = [];
             if (!empty($validated['tarikan_paroki_id'])) {
                 $paroki = Paroki::find($validated['tarikan_paroki_id']);
-                if ($paroki) $tarikDari[] = 'Paroki ' . $paroki->nama;
+                if ($paroki) $tarikDari[] = $paroki->nama;
             }
             if (!empty($validated['tarikan_lembaga_id'])) {
                 $lembaga = Lembaga::find($validated['tarikan_lembaga_id']);
@@ -363,7 +363,7 @@ class KendaraanController extends Controller
             $tarikDari = [];
             if (!empty($validated['tarikan_paroki_id'])) {
                 $paroki = Paroki::find($validated['tarikan_paroki_id']);
-                if ($paroki) $tarikDari[] = 'Paroki ' . $paroki->nama;
+                if ($paroki) $tarikDari[] = $paroki->nama;
             }
             if (!empty($validated['tarikan_lembaga_id'])) {
                 $lembaga = Lembaga::find($validated['tarikan_lembaga_id']);
