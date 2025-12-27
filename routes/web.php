@@ -7,7 +7,9 @@ use App\Http\Controllers\MerkController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\PenugasanController;
 use App\Http\Controllers\PajakController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServisController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -58,4 +60,14 @@ Route::middleware('auth')->group(function () {
     // Servis
     Route::post('servis/{servis}/selesai', [ServisController::class, 'selesai'])->name('servis.selesai');
     Route::resource('servis', ServisController::class)->parameters(['servis' => 'servis']);
+
+    // Profile
+    Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+
+    // User Management (Super Admin only)
+    Route::middleware('can:manage-users')->group(function () {
+        Route::resource('users', UserController::class)->except(['show']);
+    });
 });

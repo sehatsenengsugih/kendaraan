@@ -33,15 +33,71 @@
         </button>
 
         <!-- Notifications -->
-        <div class="relative">
-            <button type="button" class="relative flex h-10 w-10 items-center justify-center rounded-full bg-bgray-100 hover:bg-bgray-200 dark:bg-darkblack-500 dark:hover:bg-darkblack-400 transition-colors">
+        <div class="relative" x-data="{ open: false }">
+            <button @click="open = !open" type="button" class="relative flex h-10 w-10 items-center justify-center rounded-full bg-bgray-100 hover:bg-bgray-200 dark:bg-darkblack-500 dark:hover:bg-darkblack-400 transition-colors">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M10 2C6.68629 2 4 4.68629 4 8V11.5858L3.29289 12.2929C3.00517 12.5806 2.92797 13.0124 3.09922 13.3833C3.27047 13.7542 3.65283 14 4 14H16C16.3472 14 16.7295 13.7542 16.9008 13.3833C17.072 13.0124 16.9948 12.5806 16.7071 12.2929L16 11.5858V8C16 4.68629 13.3137 2 10 2Z" fill="#A0AEC0"/>
                     <path d="M10 18C11.6569 18 13 16.6569 13 15H7C7 16.6569 8.34315 18 10 18Z" fill="#22C55E"/>
                 </svg>
                 <!-- Notification Badge -->
-                <span class="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-error-200 text-xs text-white">3</span>
+                @if($notificationCount > 0)
+                <span class="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-error-200 text-xs text-white">{{ $notificationCount > 9 ? '9+' : $notificationCount }}</span>
+                @endif
             </button>
+
+            <!-- Notification Dropdown -->
+            <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-80 rounded-lg bg-white shadow-lg dark:bg-darkblack-500 border border-bgray-200 dark:border-darkblack-400 overflow-hidden">
+                <div class="px-4 py-3 border-b border-bgray-200 dark:border-darkblack-400 flex items-center justify-between">
+                    <h4 class="font-semibold text-bgray-900 dark:text-white">Notifikasi</h4>
+                    @if($notificationCount > 0)
+                    <span class="text-xs bg-error-100 text-error-300 px-2 py-1 rounded-full">{{ $notificationCount }} baru</span>
+                    @endif
+                </div>
+
+                <div class="max-h-80 overflow-y-auto">
+                    @forelse($notifications as $notification)
+                    <a href="{{ $notification['url'] }}" class="block px-4 py-3 hover:bg-bgray-50 dark:hover:bg-darkblack-400 border-b border-bgray-100 dark:border-darkblack-400 last:border-0">
+                        <div class="flex items-start space-x-3">
+                            <div class="flex-shrink-0 mt-1">
+                                @if($notification['color'] === 'error')
+                                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-error-50">
+                                    <i class="fa {{ $notification['icon'] }} text-error-300 text-sm"></i>
+                                </span>
+                                @elseif($notification['color'] === 'warning')
+                                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-warning-50">
+                                    <i class="fa {{ $notification['icon'] }} text-warning-300 text-sm"></i>
+                                </span>
+                                @else
+                                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-success-50">
+                                    <i class="fa {{ $notification['icon'] }} text-success-300 text-sm"></i>
+                                </span>
+                                @endif
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-bgray-900 dark:text-white">{{ $notification['title'] }}</p>
+                                <p class="text-sm text-bgray-600 dark:text-bgray-300 truncate">{{ $notification['message'] }}</p>
+                                <p class="text-xs text-bgray-500 dark:text-bgray-400 mt-1">{{ $notification['detail'] }}</p>
+                            </div>
+                        </div>
+                    </a>
+                    @empty
+                    <div class="px-4 py-8 text-center">
+                        <svg class="w-12 h-12 mx-auto text-bgray-300 dark:text-bgray-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                        </svg>
+                        <p class="text-sm text-bgray-500 dark:text-bgray-400">Tidak ada notifikasi</p>
+                    </div>
+                    @endforelse
+                </div>
+
+                @if($notificationCount > 0)
+                <div class="px-4 py-3 border-t border-bgray-200 dark:border-darkblack-400 text-center">
+                    <a href="{{ route('pajak.index') }}" class="text-sm text-success-300 hover:text-success-400 font-medium">Lihat Semua Pajak</a>
+                    <span class="text-bgray-300 mx-2">|</span>
+                    <a href="{{ route('servis.index') }}" class="text-sm text-success-300 hover:text-success-400 font-medium">Lihat Semua Servis</a>
+                </div>
+                @endif
+            </div>
         </div>
 
         <!-- User Dropdown -->
@@ -71,18 +127,20 @@
                 </span>
             </button>
 
-            <!-- Dropdown Menu -->
+            <!-- User Dropdown Menu -->
             <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-56 rounded-lg bg-white py-2 shadow-lg dark:bg-darkblack-500 border border-bgray-200 dark:border-darkblack-400">
                 <div class="px-4 py-2 border-b border-bgray-200 dark:border-darkblack-400">
                     <p class="text-sm font-semibold text-bgray-900 dark:text-white">{{ Auth::user()->name ?? 'User' }}</p>
                     <p class="text-xs text-bgray-500 dark:text-bgray-300">{{ Auth::user()->email ?? '' }}</p>
                 </div>
-                <a href="#" class="flex items-center px-4 py-2 text-sm text-bgray-700 hover:bg-bgray-100 dark:text-white dark:hover:bg-darkblack-400">
+                <a href="{{ route('profile.edit') }}" class="flex items-center px-4 py-2 text-sm text-bgray-700 hover:bg-bgray-100 dark:text-white dark:hover:bg-darkblack-400">
                     <i class="fa fa-user mr-3 w-4 text-bgray-500"></i> Profil Saya
                 </a>
-                <a href="#" class="flex items-center px-4 py-2 text-sm text-bgray-700 hover:bg-bgray-100 dark:text-white dark:hover:bg-darkblack-400">
-                    <i class="fa fa-cog mr-3 w-4 text-bgray-500"></i> Pengaturan
+                @can('manage-users')
+                <a href="{{ route('users.index') }}" class="flex items-center px-4 py-2 text-sm text-bgray-700 hover:bg-bgray-100 dark:text-white dark:hover:bg-darkblack-400">
+                    <i class="fa fa-users-cog mr-3 w-4 text-bgray-500"></i> Manajemen User
                 </a>
+                @endcan
                 <hr class="my-2 border-bgray-200 dark:border-darkblack-400">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -112,6 +170,61 @@
 
     <!-- Mobile Right Actions -->
     <div class="flex items-center space-x-2">
+        <!-- Notifications Mobile -->
+        <div class="relative" x-data="{ open: false }">
+            <button @click="open = !open" type="button" class="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-bgray-100 dark:hover:bg-darkblack-500">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 2C6.68629 2 4 4.68629 4 8V11.5858L3.29289 12.2929C3.00517 12.5806 2.92797 13.0124 3.09922 13.3833C3.27047 13.7542 3.65283 14 4 14H16C16.3472 14 16.7295 13.7542 16.9008 13.3833C17.072 13.0124 16.9948 12.5806 16.7071 12.2929L16 11.5858V8C16 4.68629 13.3137 2 10 2Z" fill="#A0AEC0"/>
+                    <path d="M10 18C11.6569 18 13 16.6569 13 15H7C7 16.6569 8.34315 18 10 18Z" fill="#22C55E"/>
+                </svg>
+                @if($notificationCount > 0)
+                <span class="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-error-200 text-[10px] text-white">{{ $notificationCount > 9 ? '9+' : $notificationCount }}</span>
+                @endif
+            </button>
+
+            <!-- Mobile Notification Dropdown -->
+            <div x-show="open" @click.away="open = false" x-transition class="fixed left-4 right-4 top-16 rounded-lg bg-white shadow-lg dark:bg-darkblack-500 border border-bgray-200 dark:border-darkblack-400 overflow-hidden z-50">
+                <div class="px-4 py-3 border-b border-bgray-200 dark:border-darkblack-400 flex items-center justify-between">
+                    <h4 class="font-semibold text-bgray-900 dark:text-white">Notifikasi</h4>
+                    @if($notificationCount > 0)
+                    <span class="text-xs bg-error-100 text-error-300 px-2 py-1 rounded-full">{{ $notificationCount }} baru</span>
+                    @endif
+                </div>
+
+                <div class="max-h-64 overflow-y-auto">
+                    @forelse($notifications->take(5) as $notification)
+                    <a href="{{ $notification['url'] }}" class="block px-4 py-3 hover:bg-bgray-50 dark:hover:bg-darkblack-400 border-b border-bgray-100 dark:border-darkblack-400 last:border-0">
+                        <div class="flex items-start space-x-3">
+                            <div class="flex-shrink-0 mt-1">
+                                @if($notification['color'] === 'error')
+                                <span class="flex h-6 w-6 items-center justify-center rounded-full bg-error-50">
+                                    <i class="fa {{ $notification['icon'] }} text-error-300 text-xs"></i>
+                                </span>
+                                @elseif($notification['color'] === 'warning')
+                                <span class="flex h-6 w-6 items-center justify-center rounded-full bg-warning-50">
+                                    <i class="fa {{ $notification['icon'] }} text-warning-300 text-xs"></i>
+                                </span>
+                                @else
+                                <span class="flex h-6 w-6 items-center justify-center rounded-full bg-success-50">
+                                    <i class="fa {{ $notification['icon'] }} text-success-300 text-xs"></i>
+                                </span>
+                                @endif
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-bgray-900 dark:text-white">{{ $notification['title'] }}</p>
+                                <p class="text-xs text-bgray-600 dark:text-bgray-300 truncate">{{ $notification['message'] }}</p>
+                            </div>
+                        </div>
+                    </a>
+                    @empty
+                    <div class="px-4 py-6 text-center">
+                        <p class="text-sm text-bgray-500 dark:text-bgray-400">Tidak ada notifikasi</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+
         <!-- Theme Toggle Mobile -->
         <button type="button" id="theme-toggle-mobile" class="flex h-10 w-10 items-center justify-center rounded-full hover:bg-bgray-100 dark:hover:bg-darkblack-500">
             <svg class="hidden dark:block w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
@@ -121,11 +234,5 @@
                 <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
             </svg>
         </button>
-
-        <!-- User Avatar -->
-        <div class="h-10 w-10 overflow-hidden rounded-full bg-success-100">
-            <img src="{{ Auth::user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name ?? 'User') . '&background=22C55E&color=fff' }}" alt="User" class="h-full w-full object-cover">
-        </div>
     </div>
 </header>
-
