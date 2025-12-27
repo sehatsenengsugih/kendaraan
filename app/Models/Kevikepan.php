@@ -30,4 +30,12 @@ class Kevikepan extends Model
     {
         return $this->hasMany(Garasi::class, 'kevikepan_id');
     }
+
+    /**
+     * Get paroki in this kevikepan
+     */
+    public function paroki()
+    {
+        return $this->hasMany(Paroki::class, 'kevikepan_id');
+    }
 }

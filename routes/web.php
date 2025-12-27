@@ -1,12 +1,15 @@
 <?php
 
+use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GarasiController;
-use App\Http\Controllers\MerkController;
 use App\Http\Controllers\KendaraanController;
-use App\Http\Controllers\PenugasanController;
+use App\Http\Controllers\LembagaController;
+use App\Http\Controllers\MerkController;
 use App\Http\Controllers\PajakController;
+use App\Http\Controllers\ParokiController;
+use App\Http\Controllers\PenugasanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServisController;
 use App\Http\Controllers\UserController;
@@ -45,6 +48,8 @@ Route::middleware('auth')->group(function () {
     // Master Data
     Route::resource('garasi', GarasiController::class);
     Route::resource('merk', MerkController::class);
+    Route::resource('paroki', ParokiController::class);
+    Route::resource('lembaga', LembagaController::class);
 
     // Kendaraan
     Route::resource('kendaraan', KendaraanController::class);
@@ -69,5 +74,11 @@ Route::middleware('auth')->group(function () {
     // User Management (Super Admin only)
     Route::middleware('can:manage-users')->group(function () {
         Route::resource('users', UserController::class)->except(['show']);
+    });
+
+    // Audit Logs (Super Admin only)
+    Route::middleware('can:view-audit-logs')->group(function () {
+        Route::get('audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
+        Route::get('audit-logs/{auditLog}', [AuditLogController::class, 'show'])->name('audit-logs.show');
     });
 });

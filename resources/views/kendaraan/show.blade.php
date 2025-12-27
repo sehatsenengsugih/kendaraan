@@ -102,37 +102,272 @@
                     </dl>
                 </div>
 
-                <!-- Dokumen -->
+                <!-- Dokumen & Identitas -->
                 <div class="rounded-lg bg-white p-6 dark:bg-darkblack-600">
-                    <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">Dokumen</h3>
+                    <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">Dokumen & Identitas</h3>
                     <dl class="space-y-3">
                         <div class="flex justify-between">
                             <dt class="text-bgray-500 dark:text-bgray-50">Plat Nomor</dt>
                             <dd class="font-mono font-medium text-bgray-900 dark:text-white">{{ $kendaraan->plat_nomor }}</dd>
                         </div>
                         <div class="flex justify-between">
-                            <dt class="text-bgray-500 dark:text-bgray-50">No. BPKB</dt>
-                            <dd class="font-medium text-bgray-900 dark:text-white">{{ $kendaraan->nomor_bpkb }}</dd>
+                            <dt class="text-bgray-500 dark:text-bgray-50">BPKB</dt>
+                            <dd class="font-medium text-bgray-900 dark:text-white">
+                                @if($kendaraan->ada_bpkb)
+                                    <span class="text-success-400"><i class="fa fa-check-circle mr-1"></i> Ada</span>
+                                    @if($kendaraan->nomor_bpkb)
+                                        <span class="block text-sm font-mono">{{ $kendaraan->nomor_bpkb }}</span>
+                                    @endif
+                                @else
+                                    <span class="text-bgray-400">Tidak Ada</span>
+                                @endif
+                            </dd>
                         </div>
-                        <div class="flex justify-between">
-                            <dt class="text-bgray-500 dark:text-bgray-50">Tgl Perolehan</dt>
-                            <dd class="font-medium text-bgray-900 dark:text-white">{{ $kendaraan->tanggal_perolehan?->format('d M Y') ?? '-' }}</dd>
-                        </div>
-                        @if($kendaraan->tanggal_hibah)
+                        @if($kendaraan->nomor_rangka)
                             <div class="flex justify-between">
-                                <dt class="text-bgray-500 dark:text-bgray-50">Tgl Hibah</dt>
-                                <dd class="font-medium text-bgray-900 dark:text-white">{{ $kendaraan->tanggal_hibah->format('d M Y') }}</dd>
+                                <dt class="text-bgray-500 dark:text-bgray-50">No. Rangka</dt>
+                                <dd class="font-mono font-medium text-bgray-900 dark:text-white">{{ $kendaraan->nomor_rangka }}</dd>
+                            </div>
+                        @endif
+                        @if($kendaraan->nomor_mesin)
+                            <div class="flex justify-between">
+                                <dt class="text-bgray-500 dark:text-bgray-50">No. Mesin</dt>
+                                <dd class="font-mono font-medium text-bgray-900 dark:text-white">{{ $kendaraan->nomor_mesin }}</dd>
                             </div>
                         @endif
                     </dl>
                 </div>
             </div>
 
+            <!-- Kepemilikan & Perolehan -->
+            <div class="grid gap-6 md:grid-cols-2">
+                <!-- Kepemilikan -->
+                <div class="rounded-lg bg-white p-6 dark:bg-darkblack-600">
+                    <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">Kepemilikan</h3>
+                    <dl class="space-y-3">
+                        <div class="flex justify-between">
+                            <dt class="text-bgray-500 dark:text-bgray-50">Status</dt>
+                            <dd class="font-medium text-bgray-900 dark:text-white">
+                                @if($kendaraan->status_kepemilikan === 'milik_kas')
+                                    <span class="inline-flex items-center rounded-full bg-success-50 px-2 py-0.5 text-xs font-medium text-success-400">
+                                        Milik KAS
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600">
+                                        Milik Lembaga Lain
+                                    </span>
+                                @endif
+                            </dd>
+                        </div>
+                        @if($kendaraan->status_kepemilikan === 'milik_lembaga_lain' && $kendaraan->nama_pemilik_lembaga)
+                            <div class="flex justify-between">
+                                <dt class="text-bgray-500 dark:text-bgray-50">Nama Lembaga</dt>
+                                <dd class="font-medium text-bgray-900 dark:text-white">{{ $kendaraan->nama_pemilik_lembaga }}</dd>
+                            </div>
+                        @endif
+                        <div class="flex justify-between">
+                            <dt class="text-bgray-500 dark:text-bgray-50">Tgl Perolehan</dt>
+                            <dd class="font-medium text-bgray-900 dark:text-white">{{ $kendaraan->tanggal_perolehan?->format('d M Y') ?? '-' }}</dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <!-- Info Pembelian -->
+                @if($kendaraan->tanggal_beli || $kendaraan->harga_beli)
+                    <div class="rounded-lg bg-white p-6 dark:bg-darkblack-600">
+                        <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">Info Pembelian</h3>
+                        <dl class="space-y-3">
+                            @if($kendaraan->tanggal_beli)
+                                <div class="flex justify-between">
+                                    <dt class="text-bgray-500 dark:text-bgray-50">Tanggal Beli</dt>
+                                    <dd class="font-medium text-bgray-900 dark:text-white">{{ $kendaraan->tanggal_beli->format('d M Y') }}</dd>
+                                </div>
+                            @endif
+                            @if($kendaraan->harga_beli)
+                                <div class="flex justify-between">
+                                    <dt class="text-bgray-500 dark:text-bgray-50">Harga Beli</dt>
+                                    <dd class="font-medium text-bgray-900 dark:text-white">Rp {{ number_format($kendaraan->harga_beli, 0, ',', '.') }}</dd>
+                                </div>
+                            @endif
+                        </dl>
+                    </div>
+                @endif
+            </div>
+
+            <!-- Info Hibah (if status=dihibahkan) -->
+            @if($kendaraan->status === 'dihibahkan')
+                <div class="rounded-lg bg-bgray-50 p-6 dark:bg-darkblack-500">
+                    <h3 class="mb-4 flex items-center text-lg font-semibold text-bgray-900 dark:text-white">
+                        <i class="fa fa-gift mr-2 text-purple-500"></i> Info Hibah
+                    </h3>
+                    <dl class="grid gap-4 md:grid-cols-2">
+                        @if($kendaraan->tanggal_hibah)
+                            <div>
+                                <dt class="text-sm text-bgray-500 dark:text-bgray-50">Tanggal Hibah</dt>
+                                <dd class="font-medium text-bgray-900 dark:text-white">{{ $kendaraan->tanggal_hibah->format('d M Y') }}</dd>
+                            </div>
+                        @endif
+                        @if($kendaraan->nama_penerima_hibah)
+                            <div>
+                                <dt class="text-sm text-bgray-500 dark:text-bgray-50">Penerima Hibah</dt>
+                                <dd class="font-medium text-bgray-900 dark:text-white">{{ $kendaraan->nama_penerima_hibah }}</dd>
+                            </div>
+                        @endif
+                    </dl>
+                </div>
+            @endif
+
+            <!-- Info Penjualan (if status=dijual) -->
+            @if($kendaraan->status === 'dijual')
+                <div class="rounded-lg bg-orange-50 p-6 dark:bg-darkblack-500">
+                    <h3 class="mb-4 flex items-center text-lg font-semibold text-bgray-900 dark:text-white">
+                        <i class="fa fa-money-bill mr-2 text-orange-500"></i> Info Penjualan
+                    </h3>
+                    <dl class="grid gap-4 md:grid-cols-3">
+                        @if($kendaraan->tanggal_jual)
+                            <div>
+                                <dt class="text-sm text-bgray-500 dark:text-bgray-50">Tanggal Jual</dt>
+                                <dd class="font-medium text-bgray-900 dark:text-white">{{ $kendaraan->tanggal_jual->format('d M Y') }}</dd>
+                            </div>
+                        @endif
+                        @if($kendaraan->harga_jual)
+                            <div>
+                                <dt class="text-sm text-bgray-500 dark:text-bgray-50">Harga Jual</dt>
+                                <dd class="font-medium text-bgray-900 dark:text-white">Rp {{ number_format($kendaraan->harga_jual, 0, ',', '.') }}</dd>
+                            </div>
+                        @endif
+                        @if($kendaraan->nama_pembeli)
+                            <div>
+                                <dt class="text-sm text-bgray-500 dark:text-bgray-50">Nama Pembeli</dt>
+                                <dd class="font-medium text-bgray-900 dark:text-white">{{ $kendaraan->nama_pembeli }}</dd>
+                            </div>
+                        @endif
+                    </dl>
+                </div>
+            @endif
+
+            <!-- Status Pinjam -->
+            @if($kendaraan->is_dipinjam)
+                <div class="rounded-lg bg-yellow-50 p-6 dark:bg-darkblack-500">
+                    <h3 class="mb-4 flex items-center text-lg font-semibold text-bgray-900 dark:text-white">
+                        <i class="fa fa-handshake mr-2 text-yellow-500"></i> Sedang Dipinjam
+                    </h3>
+                    <dl class="grid gap-4 md:grid-cols-2">
+                        @if($kendaraan->dipinjam_oleh)
+                            <div>
+                                <dt class="text-sm text-bgray-500 dark:text-bgray-50">Dipinjam Oleh</dt>
+                                <dd class="font-medium text-bgray-900 dark:text-white">{{ $kendaraan->dipinjam_oleh }}</dd>
+                            </div>
+                        @endif
+                        @if($kendaraan->tanggal_pinjam)
+                            <div>
+                                <dt class="text-sm text-bgray-500 dark:text-bgray-50">Tanggal Pinjam</dt>
+                                <dd class="font-medium text-bgray-900 dark:text-white">{{ $kendaraan->tanggal_pinjam->format('d M Y') }}</dd>
+                            </div>
+                        @endif
+                    </dl>
+                </div>
+            @endif
+
+            <!-- Info Tarikan -->
+            @if($kendaraan->is_tarikan)
+                <div class="rounded-lg bg-red-50 p-6 dark:bg-darkblack-500">
+                    <h3 class="mb-4 flex items-center text-lg font-semibold text-bgray-900 dark:text-white">
+                        <i class="fa fa-truck-pickup mr-2 text-red-500"></i> Kendaraan Tarikan
+                    </h3>
+                    <dl class="grid gap-4 md:grid-cols-2">
+                        @if($kendaraan->tarikan_dari)
+                            <div>
+                                <dt class="text-sm text-bgray-500 dark:text-bgray-50">Ditarik Dari</dt>
+                                <dd class="font-medium text-bgray-900 dark:text-white">{{ $kendaraan->tarikan_dari }}</dd>
+                            </div>
+                        @endif
+                        @if($kendaraan->tarikan_pemakai)
+                            <div>
+                                <dt class="text-sm text-bgray-500 dark:text-bgray-50">Pemakai Sebelumnya</dt>
+                                <dd class="font-medium text-bgray-900 dark:text-white">{{ $kendaraan->tarikan_pemakai }}</dd>
+                            </div>
+                        @endif
+                        @if($kendaraan->tarikan_kondisi)
+                            <div class="md:col-span-2">
+                                <dt class="text-sm text-bgray-500 dark:text-bgray-50">Kondisi Saat Ditarik</dt>
+                                <dd class="font-medium text-bgray-900 dark:text-white">{{ $kendaraan->tarikan_kondisi }}</dd>
+                            </div>
+                        @endif
+                    </dl>
+                </div>
+            @endif
+
+            <!-- Riwayat Pemakai -->
+            @if($kendaraan->riwayatPemakai->count() > 0)
+                <div class="rounded-lg bg-white p-6 dark:bg-darkblack-600">
+                    <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">Riwayat Pemakai</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="border-b border-bgray-200 dark:border-darkblack-400">
+                                <tr>
+                                    <th class="py-3 font-semibold text-bgray-900 dark:text-white">Nama Pemakai</th>
+                                    <th class="py-3 font-semibold text-bgray-900 dark:text-white">Jenis</th>
+                                    <th class="py-3 font-semibold text-bgray-900 dark:text-white">Periode</th>
+                                    <th class="py-3 font-semibold text-bgray-900 dark:text-white">Durasi</th>
+                                    <th class="py-3 font-semibold text-bgray-900 dark:text-white">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-bgray-100 dark:divide-darkblack-400">
+                                @foreach($kendaraan->riwayatPemakai as $riwayat)
+                                    <tr>
+                                        <td class="py-3 text-bgray-900 dark:text-white">
+                                            {{ $riwayat->nama_pemakai }}
+                                            @if($riwayat->catatan)
+                                                <p class="text-xs text-bgray-500 mt-1">{{ Str::limit($riwayat->catatan, 50) }}</p>
+                                            @endif
+                                        </td>
+                                        <td class="py-3 text-bgray-600 dark:text-bgray-50">
+                                            @if($riwayat->jenis_pemakai === 'lembaga')
+                                                <span class="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600">
+                                                    Lembaga
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center rounded-full bg-purple-50 px-2 py-0.5 text-xs font-medium text-purple-600">
+                                                    Pribadi
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td class="py-3 text-bgray-600 dark:text-bgray-50">
+                                            {{ $riwayat->tanggal_mulai->format('d M Y') }}
+                                            @if($riwayat->tanggal_selesai)
+                                                - {{ $riwayat->tanggal_selesai->format('d M Y') }}
+                                            @else
+                                                - sekarang
+                                            @endif
+                                        </td>
+                                        <td class="py-3 text-bgray-600 dark:text-bgray-50">
+                                            {{ $riwayat->durasi }} hari
+                                        </td>
+                                        <td class="py-3">
+                                            @if($riwayat->isAktif())
+                                                <span class="inline-flex items-center rounded-full bg-success-50 px-2 py-0.5 text-xs font-medium text-success-400">
+                                                    Aktif
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center rounded-full bg-bgray-100 px-2 py-0.5 text-xs font-medium text-bgray-600">
+                                                    Selesai
+                                                </span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endif
+
             <!-- Catatan -->
             @if($kendaraan->catatan)
                 <div class="rounded-lg bg-white p-6 dark:bg-darkblack-600">
                     <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">Catatan</h3>
-                    <p class="text-bgray-600 dark:text-bgray-50">{{ $kendaraan->catatan }}</p>
+                    <p class="text-bgray-600 dark:text-bgray-50 whitespace-pre-line">{{ $kendaraan->catatan }}</p>
                 </div>
             @endif
         </div>
@@ -150,9 +385,27 @@
                         <span class="inline-flex items-center rounded-full bg-warning-50 px-4 py-2 text-lg font-semibold text-warning-400">
                             <i class="fa fa-pause-circle mr-2"></i> Non-Aktif
                         </span>
-                    @else
-                        <span class="inline-flex items-center rounded-full bg-bgray-100 px-4 py-2 text-lg font-semibold text-bgray-600">
+                    @elseif($kendaraan->status === 'dihibahkan')
+                        <span class="inline-flex items-center rounded-full bg-purple-50 px-4 py-2 text-lg font-semibold text-purple-600">
                             <i class="fa fa-gift mr-2"></i> Dihibahkan
+                        </span>
+                    @else
+                        <span class="inline-flex items-center rounded-full bg-orange-50 px-4 py-2 text-lg font-semibold text-orange-600">
+                            <i class="fa fa-money-bill mr-2"></i> Dijual
+                        </span>
+                    @endif
+                </div>
+
+                <!-- Additional status badges -->
+                <div class="flex flex-wrap justify-center gap-2">
+                    @if($kendaraan->is_dipinjam)
+                        <span class="inline-flex items-center rounded-full bg-yellow-50 px-3 py-1 text-sm font-medium text-yellow-600">
+                            <i class="fa fa-handshake mr-1"></i> Dipinjam
+                        </span>
+                    @endif
+                    @if($kendaraan->is_tarikan)
+                        <span class="inline-flex items-center rounded-full bg-red-50 px-3 py-1 text-sm font-medium text-red-600">
+                            <i class="fa fa-truck-pickup mr-1"></i> Tarikan
                         </span>
                     @endif
                 </div>

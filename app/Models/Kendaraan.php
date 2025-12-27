@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,13 +11,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Kendaraan extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Auditable;
 
     protected $table = 'kendaraan';
 
     protected $fillable = [
         'plat_nomor',
         'nomor_bpkb',
+        'ada_bpkb',
+        'nomor_rangka',
+        'nomor_mesin',
         'merk_id',
         'nama_model',
         'tahun_pembuatan',
@@ -25,26 +29,55 @@ class Kendaraan extends Model
         'garasi_id',
         'pemegang_id',
         'status',
+        'status_kepemilikan',
+        'nama_pemilik_lembaga',
+        'pemilik_lembaga_id',
         'tanggal_perolehan',
+        'tanggal_beli',
+        'harga_beli',
         'tanggal_hibah',
+        'nama_penerima_hibah',
+        'tanggal_jual',
+        'harga_jual',
+        'nama_pembeli',
+        'is_dipinjam',
+        'dipinjam_oleh',
+        'dipinjam_paroki_id',
+        'tanggal_pinjam',
+        'is_tarikan',
+        'tarikan_dari',
+        'tarikan_paroki_id',
+        'tarikan_lembaga_id',
+        'tarikan_pemakai',
+        'tarikan_kondisi',
         'catatan',
         'avatar_path',
     ];
 
     protected $casts = [
         'tanggal_perolehan' => 'date',
+        'tanggal_beli' => 'date',
         'tanggal_hibah' => 'date',
+        'tanggal_jual' => 'date',
+        'tanggal_pinjam' => 'date',
         'tahun_pembuatan' => 'integer',
+        'harga_beli' => 'decimal:2',
+        'harga_jual' => 'decimal:2',
+        'ada_bpkb' => 'boolean',
+        'is_dipinjam' => 'boolean',
+        'is_tarikan' => 'boolean',
     ];
 
     public const STATUS_AKTIF = 'aktif';
     public const STATUS_NONAKTIF = 'nonaktif';
     public const STATUS_DIHIBAHKAN = 'dihibahkan';
+    public const STATUS_DIJUAL = 'dijual';
 
     public const STATUS_OPTIONS = [
         self::STATUS_AKTIF => 'Aktif',
         self::STATUS_NONAKTIF => 'Non-Aktif',
         self::STATUS_DIHIBAHKAN => 'Dihibahkan',
+        self::STATUS_DIJUAL => 'Dijual',
     ];
 
     public const JENIS_MOBIL = 'mobil';
@@ -53,6 +86,14 @@ class Kendaraan extends Model
     public const JENIS_OPTIONS = [
         self::JENIS_MOBIL => 'Mobil',
         self::JENIS_MOTOR => 'Motor',
+    ];
+
+    public const KEPEMILIKAN_KAS = 'milik_kas';
+    public const KEPEMILIKAN_LEMBAGA_LAIN = 'milik_lembaga_lain';
+
+    public const KEPEMILIKAN_OPTIONS = [
+        self::KEPEMILIKAN_KAS => 'Milik KAS',
+        self::KEPEMILIKAN_LEMBAGA_LAIN => 'Milik Lembaga Lain',
     ];
 
     /**
@@ -77,6 +118,38 @@ class Kendaraan extends Model
     public function pemegang(): BelongsTo
     {
         return $this->belongsTo(Pengguna::class, 'pemegang_id');
+    }
+
+    /**
+     * Get the lembaga pemilik of this kendaraan.
+     */
+    public function pemilikLembaga(): BelongsTo
+    {
+        return $this->belongsTo(Lembaga::class, 'pemilik_lembaga_id');
+    }
+
+    /**
+     * Get the paroki yang meminjam kendaraan ini.
+     */
+    public function dipinjamParoki(): BelongsTo
+    {
+        return $this->belongsTo(Paroki::class, 'dipinjam_paroki_id');
+    }
+
+    /**
+     * Get the paroki asal tarikan.
+     */
+    public function tarikanParoki(): BelongsTo
+    {
+        return $this->belongsTo(Paroki::class, 'tarikan_paroki_id');
+    }
+
+    /**
+     * Get the lembaga asal tarikan.
+     */
+    public function tarikanLembaga(): BelongsTo
+    {
+        return $this->belongsTo(Lembaga::class, 'tarikan_lembaga_id');
     }
 
     /**
@@ -128,6 +201,22 @@ class Kendaraan extends Model
     }
 
     /**
+     * Get all riwayat pemakai for this kendaraan.
+     */
+    public function riwayatPemakai(): HasMany
+    {
+        return $this->hasMany(RiwayatPemakai::class, 'kendaraan_id')->orderByDesc('tanggal_mulai');
+    }
+
+    /**
+     * Get active riwayat pemakai (tanggal_selesai is null).
+     */
+    public function riwayatPemakaiAktif(): HasMany
+    {
+        return $this->hasMany(RiwayatPemakai::class, 'kendaraan_id')->whereNull('tanggal_selesai');
+    }
+
+    /**
      * Get the display name (merk + model).
      */
     public function getDisplayNameAttribute(): string
@@ -158,6 +247,22 @@ class Kendaraan extends Model
     public function isDihibahkan(): bool
     {
         return $this->status === self::STATUS_DIHIBAHKAN;
+    }
+
+    /**
+     * Check if kendaraan is dijual.
+     */
+    public function isDijual(): bool
+    {
+        return $this->status === self::STATUS_DIJUAL;
+    }
+
+    /**
+     * Check if kendaraan is milik KAS.
+     */
+    public function isMilikKas(): bool
+    {
+        return $this->status_kepemilikan === self::KEPEMILIKAN_KAS;
     }
 
     /**

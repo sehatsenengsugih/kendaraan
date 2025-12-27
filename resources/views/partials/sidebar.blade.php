@@ -64,24 +64,6 @@
                         </a>
                     </li>
 
-                    <!-- Penugasan -->
-                    <li class="item py-[11px] text-bgray-900 dark:text-white {{ request()->routeIs('penugasan.*') ? 'active' : '' }}">
-                        <a href="{{ route('penugasan.index') }}">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-2.5">
-                                    <span class="item-ico">
-                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path class="path-1" d="M14 16C14 13.7909 12.2091 12 10 12C7.79086 12 6 13.7909 6 16" fill="#1A202C"/>
-                                            <path class="path-2" d="M10 10C11.6569 10 13 8.65685 13 7C13 5.34315 11.6569 4 10 4C8.34315 4 7 5.34315 7 7C7 8.65685 8.34315 10 10 10Z" fill="#22C55E"/>
-                                            <path class="path-1" d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18Z" stroke="#1A202C" stroke-width="1.5"/>
-                                        </svg>
-                                    </span>
-                                    <span class="item-text text-lg font-medium leading-none">Penugasan</span>
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-
                     <!-- Pajak -->
                     <li class="item py-[11px] text-bgray-900 dark:text-white {{ request()->routeIs('pajak.*') ? 'active' : '' }}">
                         <a href="{{ route('pajak.index') }}">
@@ -159,6 +141,40 @@
                             </div>
                         </a>
                     </li>
+
+                    <!-- Paroki -->
+                    <li class="item py-[11px] text-bgray-900 dark:text-white {{ request()->routeIs('paroki.*') ? 'active' : '' }}">
+                        <a href="{{ route('paroki.index') }}">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2.5">
+                                    <span class="item-ico">
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path class="path-1" d="M10 2L3 8V18H17V8L10 2Z" fill="#1A202C"/>
+                                            <path class="path-2" d="M10 2V6M10 18V14M7 18V14H13V18" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round"/>
+                                        </svg>
+                                    </span>
+                                    <span class="item-text text-lg font-medium leading-none">Paroki</span>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+
+                    <!-- Lembaga -->
+                    <li class="item py-[11px] text-bgray-900 dark:text-white {{ request()->routeIs('lembaga.*') ? 'active' : '' }}">
+                        <a href="{{ route('lembaga.index') }}">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2.5">
+                                    <span class="item-ico">
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path class="path-1" d="M3 4C3 2.89543 3.89543 2 5 2H15C16.1046 2 17 2.89543 17 4V18H3V4Z" fill="#1A202C"/>
+                                            <path class="path-2" d="M6 6H8M6 10H8M6 14H8M12 6H14M12 10H14M12 14H14" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round"/>
+                                        </svg>
+                                    </span>
+                                    <span class="item-text text-lg font-medium leading-none">Lembaga</span>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
                 </ul>
             </div>
 
@@ -170,8 +186,8 @@
                 </h4>
                 <ul class="mt-2.5">
                     <!-- User Management -->
-                    <li class="item py-[11px] text-bgray-900 dark:text-white">
-                        <a href="#">
+                    <li class="item py-[11px] text-bgray-900 dark:text-white {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                        <a href="{{ route('users.index') }}">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-2.5">
                                     <span class="item-ico">
@@ -189,8 +205,8 @@
 
                     <!-- Audit Log -->
                     @can('view-audit-logs')
-                    <li class="item py-[11px] text-bgray-900 dark:text-white">
-                        <a href="#">
+                    <li class="item py-[11px] text-bgray-900 dark:text-white {{ request()->routeIs('audit-logs.*') ? 'active' : '' }}">
+                        <a href="{{ route('audit-logs.index') }}">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-2.5">
                                     <span class="item-ico">

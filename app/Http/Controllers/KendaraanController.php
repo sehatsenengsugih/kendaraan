@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Garasi;
 use App\Models\GambarKendaraan;
 use App\Models\Kendaraan;
+use App\Models\Lembaga;
 use App\Models\Merk;
+use App\Models\Paroki;
 use App\Models\Pengguna;
+use App\Models\RiwayatPemakai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -73,12 +76,14 @@ class KendaraanController extends Controller
             ->where('status', 'active')
             ->orderBy('name')
             ->get();
+        $paroki = Paroki::with('kevikepan')->where('is_active', true)->orderBy('nama')->get();
+        $lembaga = Lembaga::where('is_active', true)->orderBy('nama')->get();
 
         // Pre-selected values from query params
         $selectedMerkId = $request->merk_id;
         $selectedGarasiId = $request->garasi_id;
 
-        return view('kendaraan.create', compact('merk', 'garasi', 'pemegang', 'selectedMerkId', 'selectedGarasiId'));
+        return view('kendaraan.create', compact('merk', 'garasi', 'pemegang', 'paroki', 'lembaga', 'selectedMerkId', 'selectedGarasiId'));
     }
 
     /**
@@ -88,21 +93,84 @@ class KendaraanController extends Controller
     {
         $validated = $request->validate([
             'plat_nomor' => 'required|string|max:20|unique:kendaraan,plat_nomor',
-            'nomor_bpkb' => 'required|string|max:50|unique:kendaraan,nomor_bpkb',
+            'ada_bpkb' => 'nullable|boolean',
+            'nomor_bpkb' => 'nullable|string|max:50|unique:kendaraan,nomor_bpkb',
+            'nomor_rangka' => 'nullable|string|max:50',
+            'nomor_mesin' => 'nullable|string|max:50',
             'merk_id' => 'required|exists:merk,id',
             'nama_model' => 'required|string|max:100',
             'tahun_pembuatan' => 'required|integer|min:1900|max:' . (date('Y') + 1),
             'warna' => 'required|string|max:50',
             'jenis' => 'required|in:mobil,motor',
-            'garasi_id' => 'required|exists:garasi,id',
+            'garasi_id' => 'nullable|exists:garasi,id',
             'pemegang_id' => 'nullable|exists:pengguna,id',
-            'status' => 'required|in:aktif,nonaktif,dihibahkan',
-            'tanggal_perolehan' => 'required|date',
+            'status' => 'required|in:aktif,nonaktif,dihibahkan,dijual',
+            'status_kepemilikan' => 'required|in:milik_kas,milik_lembaga_lain',
+            'pemilik_lembaga_id' => 'nullable|exists:lembaga,id',
+            'nama_pemilik_lembaga' => 'nullable|string|max:255',
+            'tanggal_perolehan' => 'nullable|date',
+            'tanggal_beli' => 'nullable|date',
+            'harga_beli' => 'nullable|numeric|min:0',
             'tanggal_hibah' => 'nullable|date|after_or_equal:tanggal_perolehan',
+            'nama_penerima_hibah' => 'nullable|required_if:status,dihibahkan|string|max:255',
+            'tanggal_jual' => 'nullable|date|after_or_equal:tanggal_perolehan',
+            'harga_jual' => 'nullable|numeric|min:0',
+            'nama_pembeli' => 'nullable|required_if:status,dijual|string|max:255',
+            'is_dipinjam' => 'nullable|boolean',
+            'dipinjam_paroki_id' => 'nullable|exists:paroki,id',
+            'dipinjam_oleh' => 'nullable|string|max:255',
+            'tanggal_pinjam' => 'nullable|date',
+            'is_tarikan' => 'nullable|boolean',
+            'tarikan_paroki_id' => 'nullable|exists:paroki,id',
+            'tarikan_lembaga_id' => 'nullable|exists:lembaga,id',
+            'tarikan_dari' => 'nullable|string|max:255',
+            'tarikan_pemakai' => 'nullable|string|max:255',
+            'tarikan_kondisi' => 'nullable|string',
             'catatan' => 'nullable|string',
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'gambar.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            // Riwayat Pemakai
+            'riwayat_pemakai' => 'nullable|array',
+            'riwayat_pemakai.*.jenis_pemakai' => 'nullable|in:paroki,lembaga,pribadi',
+            'riwayat_pemakai.*.paroki_id' => 'nullable|exists:paroki,id',
+            'riwayat_pemakai.*.lembaga_id' => 'nullable|exists:lembaga,id',
+            'riwayat_pemakai.*.nama_pemakai' => 'nullable|string|max:255',
+            'riwayat_pemakai.*.tanggal_mulai' => 'nullable|date',
+            'riwayat_pemakai.*.tanggal_selesai' => 'nullable|date|after_or_equal:riwayat_pemakai.*.tanggal_mulai',
+            'riwayat_pemakai.*.catatan' => 'nullable|string',
         ]);
+
+        // Convert checkbox values
+        $validated['ada_bpkb'] = $request->boolean('ada_bpkb');
+        $validated['is_dipinjam'] = $request->boolean('is_dipinjam');
+        $validated['is_tarikan'] = $request->boolean('is_tarikan');
+
+        // Resolve dropdown values to text fields
+        if (!empty($validated['pemilik_lembaga_id'])) {
+            $lembaga = Lembaga::find($validated['pemilik_lembaga_id']);
+            $validated['nama_pemilik_lembaga'] = $lembaga?->nama;
+        }
+
+        if (!empty($validated['dipinjam_paroki_id'])) {
+            $paroki = Paroki::find($validated['dipinjam_paroki_id']);
+            $validated['dipinjam_oleh'] = $paroki?->nama;
+        }
+
+        // Resolve tarikan dari dropdown values
+        if (!empty($validated['tarikan_paroki_id']) || !empty($validated['tarikan_lembaga_id'])) {
+            $tarikDari = [];
+            if (!empty($validated['tarikan_paroki_id'])) {
+                $paroki = Paroki::find($validated['tarikan_paroki_id']);
+                if ($paroki) $tarikDari[] = 'Paroki ' . $paroki->nama;
+            }
+            if (!empty($validated['tarikan_lembaga_id'])) {
+                $lembaga = Lembaga::find($validated['tarikan_lembaga_id']);
+                if ($lembaga) $tarikDari[] = $lembaga->nama;
+            }
+            if (!empty($tarikDari)) {
+                $validated['tarikan_dari'] = implode(', ', $tarikDari);
+            }
+        }
 
         DB::beginTransaction();
         try {
@@ -112,7 +180,8 @@ class KendaraanController extends Controller
             }
 
             // Remove non-model fields
-            unset($validated['avatar'], $validated['gambar']);
+            $riwayatPemakaiData = $validated['riwayat_pemakai'] ?? [];
+            unset($validated['avatar'], $validated['gambar'], $validated['riwayat_pemakai']);
 
             $kendaraan = Kendaraan::create($validated);
 
@@ -128,6 +197,40 @@ class KendaraanController extends Controller
                         'mime_type' => $file->getMimeType(),
                         'file_size' => $file->getSize(),
                         'urutan' => $urutan++,
+                    ]);
+                }
+            }
+
+            // Handle riwayat pemakai
+            foreach ($riwayatPemakaiData as $riwayat) {
+                $jenisPemakai = $riwayat['jenis_pemakai'] ?? 'paroki';
+                $namaPemakai = null;
+                $parokiId = null;
+                $lembagaId = null;
+
+                // Resolve nama_pemakai based on jenis
+                if ($jenisPemakai === 'paroki' && !empty($riwayat['paroki_id'])) {
+                    $paroki = Paroki::find($riwayat['paroki_id']);
+                    $namaPemakai = $paroki?->nama;
+                    $parokiId = $riwayat['paroki_id'];
+                } elseif ($jenisPemakai === 'lembaga' && !empty($riwayat['lembaga_id'])) {
+                    $lembaga = Lembaga::find($riwayat['lembaga_id']);
+                    $namaPemakai = $lembaga?->nama;
+                    $lembagaId = $riwayat['lembaga_id'];
+                } elseif ($jenisPemakai === 'pribadi' && !empty($riwayat['nama_pemakai'])) {
+                    $namaPemakai = $riwayat['nama_pemakai'];
+                }
+
+                if (!empty($namaPemakai) && !empty($riwayat['tanggal_mulai'])) {
+                    RiwayatPemakai::create([
+                        'kendaraan_id' => $kendaraan->id,
+                        'nama_pemakai' => $namaPemakai,
+                        'jenis_pemakai' => $jenisPemakai,
+                        'paroki_id' => $parokiId,
+                        'lembaga_id' => $lembagaId,
+                        'tanggal_mulai' => $riwayat['tanggal_mulai'],
+                        'tanggal_selesai' => $riwayat['tanggal_selesai'] ?? null,
+                        'catatan' => $riwayat['catatan'] ?? null,
                     ]);
                 }
             }
@@ -156,7 +259,7 @@ class KendaraanController extends Controller
      */
     public function show(Kendaraan $kendaraan)
     {
-        $kendaraan->load(['merk', 'garasi.kevikepan', 'pemegang', 'gambar']);
+        $kendaraan->load(['merk', 'garasi.kevikepan', 'pemegang', 'gambar', 'riwayatPemakai']);
 
         return view('kendaraan.show', compact('kendaraan'));
     }
@@ -166,7 +269,7 @@ class KendaraanController extends Controller
      */
     public function edit(Kendaraan $kendaraan)
     {
-        $kendaraan->load('gambar');
+        $kendaraan->load(['gambar', 'riwayatPemakai']);
 
         $merk = Merk::orderBy('nama')->get();
         $garasi = Garasi::with('kevikepan')->orderBy('nama')->get();
@@ -174,8 +277,10 @@ class KendaraanController extends Controller
             ->where('status', 'active')
             ->orderBy('name')
             ->get();
+        $paroki = Paroki::with('kevikepan')->where('is_active', true)->orderBy('nama')->get();
+        $lembaga = Lembaga::where('is_active', true)->orderBy('nama')->get();
 
-        return view('kendaraan.edit', compact('kendaraan', 'merk', 'garasi', 'pemegang'));
+        return view('kendaraan.edit', compact('kendaraan', 'merk', 'garasi', 'pemegang', 'paroki', 'lembaga'));
     }
 
     /**
@@ -185,23 +290,89 @@ class KendaraanController extends Controller
     {
         $validated = $request->validate([
             'plat_nomor' => ['required', 'string', 'max:20', Rule::unique('kendaraan')->ignore($kendaraan->id)],
-            'nomor_bpkb' => ['required', 'string', 'max:50', Rule::unique('kendaraan')->ignore($kendaraan->id)],
+            'ada_bpkb' => 'nullable|boolean',
+            'nomor_bpkb' => ['nullable', 'string', 'max:50', Rule::unique('kendaraan')->ignore($kendaraan->id)],
+            'nomor_rangka' => 'nullable|string|max:50',
+            'nomor_mesin' => 'nullable|string|max:50',
             'merk_id' => 'required|exists:merk,id',
             'nama_model' => 'required|string|max:100',
             'tahun_pembuatan' => 'required|integer|min:1900|max:' . (date('Y') + 1),
             'warna' => 'required|string|max:50',
             'jenis' => 'required|in:mobil,motor',
-            'garasi_id' => 'required|exists:garasi,id',
+            'garasi_id' => 'nullable|exists:garasi,id',
             'pemegang_id' => 'nullable|exists:pengguna,id',
-            'status' => 'required|in:aktif,nonaktif,dihibahkan',
-            'tanggal_perolehan' => 'required|date',
+            'status' => 'required|in:aktif,nonaktif,dihibahkan,dijual',
+            'status_kepemilikan' => 'required|in:milik_kas,milik_lembaga_lain',
+            'pemilik_lembaga_id' => 'nullable|exists:lembaga,id',
+            'nama_pemilik_lembaga' => 'nullable|string|max:255',
+            'tanggal_perolehan' => 'nullable|date',
+            'tanggal_beli' => 'nullable|date',
+            'harga_beli' => 'nullable|numeric|min:0',
             'tanggal_hibah' => 'nullable|date|after_or_equal:tanggal_perolehan',
+            'nama_penerima_hibah' => 'nullable|required_if:status,dihibahkan|string|max:255',
+            'tanggal_jual' => 'nullable|date|after_or_equal:tanggal_perolehan',
+            'harga_jual' => 'nullable|numeric|min:0',
+            'nama_pembeli' => 'nullable|required_if:status,dijual|string|max:255',
+            'is_dipinjam' => 'nullable|boolean',
+            'dipinjam_paroki_id' => 'nullable|exists:paroki,id',
+            'dipinjam_oleh' => 'nullable|string|max:255',
+            'tanggal_pinjam' => 'nullable|date',
+            'is_tarikan' => 'nullable|boolean',
+            'tarikan_paroki_id' => 'nullable|exists:paroki,id',
+            'tarikan_lembaga_id' => 'nullable|exists:lembaga,id',
+            'tarikan_dari' => 'nullable|string|max:255',
+            'tarikan_pemakai' => 'nullable|string|max:255',
+            'tarikan_kondisi' => 'nullable|string',
             'catatan' => 'nullable|string',
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'gambar.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'delete_gambar' => 'nullable|array',
             'delete_gambar.*' => 'exists:gambar_kendaraan,id',
+            // Riwayat Pemakai
+            'riwayat_pemakai' => 'nullable|array',
+            'riwayat_pemakai.*.id' => 'nullable|exists:riwayat_pemakai,id',
+            'riwayat_pemakai.*.jenis_pemakai' => 'nullable|in:paroki,lembaga,pribadi',
+            'riwayat_pemakai.*.paroki_id' => 'nullable|exists:paroki,id',
+            'riwayat_pemakai.*.lembaga_id' => 'nullable|exists:lembaga,id',
+            'riwayat_pemakai.*.nama_pemakai' => 'nullable|string|max:255',
+            'riwayat_pemakai.*.tanggal_mulai' => 'nullable|date',
+            'riwayat_pemakai.*.tanggal_selesai' => 'nullable|date|after_or_equal:riwayat_pemakai.*.tanggal_mulai',
+            'riwayat_pemakai.*.catatan' => 'nullable|string',
+            'delete_riwayat' => 'nullable|array',
+            'delete_riwayat.*' => 'exists:riwayat_pemakai,id',
         ]);
+
+        // Convert checkbox values
+        $validated['ada_bpkb'] = $request->boolean('ada_bpkb');
+        $validated['is_dipinjam'] = $request->boolean('is_dipinjam');
+        $validated['is_tarikan'] = $request->boolean('is_tarikan');
+
+        // Resolve dropdown values to text fields
+        if (!empty($validated['pemilik_lembaga_id'])) {
+            $lembaga = Lembaga::find($validated['pemilik_lembaga_id']);
+            $validated['nama_pemilik_lembaga'] = $lembaga?->nama;
+        }
+
+        if (!empty($validated['dipinjam_paroki_id'])) {
+            $paroki = Paroki::find($validated['dipinjam_paroki_id']);
+            $validated['dipinjam_oleh'] = $paroki?->nama;
+        }
+
+        // Resolve tarikan dari dropdown values
+        if (!empty($validated['tarikan_paroki_id']) || !empty($validated['tarikan_lembaga_id'])) {
+            $tarikDari = [];
+            if (!empty($validated['tarikan_paroki_id'])) {
+                $paroki = Paroki::find($validated['tarikan_paroki_id']);
+                if ($paroki) $tarikDari[] = 'Paroki ' . $paroki->nama;
+            }
+            if (!empty($validated['tarikan_lembaga_id'])) {
+                $lembaga = Lembaga::find($validated['tarikan_lembaga_id']);
+                if ($lembaga) $tarikDari[] = $lembaga->nama;
+            }
+            if (!empty($tarikDari)) {
+                $validated['tarikan_dari'] = implode(', ', $tarikDari);
+            }
+        }
 
         DB::beginTransaction();
         try {
@@ -215,7 +386,8 @@ class KendaraanController extends Controller
             }
 
             // Remove non-model fields
-            unset($validated['avatar'], $validated['gambar'], $validated['delete_gambar']);
+            $riwayatPemakaiData = $validated['riwayat_pemakai'] ?? [];
+            unset($validated['avatar'], $validated['gambar'], $validated['delete_gambar'], $validated['riwayat_pemakai'], $validated['delete_riwayat']);
 
             $kendaraan->update($validated);
 
@@ -245,6 +417,57 @@ class KendaraanController extends Controller
                         'file_size' => $file->getSize(),
                         'urutan' => $urutan++,
                     ]);
+                }
+            }
+
+            // Delete selected riwayat pemakai
+            if ($request->has('delete_riwayat')) {
+                RiwayatPemakai::whereIn('id', $request->delete_riwayat)
+                    ->where('kendaraan_id', $kendaraan->id)
+                    ->delete();
+            }
+
+            // Handle riwayat pemakai (update existing or create new)
+            foreach ($riwayatPemakaiData as $riwayat) {
+                $jenisPemakai = $riwayat['jenis_pemakai'] ?? 'paroki';
+                $namaPemakai = null;
+                $parokiId = null;
+                $lembagaId = null;
+
+                // Resolve nama_pemakai based on jenis
+                if ($jenisPemakai === 'paroki' && !empty($riwayat['paroki_id'])) {
+                    $paroki = Paroki::find($riwayat['paroki_id']);
+                    $namaPemakai = $paroki?->nama;
+                    $parokiId = $riwayat['paroki_id'];
+                } elseif ($jenisPemakai === 'lembaga' && !empty($riwayat['lembaga_id'])) {
+                    $lembaga = Lembaga::find($riwayat['lembaga_id']);
+                    $namaPemakai = $lembaga?->nama;
+                    $lembagaId = $riwayat['lembaga_id'];
+                } elseif ($jenisPemakai === 'pribadi' && !empty($riwayat['nama_pemakai'])) {
+                    $namaPemakai = $riwayat['nama_pemakai'];
+                }
+
+                if (!empty($namaPemakai) && !empty($riwayat['tanggal_mulai'])) {
+                    $riwayatData = [
+                        'kendaraan_id' => $kendaraan->id,
+                        'nama_pemakai' => $namaPemakai,
+                        'jenis_pemakai' => $jenisPemakai,
+                        'paroki_id' => $parokiId,
+                        'lembaga_id' => $lembagaId,
+                        'tanggal_mulai' => $riwayat['tanggal_mulai'],
+                        'tanggal_selesai' => $riwayat['tanggal_selesai'] ?? null,
+                        'catatan' => $riwayat['catatan'] ?? null,
+                    ];
+
+                    if (!empty($riwayat['id'])) {
+                        // Update existing
+                        RiwayatPemakai::where('id', $riwayat['id'])
+                            ->where('kendaraan_id', $kendaraan->id)
+                            ->update($riwayatData);
+                    } else {
+                        // Create new
+                        RiwayatPemakai::create($riwayatData);
+                    }
                 }
             }
 
