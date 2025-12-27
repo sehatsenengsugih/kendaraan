@@ -33,7 +33,7 @@
             <div class="aside-overlay fixed left-0 top-0 z-20 hidden h-full w-full bg-black/50 xl:hidden"></div>
 
             <!-- Main Content -->
-            <div class="body-wrapper flex-1 xl:ml-[308px]">
+            <div class="body-wrapper flex-1">
                 <!-- Header -->
                 @include('partials.header')
 
