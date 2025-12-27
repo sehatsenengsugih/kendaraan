@@ -33,12 +33,17 @@
             <div class="aside-overlay fixed left-0 top-0 z-20 hidden h-full w-full bg-black/50 xl:hidden"></div>
 
             <!-- Main Content -->
-            <div class="body-wrapper flex-1">
+            <div class="body-wrapper flex-1 min-h-screen overflow-x-hidden" id="body-wrapper" style="margin-left: 308px;">
+                <style>
+                    @media (max-width: 1279px) {
+                        #body-wrapper { margin-left: 0 !important; }
+                    }
+                </style>
                 <!-- Header -->
                 @include('partials.header')
 
                 <!-- Page Content -->
-                <main class="w-full px-6 pb-6 pt-6 xl:px-12 xl:pb-12">
+                <main class="w-full px-6 pb-6 pt-[80px] xl:pl-16 xl:pr-12 xl:pb-12 xl:pt-[100px]">
                     <!-- Flash Messages -->
                     @if(session('success'))
                         <div class="mb-4 rounded-lg bg-success-50 p-4 text-success-400" role="alert">

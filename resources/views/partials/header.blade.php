@@ -129,5 +129,3 @@
     </div>
 </header>
 
-<!-- Spacer for fixed header -->
-<div class="h-[72px] xl:h-[88px]"></div>

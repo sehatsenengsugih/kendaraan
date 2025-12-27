@@ -46,20 +46,27 @@ body {
 /* Body wrapper margin - Desktop only */
 @media (min-width: 1280px) {
   .layout-wrapper .body-wrapper {
-    margin-left: 0;
+    margin-left: 0 !important;
     transition: margin-left 0.3s ease-in-out;
   }
   .layout-wrapper.active .body-wrapper {
-    margin-left: 308px;
+    margin-left: 308px !important;
   }
 
-  /* Header width adjustments */
+  /* Header position and width adjustments */
   .layout-wrapper .body-wrapper .header-wrapper {
     width: 100%;
-    transition: width 0.3s ease-in-out;
+    left: 0;
+    transition: all 0.3s ease-in-out;
   }
   .layout-wrapper.active .body-wrapper .header-wrapper {
     width: calc(100% - 308px);
+    left: 308px;
+  }
+
+  /* Main content area - ensure no overflow clipping */
+  .layout-wrapper.active .body-wrapper main {
+    padding-left: 1.5rem;
   }
 }
 
@@ -70,6 +77,7 @@ body {
   }
   .layout-wrapper .body-wrapper .header-wrapper {
     width: 100% !important;
+    left: 0 !important;
   }
 }
 

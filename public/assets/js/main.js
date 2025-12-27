@@ -12,15 +12,22 @@ $(function () {
   $(".drawer-btn").on("click", () => {
     const wrapper = $(".layout-wrapper");
     const overlay = $(".aside-overlay");
+    const bodyWrapper = $("#body-wrapper");
 
     if (wrapper.hasClass("active")) {
       wrapper.removeClass("active");
       overlay.addClass("hidden");
+      // Remove margin on desktop when sidebar hidden
+      if (window.innerWidth >= 1280) {
+        bodyWrapper.css("margin-left", "0");
+      }
     } else {
       wrapper.addClass("active");
-      // Show overlay on mobile
+      // Show overlay on mobile, add margin on desktop
       if (window.innerWidth < 1280) {
         overlay.removeClass("hidden");
+      } else {
+        bodyWrapper.css("margin-left", "308px");
       }
     }
   });
@@ -29,6 +36,7 @@ $(function () {
   $(".aside-overlay").on("click", () => {
     $(".layout-wrapper").removeClass("active");
     $(".aside-overlay").addClass("hidden");
+    // No need to change margin on mobile
   });
 
   // Sidebar toggle shortcut (Ctrl+B)
@@ -37,10 +45,17 @@ $(function () {
       e.preventDefault();
       e.stopPropagation();
       const wrapper = $(".layout-wrapper");
+      const bodyWrapper = $("#body-wrapper");
       if (wrapper.hasClass("active")) {
         wrapper.removeClass("active");
+        if (window.innerWidth >= 1280) {
+          bodyWrapper.css("margin-left", "0");
+        }
       } else {
         wrapper.addClass("active");
+        if (window.innerWidth >= 1280) {
+          bodyWrapper.css("margin-left", "308px");
+        }
       }
     }
   });

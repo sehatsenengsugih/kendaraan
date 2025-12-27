@@ -11,14 +11,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
         </button>
-        <!-- Toggle Button (Desktop) -->
-        <button type="button" class="drawer-btn absolute right-0 top-auto hidden xl:block" title="Ctrl+b">
-            <span>
-                <svg width="16" height="40" viewBox="0 0 16 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 10C0 4.47715 4.47715 0 10 0H16V40H10C4.47715 40 0 35.5228 0 30V10Z" fill="#22C55E"/>
-                    <path d="M10 15L6 20.0049L10 25.0098" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </span>
+        <!-- Toggle Button (Desktop) - moved inside sidebar boundary -->
+        <button type="button" class="drawer-btn absolute right-2 top-1/2 -translate-y-1/2 hidden xl:flex items-center justify-center w-8 h-8 bg-success-300 rounded-full hover:bg-success-400 transition-colors" title="Toggle Sidebar (Ctrl+B)">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
         </button>
     </div>
 
