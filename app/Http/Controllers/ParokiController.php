@@ -36,10 +36,22 @@ class ParokiController extends Controller
             $query->where('is_active', $request->status === 'active');
         }
 
-        $paroki = $query->orderBy('nama')->paginate(20)->withQueryString();
+        // Sorting
+        $sortColumn = $request->input('sort', 'nama');
+        $sortDirection = $request->input('direction', 'asc');
+
+        $allowedSorts = ['nama', 'kota'];
+        if (!in_array($sortColumn, $allowedSorts)) {
+            $sortColumn = 'nama';
+        }
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'asc';
+        }
+
+        $paroki = $query->orderBy($sortColumn, $sortDirection)->paginate(20)->withQueryString();
         $kevikepan = Kevikepan::orderBy('nama')->get();
 
-        return view('paroki.index', compact('paroki', 'kevikepan'));
+        return view('paroki.index', compact('paroki', 'kevikepan', 'sortColumn', 'sortDirection'));
     }
 
     /**

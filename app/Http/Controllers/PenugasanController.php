@@ -47,7 +47,19 @@ class PenugasanController extends Controller
             $query->where('status', $request->status);
         }
 
-        $penugasan = $query->orderBy('tanggal_mulai', 'desc')->paginate(15)->withQueryString();
+        // Sorting
+        $sortColumn = $request->input('sort', 'tanggal_mulai');
+        $sortDirection = $request->input('direction', 'desc');
+
+        $allowedSorts = ['tanggal_mulai', 'tanggal_selesai', 'status'];
+        if (!in_array($sortColumn, $allowedSorts)) {
+            $sortColumn = 'tanggal_mulai';
+        }
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'desc';
+        }
+
+        $penugasan = $query->orderBy($sortColumn, $sortDirection)->paginate(15)->withQueryString();
 
         $kendaraan = Kendaraan::aktif()->with('merk')->orderBy('plat_nomor')->get();
         $pemegang = Pengguna::where('role', 'user')->where('status', 'active')->orderBy('name')->get();
@@ -59,7 +71,7 @@ class PenugasanController extends Controller
             'selesai' => Penugasan::selesai()->count(),
         ];
 
-        return view('penugasan.index', compact('penugasan', 'kendaraan', 'pemegang', 'stats'));
+        return view('penugasan.index', compact('penugasan', 'kendaraan', 'pemegang', 'stats', 'sortColumn', 'sortDirection'));
     }
 
     /**

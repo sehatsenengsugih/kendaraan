@@ -94,12 +94,24 @@ class KendaraanController extends Controller
             $query->where('garasi_id', $request->garasi_id);
         }
 
-        $kendaraan = $query->orderBy('plat_nomor')->paginate(15)->withQueryString();
+        // Sorting
+        $sortColumn = $request->input('sort', 'plat_nomor');
+        $sortDirection = $request->input('direction', 'asc');
+
+        $allowedSorts = ['plat_nomor', 'jenis', 'tahun_pembuatan', 'status', 'nama_model'];
+        if (!in_array($sortColumn, $allowedSorts)) {
+            $sortColumn = 'plat_nomor';
+        }
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'asc';
+        }
+
+        $kendaraan = $query->orderBy($sortColumn, $sortDirection)->paginate(15)->withQueryString();
 
         $merk = Merk::orderBy('nama')->get();
         $garasi = Garasi::orderBy('nama')->get();
 
-        return view('kendaraan.index', compact('kendaraan', 'merk', 'garasi'));
+        return view('kendaraan.index', compact('kendaraan', 'merk', 'garasi', 'sortColumn', 'sortDirection'));
     }
 
     /**

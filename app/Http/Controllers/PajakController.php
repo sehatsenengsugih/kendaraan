@@ -60,7 +60,19 @@ class PajakController extends Controller
                 ->where('tanggal_jatuh_tempo', '<', now());
         }
 
-        $pajak = $query->orderBy('tanggal_jatuh_tempo', 'desc')->paginate(15)->withQueryString();
+        // Sorting
+        $sortColumn = $request->input('sort', 'tanggal_jatuh_tempo');
+        $sortDirection = $request->input('direction', 'desc');
+
+        $allowedSorts = ['tanggal_jatuh_tempo', 'jenis', 'nominal', 'status'];
+        if (!in_array($sortColumn, $allowedSorts)) {
+            $sortColumn = 'tanggal_jatuh_tempo';
+        }
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'desc';
+        }
+
+        $pajak = $query->orderBy($sortColumn, $sortDirection)->paginate(15)->withQueryString();
 
         $kendaraan = Kendaraan::aktif()->with('merk')->orderBy('plat_nomor')->get();
 
@@ -73,7 +85,7 @@ class PajakController extends Controller
             'due_soon' => Pajak::dueWithinDays(30)->count(),
         ];
 
-        return view('pajak.index', compact('pajak', 'kendaraan', 'stats'));
+        return view('pajak.index', compact('pajak', 'kendaraan', 'stats', 'sortColumn', 'sortDirection'));
     }
 
     /**

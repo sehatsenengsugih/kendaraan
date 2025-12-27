@@ -45,7 +45,19 @@ class ServisController extends Controller
             $query->where('jenis', $request->jenis);
         }
 
-        $servis = $query->orderBy('tanggal_servis', 'desc')->paginate(15)->withQueryString();
+        // Sorting
+        $sortColumn = $request->input('sort', 'tanggal_servis');
+        $sortDirection = $request->input('direction', 'desc');
+
+        $allowedSorts = ['tanggal_servis', 'jenis', 'biaya', 'status'];
+        if (!in_array($sortColumn, $allowedSorts)) {
+            $sortColumn = 'tanggal_servis';
+        }
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'desc';
+        }
+
+        $servis = $query->orderBy($sortColumn, $sortDirection)->paginate(15)->withQueryString();
 
         $kendaraan = Kendaraan::aktif()->with('merk')->orderBy('plat_nomor')->get();
 
@@ -64,7 +76,7 @@ class ServisController extends Controller
                 ->sum('biaya'),
         ];
 
-        return view('servis.index', compact('servis', 'kendaraan', 'stats'));
+        return view('servis.index', compact('servis', 'kendaraan', 'stats', 'sortColumn', 'sortDirection'));
     }
 
     /**

@@ -115,9 +115,13 @@
                     <tr class="text-left">
                         <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">Kendaraan</th>
                         <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">Pemegang</th>
-                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">Periode</th>
+                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">
+                            <x-sortable-header column="tanggal_mulai" label="Periode" :currentSort="$sortColumn" :currentDirection="$sortDirection" />
+                        </th>
                         <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">Tujuan</th>
-                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">Status</th>
+                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">
+                            <x-sortable-header column="status" label="Status" :currentSort="$sortColumn" :currentDirection="$sortDirection" />
+                        </th>
                         <th class="px-6 py-4 text-right text-sm font-semibold text-bgray-600 dark:text-bgray-50">Aksi</th>
                     </tr>
                 </thead>

@@ -129,11 +129,17 @@
             <table class="w-full">
                 <thead class="border-b border-bgray-200 dark:border-darkblack-400">
                     <tr class="text-left">
-                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">Kendaraan</th>
-                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">Plat Nomor</th>
+                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">
+                            <x-sortable-header column="nama_model" label="Kendaraan" :currentSort="$sortColumn" :currentDirection="$sortDirection" />
+                        </th>
+                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">
+                            <x-sortable-header column="plat_nomor" label="Plat Nomor" :currentSort="$sortColumn" :currentDirection="$sortDirection" />
+                        </th>
                         <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">Garasi</th>
                         <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">Pemegang</th>
-                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">Status</th>
+                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">
+                            <x-sortable-header column="status" label="Status" :currentSort="$sortColumn" :currentDirection="$sortDirection" />
+                        </th>
                         <th class="px-6 py-4 text-right text-sm font-semibold text-bgray-600 dark:text-bgray-50">Aksi</th>
                     </tr>
                 </thead>

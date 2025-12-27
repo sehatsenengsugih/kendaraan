@@ -38,11 +38,23 @@ class GarasiController extends Controller
             $query->where('kota', $request->kota);
         }
 
-        $garasi = $query->orderBy('nama')->paginate(15)->withQueryString();
+        // Sorting
+        $sortColumn = $request->input('sort', 'nama');
+        $sortDirection = $request->input('direction', 'asc');
+
+        $allowedSorts = ['nama', 'kota'];
+        if (!in_array($sortColumn, $allowedSorts)) {
+            $sortColumn = 'nama';
+        }
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'asc';
+        }
+
+        $garasi = $query->orderBy($sortColumn, $sortDirection)->paginate(15)->withQueryString();
         $kevikepan = Kevikepan::orderBy('nama')->get();
         $kotaList = Garasi::select('kota')->distinct()->orderBy('kota')->pluck('kota');
 
-        return view('garasi.index', compact('garasi', 'kevikepan', 'kotaList'));
+        return view('garasi.index', compact('garasi', 'kevikepan', 'kotaList', 'sortColumn', 'sortDirection'));
     }
 
     /**

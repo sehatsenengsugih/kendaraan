@@ -29,9 +29,21 @@ class LembagaController extends Controller
             $query->where('is_active', $request->status === 'active');
         }
 
-        $lembaga = $query->orderBy('nama')->paginate(20)->withQueryString();
+        // Sorting
+        $sortColumn = $request->input('sort', 'nama');
+        $sortDirection = $request->input('direction', 'asc');
 
-        return view('lembaga.index', compact('lembaga'));
+        $allowedSorts = ['nama', 'kota'];
+        if (!in_array($sortColumn, $allowedSorts)) {
+            $sortColumn = 'nama';
+        }
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'asc';
+        }
+
+        $lembaga = $query->orderBy($sortColumn, $sortDirection)->paginate(20)->withQueryString();
+
+        return view('lembaga.index', compact('lembaga', 'sortColumn', 'sortDirection'));
     }
 
     /**

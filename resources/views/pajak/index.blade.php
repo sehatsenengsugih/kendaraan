@@ -131,10 +131,18 @@
                 <thead class="border-b border-bgray-200 dark:border-darkblack-400">
                     <tr class="text-left">
                         <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">Kendaraan</th>
-                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">Jenis</th>
-                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">Jatuh Tempo</th>
-                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">Nominal</th>
-                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">Status</th>
+                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">
+                            <x-sortable-header column="jenis" label="Jenis" :currentSort="$sortColumn" :currentDirection="$sortDirection" />
+                        </th>
+                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">
+                            <x-sortable-header column="tanggal_jatuh_tempo" label="Jatuh Tempo" :currentSort="$sortColumn" :currentDirection="$sortDirection" />
+                        </th>
+                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">
+                            <x-sortable-header column="nominal" label="Nominal" :currentSort="$sortColumn" :currentDirection="$sortDirection" />
+                        </th>
+                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">
+                            <x-sortable-header column="status" label="Status" :currentSort="$sortColumn" :currentDirection="$sortDirection" />
+                        </th>
                         <th class="px-6 py-4 text-right text-sm font-semibold text-bgray-600 dark:text-bgray-50">Aksi</th>
                     </tr>
                 </thead>
