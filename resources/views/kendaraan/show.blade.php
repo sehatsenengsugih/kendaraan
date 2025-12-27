@@ -111,15 +111,15 @@
                             <dd class="font-mono font-medium text-bgray-900 dark:text-white">{{ $kendaraan->plat_nomor }}</dd>
                         </div>
                         <div class="flex justify-between">
-                            <dt class="text-bgray-500 dark:text-bgray-50">BPKB</dt>
+                            <dt class="text-bgray-500 dark:text-bgray-50">Status BPKB</dt>
                             <dd class="font-medium text-bgray-900 dark:text-white">
-                                @if($kendaraan->ada_bpkb)
-                                    <span class="text-success-400"><i class="fa fa-check-circle mr-1"></i> Ada</span>
+                                @if($kendaraan->statusBpkb)
+                                    <span class="text-success-400"><i class="fa fa-check-circle mr-1"></i> {{ $kendaraan->statusBpkb->nama }}</span>
                                     @if($kendaraan->nomor_bpkb)
                                         <span class="block text-sm font-mono">{{ $kendaraan->nomor_bpkb }}</span>
                                     @endif
                                 @else
-                                    <span class="text-bgray-400">Tidak Ada</span>
+                                    <span class="text-bgray-400">-</span>
                                 @endif
                             </dd>
                         </div>

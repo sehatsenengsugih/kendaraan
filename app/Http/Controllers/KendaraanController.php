@@ -10,6 +10,7 @@ use App\Models\Merk;
 use App\Models\Paroki;
 use App\Models\Pengguna;
 use App\Models\RiwayatPemakai;
+use App\Models\StatusBpkb;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -78,12 +79,13 @@ class KendaraanController extends Controller
             ->get();
         $paroki = Paroki::with('kevikepan')->where('is_active', true)->orderBy('nama')->get();
         $lembaga = Lembaga::where('is_active', true)->orderBy('nama')->get();
+        $statusBpkb = StatusBpkb::active()->ordered()->get();
 
         // Pre-selected values from query params
         $selectedMerkId = $request->merk_id;
         $selectedGarasiId = $request->garasi_id;
 
-        return view('kendaraan.create', compact('merk', 'garasi', 'pemegang', 'paroki', 'lembaga', 'selectedMerkId', 'selectedGarasiId'));
+        return view('kendaraan.create', compact('merk', 'garasi', 'pemegang', 'paroki', 'lembaga', 'statusBpkb', 'selectedMerkId', 'selectedGarasiId'));
     }
 
     /**
@@ -93,7 +95,7 @@ class KendaraanController extends Controller
     {
         $validated = $request->validate([
             'plat_nomor' => 'required|string|max:20|unique:kendaraan,plat_nomor',
-            'ada_bpkb' => 'nullable|boolean',
+            'status_bpkb_id' => 'nullable|exists:status_bpkb,id',
             'nomor_bpkb' => 'nullable|string|max:50|unique:kendaraan,nomor_bpkb',
             'nomor_rangka' => 'nullable|string|max:50',
             'nomor_mesin' => 'nullable|string|max:50',
@@ -141,7 +143,6 @@ class KendaraanController extends Controller
         ]);
 
         // Convert checkbox values
-        $validated['ada_bpkb'] = $request->boolean('ada_bpkb');
         $validated['is_dipinjam'] = $request->boolean('is_dipinjam');
         $validated['is_tarikan'] = $request->boolean('is_tarikan');
 
@@ -259,7 +260,7 @@ class KendaraanController extends Controller
      */
     public function show(Kendaraan $kendaraan)
     {
-        $kendaraan->load(['merk', 'garasi.kevikepan', 'pemegang', 'gambar', 'riwayatPemakai']);
+        $kendaraan->load(['merk', 'garasi.kevikepan', 'pemegang', 'gambar', 'riwayatPemakai', 'statusBpkb']);
 
         return view('kendaraan.show', compact('kendaraan'));
     }
@@ -269,7 +270,7 @@ class KendaraanController extends Controller
      */
     public function edit(Kendaraan $kendaraan)
     {
-        $kendaraan->load(['gambar', 'riwayatPemakai']);
+        $kendaraan->load(['gambar', 'riwayatPemakai', 'statusBpkb']);
 
         $merk = Merk::orderBy('nama')->get();
         $garasi = Garasi::with('kevikepan')->orderBy('nama')->get();
@@ -279,8 +280,9 @@ class KendaraanController extends Controller
             ->get();
         $paroki = Paroki::with('kevikepan')->where('is_active', true)->orderBy('nama')->get();
         $lembaga = Lembaga::where('is_active', true)->orderBy('nama')->get();
+        $statusBpkb = StatusBpkb::active()->ordered()->get();
 
-        return view('kendaraan.edit', compact('kendaraan', 'merk', 'garasi', 'pemegang', 'paroki', 'lembaga'));
+        return view('kendaraan.edit', compact('kendaraan', 'merk', 'garasi', 'pemegang', 'paroki', 'lembaga', 'statusBpkb'));
     }
 
     /**
@@ -290,7 +292,7 @@ class KendaraanController extends Controller
     {
         $validated = $request->validate([
             'plat_nomor' => ['required', 'string', 'max:20', Rule::unique('kendaraan')->ignore($kendaraan->id)],
-            'ada_bpkb' => 'nullable|boolean',
+            'status_bpkb_id' => 'nullable|exists:status_bpkb,id',
             'nomor_bpkb' => ['nullable', 'string', 'max:50', Rule::unique('kendaraan')->ignore($kendaraan->id)],
             'nomor_rangka' => 'nullable|string|max:50',
             'nomor_mesin' => 'nullable|string|max:50',
@@ -343,7 +345,6 @@ class KendaraanController extends Controller
         ]);
 
         // Convert checkbox values
-        $validated['ada_bpkb'] = $request->boolean('ada_bpkb');
         $validated['is_dipinjam'] = $request->boolean('is_dipinjam');
         $validated['is_tarikan'] = $request->boolean('is_tarikan');
 

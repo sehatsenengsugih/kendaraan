@@ -18,7 +18,7 @@ class Kendaraan extends Model
     protected $fillable = [
         'plat_nomor',
         'nomor_bpkb',
-        'ada_bpkb',
+        'status_bpkb_id',
         'nomor_rangka',
         'nomor_mesin',
         'merk_id',
@@ -63,7 +63,6 @@ class Kendaraan extends Model
         'tahun_pembuatan' => 'integer',
         'harga_beli' => 'decimal:2',
         'harga_jual' => 'decimal:2',
-        'ada_bpkb' => 'boolean',
         'is_dipinjam' => 'boolean',
         'is_tarikan' => 'boolean',
     ];
@@ -150,6 +149,14 @@ class Kendaraan extends Model
     public function tarikanLembaga(): BelongsTo
     {
         return $this->belongsTo(Lembaga::class, 'tarikan_lembaga_id');
+    }
+
+    /**
+     * Get the status BPKB of this kendaraan.
+     */
+    public function statusBpkb(): BelongsTo
+    {
+        return $this->belongsTo(StatusBpkb::class, 'status_bpkb_id');
     }
 
     /**

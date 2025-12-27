@@ -127,17 +127,27 @@
                     <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">Dokumen & Identitas</h3>
 
                     <div class="grid gap-4 md:grid-cols-2">
-                        <!-- Ada BPKB Checkbox -->
-                        <div class="md:col-span-2">
-                            <label class="flex cursor-pointer items-center gap-3">
-                                <input type="checkbox" name="ada_bpkb" id="ada_bpkb" value="1" {{ old('ada_bpkb', $kendaraan->ada_bpkb) ? 'checked' : '' }}
-                                    class="h-5 w-5 rounded border-bgray-300 text-success-300 focus:ring-success-300">
-                                <span class="text-sm font-medium text-bgray-900 dark:text-white">Ada BPKB</span>
+                        <!-- Status BPKB -->
+                        <div>
+                            <label for="status_bpkb_id" class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">
+                                Status BPKB
                             </label>
+                            <select name="status_bpkb_id" id="status_bpkb_id"
+                                class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('status_bpkb_id') border-error-300 @enderror">
+                                <option value="">-- Pilih Status BPKB --</option>
+                                @foreach($statusBpkb as $status)
+                                    <option value="{{ $status->id }}" {{ old('status_bpkb_id', $kendaraan->status_bpkb_id) == $status->id ? 'selected' : '' }}>
+                                        {{ $status->nama }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('status_bpkb_id')
+                                <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
+                            @enderror
                         </div>
 
-                        <!-- Nomor BPKB (conditional) -->
-                        <div id="bpkb-field" class="{{ old('ada_bpkb', $kendaraan->ada_bpkb) ? '' : 'hidden' }}">
+                        <!-- Nomor BPKB (conditional - show when status is selected) -->
+                        <div id="bpkb-field" class="{{ old('status_bpkb_id', $kendaraan->status_bpkb_id) ? '' : 'hidden' }}">
                             <label for="nomor_bpkb" class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">
                                 Nomor BPKB
                             </label>
@@ -733,10 +743,11 @@
 
     @push('scripts')
     <script>
-        // Toggle BPKB field
-        document.getElementById('ada_bpkb').addEventListener('change', function() {
-            document.getElementById('bpkb-field').classList.toggle('hidden', !this.checked);
-            if (!this.checked) {
+        // Toggle BPKB field based on status selection
+        document.getElementById('status_bpkb_id').addEventListener('change', function() {
+            const hasValue = this.value !== '';
+            document.getElementById('bpkb-field').classList.toggle('hidden', !hasValue);
+            if (!hasValue) {
                 document.getElementById('nomor_bpkb').value = '';
             }
         });
