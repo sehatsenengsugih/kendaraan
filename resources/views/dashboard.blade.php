@@ -68,163 +68,28 @@
             </div>
         </a>
 
-        <!-- Servis Akan Jatuh Tempo -->
-        <a href="{{ route('servis.index') }}" class="card hover:shadow-lg transition-shadow">
+        <!-- Kendaraan Aktif -->
+        <a href="{{ route('kendaraan.index', ['status' => 'aktif']) }}" class="card hover:shadow-lg transition-shadow">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-bgray-600 dark:text-bgray-300">Servis Akan Jatuh Tempo</p>
-                    <h3 class="mt-2 text-3xl font-bold text-purple">{{ $servisStats['due_soon'] }}</h3>
-                    <p class="mt-1 text-xs text-bgray-500">Dalam 30 hari ke depan</p>
+                    <p class="text-sm font-medium text-bgray-600 dark:text-bgray-300">Kendaraan Aktif</p>
+                    <h3 class="mt-2 text-3xl font-bold text-blue-500">{{ $kendaraanAktifStats['total'] }}</h3>
+                    <p class="mt-1 text-xs text-bgray-500">
+                        <i class="fa fa-car mr-1"></i>{{ $kendaraanAktifStats['mobil'] }} Mobil |
+                        <i class="fa fa-motorcycle mr-1"></i>{{ $kendaraanAktifStats['motor'] }} Motor
+                    </p>
                 </div>
-                <div class="flex h-14 w-14 items-center justify-center rounded-full bg-purple/10">
+                <div class="flex h-14 w-14 items-center justify-center rounded-full bg-blue-50">
                     <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M21 9.33301L17.5 5.83301L14 9.33301" stroke="#936DFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M17.5 5.83301V17.4997C17.5 18.7703 16.4706 19.7997 15.2 19.7997H7" stroke="#936DFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M7 18.667L10.5 22.167L14 18.667" stroke="#936DFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M10.5 22.167V10.5003C10.5 9.22968 11.5294 8.20033 12.8 8.20033H21" stroke="#936DFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M14 25.667C20.4433 25.667 25.667 20.4433 25.667 14C25.667 7.55668 20.4433 2.33301 14 2.33301C7.55668 2.33301 2.33301 7.55668 2.33301 14C2.33301 20.4433 7.55668 25.667 14 25.667Z" fill="#3B82F6"/>
+                        <path d="M10.5 14L13 16.5L18 11.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </div>
             </div>
         </a>
     </div>
 
-    <!-- Chart: Umur Kendaraan -->
-    <div class="mb-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
-        <!-- Bar Chart -->
-        <div class="card">
-            <h3 class="mb-4 text-lg font-bold text-bgray-900 dark:text-white">
-                <i class="fa fa-chart-bar mr-2 text-success-300"></i>
-                Distribusi Umur Kendaraan
-            </h3>
-            <div class="relative h-64">
-                <canvas id="umurKendaraanChart"></canvas>
-            </div>
-            <div class="mt-4 text-center text-sm text-bgray-500">
-                Total: {{ array_sum($umurData) }} kendaraan
-            </div>
-        </div>
-
-        <!-- Summary Cards -->
-        <div class="card">
-            <h3 class="mb-4 text-lg font-bold text-bgray-900 dark:text-white">
-                <i class="fa fa-clock mr-2 text-warning-300"></i>
-                Ringkasan Umur Kendaraan
-            </h3>
-            <div class="space-y-3">
-                @php
-                    $colors = [
-                        '0-5 tahun' => ['bg' => 'bg-success-100', 'text' => 'text-success-500', 'bar' => 'bg-success-400'],
-                        '6-10 tahun' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-500', 'bar' => 'bg-blue-400'],
-                        '11-15 tahun' => ['bg' => 'bg-warning-100', 'text' => 'text-warning-500', 'bar' => 'bg-warning-400'],
-                        '16-20 tahun' => ['bg' => 'bg-orange-100', 'text' => 'text-orange-500', 'bar' => 'bg-orange-400'],
-                        '> 20 tahun' => ['bg' => 'bg-error-100', 'text' => 'text-error-400', 'bar' => 'bg-error-300'],
-                    ];
-                    $total = array_sum($umurData) ?: 1;
-                @endphp
-                @foreach($umurData as $range => $count)
-                    @php $pct = round(($count / $total) * 100); @endphp
-                    <div class="rounded-lg {{ $colors[$range]['bg'] ?? 'bg-bgray-100' }} p-3">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="font-medium {{ $colors[$range]['text'] ?? 'text-bgray-700' }}">{{ $range }}</span>
-                            <span class="font-bold {{ $colors[$range]['text'] ?? 'text-bgray-900' }}">{{ $count }} unit</span>
-                        </div>
-                        <div class="h-2 w-full rounded-full bg-white/50">
-                            <div class="h-2 rounded-full {{ $colors[$range]['bar'] ?? 'bg-bgray-400' }}" style="width: {{ $pct }}%"></div>
-                        </div>
-                        <div class="text-right text-xs mt-1 {{ $colors[$range]['text'] ?? 'text-bgray-500' }}">{{ $pct }}%</div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
-
-    <!-- Chart: Kendaraan per Merk -->
-    <div class="mb-6">
-        <h3 class="mb-4 text-xl font-bold text-bgray-900 dark:text-white">
-            <i class="fa fa-car-side mr-2 text-purple"></i>
-            Kendaraan Berdasarkan Merk
-        </h3>
-        <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
-            <!-- Mobil Chart -->
-            <div class="card">
-                <div class="flex items-center justify-between mb-4">
-                    <h4 class="text-lg font-semibold text-bgray-900 dark:text-white">
-                        <i class="fa fa-car mr-2 text-blue-500"></i>
-                        Mobil
-                    </h4>
-                    <span class="rounded-full bg-blue-100 px-3 py-1 text-sm font-bold text-blue-600">
-                        {{ $merkMobil->sum('jumlah') }} unit
-                    </span>
-                </div>
-                <div class="relative h-72">
-                    <canvas id="merkMobilChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Motor Chart -->
-            <div class="card">
-                <div class="flex items-center justify-between mb-4">
-                    <h4 class="text-lg font-semibold text-bgray-900 dark:text-white">
-                        <i class="fa fa-motorcycle mr-2 text-orange-500"></i>
-                        Motor
-                    </h4>
-                    <span class="rounded-full bg-orange-100 px-3 py-1 text-sm font-bold text-orange-600">
-                        {{ $merkMotor->sum('jumlah') }} unit
-                    </span>
-                </div>
-                <div class="relative h-72">
-                    <canvas id="merkMotorChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Detail Table -->
-        <div class="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
-            <!-- Mobil Table -->
-            <div class="card">
-                <h4 class="mb-4 font-semibold text-bgray-900 dark:text-white">Detail Mobil per Merk</h4>
-                <div class="space-y-2">
-                    @php $totalMobil = $merkMobil->sum('jumlah') ?: 1; @endphp
-                    @foreach($merkMobil as $item)
-                        @php $pct = round(($item['jumlah'] / $totalMobil) * 100); @endphp
-                        <div class="flex items-center gap-3">
-                            <div class="w-24 text-sm font-medium text-bgray-700 dark:text-bgray-300">{{ $item['merk'] }}</div>
-                            <div class="flex-1 h-6 bg-bgray-100 dark:bg-darkblack-500 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-end pr-2"
-                                     style="width: {{ max($pct, 8) }}%">
-                                    <span class="text-xs font-bold text-white">{{ $item['jumlah'] }}</span>
-                                </div>
-                            </div>
-                            <div class="w-12 text-right text-sm text-bgray-500">{{ $pct }}%</div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
-            <!-- Motor Table -->
-            <div class="card">
-                <h4 class="mb-4 font-semibold text-bgray-900 dark:text-white">Detail Motor per Merk</h4>
-                <div class="space-y-2">
-                    @php $totalMotor = $merkMotor->sum('jumlah') ?: 1; @endphp
-                    @foreach($merkMotor as $item)
-                        @php $pct = round(($item['jumlah'] / $totalMotor) * 100); @endphp
-                        <div class="flex items-center gap-3">
-                            <div class="w-24 text-sm font-medium text-bgray-700 dark:text-bgray-300">{{ $item['merk'] }}</div>
-                            <div class="flex-1 h-6 bg-bgray-100 dark:bg-darkblack-500 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-orange-400 to-orange-600 rounded-full flex items-center justify-end pr-2"
-                                     style="width: {{ max($pct, 8) }}%">
-                                    <span class="text-xs font-bold text-white">{{ $item['jumlah'] }}</span>
-                                </div>
-                            </div>
-                            <div class="w-12 text-right text-sm text-bgray-500">{{ $pct }}%</div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Reminder Pajak Section -->
+    <!-- Reminder Pajak Section (Row 2) -->
     <div class="mb-6">
         <div class="mb-4 flex items-center justify-between">
             <h3 class="text-xl font-bold text-bgray-900 dark:text-white">
@@ -526,44 +391,157 @@
         </div>
     </div>
 
-    <!-- Content Grid -->
-    <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
+    <!-- Chart: Umur Kendaraan -->
+    <div class="mb-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
+        <!-- Bar Chart -->
+        <div class="card">
+            <h3 class="mb-4 text-lg font-bold text-bgray-900 dark:text-white">
+                <i class="fa fa-chart-bar mr-2 text-success-300"></i>
+                Distribusi Umur Kendaraan
+            </h3>
+            <div class="relative h-64">
+                <canvas id="umurKendaraanChart"></canvas>
+            </div>
+            <div class="mt-4 text-center text-sm text-bgray-500">
+                Total: {{ array_sum($umurData) }} kendaraan
+            </div>
+        </div>
 
-        <!-- Quick Stats -->
-        <div class="space-y-6">
-            <!-- Kendaraan per Garasi -->
-            <div class="card">
-                <h3 class="mb-4 text-lg font-bold text-bgray-900 dark:text-white">Kendaraan per Garasi</h3>
-                <div class="space-y-4">
-                    @forelse($kendaraanPerGarasi as $garasi)
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-bgray-600 dark:text-bgray-300">{{ Str::limit($garasi->nama, 25) }}</span>
-                            <span class="text-sm font-semibold text-bgray-900 dark:text-white">{{ $garasi->kendaraan_count }}</span>
+        <!-- Summary Cards -->
+        <div class="card">
+            <h3 class="mb-4 text-lg font-bold text-bgray-900 dark:text-white">
+                <i class="fa fa-clock mr-2 text-warning-300"></i>
+                Ringkasan Umur Kendaraan
+            </h3>
+            <div class="space-y-3">
+                @php
+                    $colors = [
+                        '0-5 tahun' => ['bg' => 'bg-success-100', 'text' => 'text-success-500', 'bar' => 'bg-success-400'],
+                        '6-10 tahun' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-500', 'bar' => 'bg-blue-400'],
+                        '11-15 tahun' => ['bg' => 'bg-warning-100', 'text' => 'text-warning-500', 'bar' => 'bg-warning-400'],
+                        '16-20 tahun' => ['bg' => 'bg-orange-100', 'text' => 'text-orange-500', 'bar' => 'bg-orange-400'],
+                        '> 20 tahun' => ['bg' => 'bg-error-100', 'text' => 'text-error-400', 'bar' => 'bg-error-300'],
+                    ];
+                    $total = array_sum($umurData) ?: 1;
+                @endphp
+                @foreach($umurData as $range => $count)
+                    @php $pct = round(($count / $total) * 100); @endphp
+                    <div class="rounded-lg {{ $colors[$range]['bg'] ?? 'bg-bgray-100' }} p-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium {{ $colors[$range]['text'] ?? 'text-bgray-700' }}">{{ $range }}</span>
+                            <span class="font-bold {{ $colors[$range]['text'] ?? 'text-bgray-900' }}">{{ $count }} unit</span>
                         </div>
-                    @empty
-                        <p class="text-center text-sm text-bgray-500">Belum ada data garasi</p>
-                    @endforelse
+                        <div class="h-2 w-full rounded-full bg-white/50">
+                            <div class="h-2 rounded-full {{ $colors[$range]['bar'] ?? 'bg-bgray-400' }}" style="width: {{ $pct }}%"></div>
+                        </div>
+                        <div class="text-right text-xs mt-1 {{ $colors[$range]['text'] ?? 'text-bgray-500' }}">{{ $pct }}%</div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart: Kendaraan per Merk -->
+    <div class="mb-6">
+        <h3 class="mb-4 text-xl font-bold text-bgray-900 dark:text-white">
+            <i class="fa fa-car-side mr-2 text-purple"></i>
+            Kendaraan Berdasarkan Merk
+        </h3>
+        <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
+            <!-- Mobil Chart -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-lg font-semibold text-bgray-900 dark:text-white">
+                        <i class="fa fa-car mr-2 text-blue-500"></i>
+                        Mobil
+                    </h4>
+                    <span class="rounded-full bg-blue-100 px-3 py-1 text-sm font-bold text-blue-600">
+                        {{ $merkMobil->sum('jumlah') }} unit
+                    </span>
                 </div>
-                <a href="{{ route('garasi.index') }}" class="mt-4 block text-center text-sm font-medium text-success-300 hover:underline">
-                    Lihat Semua Garasi
-                </a>
+                <div class="relative h-72">
+                    <canvas id="merkMobilChart"></canvas>
+                </div>
             </div>
 
-            <!-- Penugasan Aktif -->
+            <!-- Motor Chart -->
             <div class="card">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-bgray-600 dark:text-bgray-300">Penugasan Aktif</p>
-                        <h3 class="mt-2 text-3xl font-bold text-success-400">{{ $penugasanAktif }}</h3>
-                    </div>
-                    <div class="flex h-14 w-14 items-center justify-center rounded-full bg-success-50">
-                        <i class="fa fa-users text-2xl text-success-400"></i>
-                    </div>
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-lg font-semibold text-bgray-900 dark:text-white">
+                        <i class="fa fa-motorcycle mr-2 text-orange-500"></i>
+                        Motor
+                    </h4>
+                    <span class="rounded-full bg-orange-100 px-3 py-1 text-sm font-bold text-orange-600">
+                        {{ $merkMotor->sum('jumlah') }} unit
+                    </span>
                 </div>
-                <a href="{{ route('penugasan.index', ['status' => 'aktif']) }}" class="mt-4 block text-center text-sm font-medium text-success-300 hover:underline">
-                    Lihat Semua Penugasan
-                </a>
+                <div class="relative h-72">
+                    <canvas id="merkMotorChart"></canvas>
+                </div>
             </div>
+        </div>
+
+        <!-- Detail Table -->
+        <div class="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
+            <!-- Mobil Table -->
+            <div class="card">
+                <h4 class="mb-4 font-semibold text-bgray-900 dark:text-white">Detail Mobil per Merk</h4>
+                <div class="space-y-2">
+                    @php $totalMobil = $merkMobil->sum('jumlah') ?: 1; @endphp
+                    @foreach($merkMobil as $item)
+                        @php $pct = round(($item['jumlah'] / $totalMobil) * 100); @endphp
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 text-sm font-medium text-bgray-700 dark:text-bgray-300">{{ $item['merk'] }}</div>
+                            <div class="flex-1 h-6 bg-bgray-100 dark:bg-darkblack-500 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-end pr-2"
+                                     style="width: {{ max($pct, 8) }}%">
+                                    <span class="text-xs font-bold text-white">{{ $item['jumlah'] }}</span>
+                                </div>
+                            </div>
+                            <div class="w-12 text-right text-sm text-bgray-500">{{ $pct }}%</div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Motor Table -->
+            <div class="card">
+                <h4 class="mb-4 font-semibold text-bgray-900 dark:text-white">Detail Motor per Merk</h4>
+                <div class="space-y-2">
+                    @php $totalMotor = $merkMotor->sum('jumlah') ?: 1; @endphp
+                    @foreach($merkMotor as $item)
+                        @php $pct = round(($item['jumlah'] / $totalMotor) * 100); @endphp
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 text-sm font-medium text-bgray-700 dark:text-bgray-300">{{ $item['merk'] }}</div>
+                            <div class="flex-1 h-6 bg-bgray-100 dark:bg-darkblack-500 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-orange-400 to-orange-600 rounded-full flex items-center justify-end pr-2"
+                                     style="width: {{ max($pct, 8) }}%">
+                                    <span class="text-xs font-bold text-white">{{ $item['jumlah'] }}</span>
+                                </div>
+                            </div>
+                            <div class="w-12 text-right text-sm text-bgray-500">{{ $pct }}%</div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Penugasan Aktif -->
+    <div class="mb-6">
+        <div class="card">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-bgray-600 dark:text-bgray-300">Penugasan Aktif</p>
+                    <h3 class="mt-2 text-3xl font-bold text-success-400">{{ $penugasanAktif }}</h3>
+                </div>
+                <div class="flex h-14 w-14 items-center justify-center rounded-full bg-success-50">
+                    <i class="fa fa-users text-2xl text-success-400"></i>
+                </div>
+            </div>
+            <a href="{{ route('penugasan.index', ['status' => 'aktif']) }}" class="mt-4 block text-center text-sm font-medium text-success-300 hover:underline">
+                Lihat Semua Penugasan
+            </a>
         </div>
     </div>
 

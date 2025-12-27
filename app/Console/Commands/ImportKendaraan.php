@@ -128,9 +128,11 @@ class ImportKendaraan extends Command
 
     private function loadCaches(): void
     {
-        // Load merk cache (nama => id)
-        $this->merkCache = Merk::pluck('id', 'nama')->mapWithKeys(function ($id, $nama) {
-            return [strtolower($nama) => $id];
+        // Load merk cache (nama_jenis => id) - composite key karena unique constraint pada (nama, jenis)
+        // Include soft-deleted karena unique constraint tidak mempertimbangkan deleted_at
+        $this->merkCache = Merk::withTrashed()->select('id', 'nama', 'jenis')->get()->mapWithKeys(function ($merk) {
+            $key = strtolower($merk->nama) . '_' . strtolower($merk->jenis);
+            return [$key => $merk->id];
         })->toArray();
 
         // Load garasi cache (nama => id)
@@ -231,6 +233,9 @@ class ImportKendaraan extends Command
         // Extract year from nama_model if tahun_pembuatan is empty
         $tahunPembuatan = $this->extractYear($data['tahun_pembuatan'] ?? null, $data['nama_model'] ?? '');
 
+        // Resolve status
+        $status = $this->resolveStatus($data['status'] ?? 'aktif');
+
         // Prepare kendaraan data
         $kendaraanData = [
             'plat_nomor' => strtoupper(trim($data['plat_nomor'])),
@@ -245,12 +250,25 @@ class ImportKendaraan extends Command
             'nomor_mesin' => !empty($data['nomor_mesin']) ? trim($data['nomor_mesin']) : null,
             'garasi_id' => $garasiId,
             'pemegang_nama' => $pemegangNama,
-            'status' => $this->resolveStatus($data['status'] ?? 'aktif'),
+            'status' => $status,
             'status_kepemilikan' => $this->resolveKepemilikan($data['status_kepemilikan'] ?? 'milik_kas'),
             'tanggal_perolehan' => $this->parseDate($data['tanggal_perolehan'] ?? null),
             'harga_beli' => $this->parseDecimal($data['harga_beli'] ?? null),
             'catatan' => !empty($data['catatan']) ? trim($data['catatan']) : null,
         ];
+
+        // Tambahan field untuk status 'dijual'
+        if ($status === 'dijual') {
+            $kendaraanData['tanggal_jual'] = $this->parseDate($data['tanggal_jual'] ?? null);
+            $kendaraanData['harga_jual'] = $this->parseDecimal($data['harga_jual'] ?? null);
+            $kendaraanData['nama_pembeli'] = !empty($data['nama_pembeli']) ? trim($data['nama_pembeli']) : null;
+        }
+
+        // Tambahan field untuk status 'dihibahkan'
+        if ($status === 'dihibahkan') {
+            $kendaraanData['tanggal_hibah'] = $this->parseDate($data['tanggal_hibah'] ?? null);
+            $kendaraanData['nama_penerima_hibah'] = !empty($data['nama_penerima_hibah']) ? trim($data['nama_penerima_hibah']) : null;
+        }
 
         // Create kendaraan
         if (!$isDryRun) {
@@ -284,10 +302,21 @@ class ImportKendaraan extends Command
 
     private function resolveMerkId(string $merkName, string $jenis, bool $isDryRun): ?int
     {
-        $key = strtolower($merkName);
+        // Gunakan composite key: nama_jenis
+        $key = strtolower($merkName) . '_' . strtolower($jenis);
 
         if (isset($this->merkCache[$key])) {
-            return $this->merkCache[$key];
+            $merkId = $this->merkCache[$key];
+
+            // Jika bukan dry run, pastikan merk tidak soft-deleted
+            if (!$isDryRun) {
+                $merk = Merk::withTrashed()->find($merkId);
+                if ($merk && $merk->trashed()) {
+                    $merk->restore();
+                }
+            }
+
+            return $merkId;
         }
 
         // Create new merk if not dry run

@@ -23,6 +23,13 @@ class DashboardController extends Controller
             'motor' => Kendaraan::where('jenis', 'motor')->count(),
         ];
 
+        // Statistik kendaraan aktif
+        $kendaraanAktifStats = [
+            'total' => Kendaraan::where('status', 'aktif')->count(),
+            'mobil' => Kendaraan::where('status', 'aktif')->where('jenis', 'mobil')->count(),
+            'motor' => Kendaraan::where('status', 'aktif')->where('jenis', 'motor')->count(),
+        ];
+
         // Statistik pajak (akan jatuh tempo & terlambat)
         $pajakStats = [
             'due_soon' => Pajak::where('status', '!=', 'lunas')
@@ -30,14 +37,6 @@ class DashboardController extends Controller
                 ->count(),
             'overdue' => Pajak::where('status', '!=', 'lunas')
                 ->where('tanggal_jatuh_tempo', '<', now())
-                ->count(),
-        ];
-
-        // Statistik servis - servis berikutnya dalam 30 hari
-        $servisStats = [
-            'due_soon' => Servis::where('status', 'selesai')
-                ->whereNotNull('servis_berikutnya')
-                ->whereBetween('servis_berikutnya', [now(), now()->addDays(30)])
                 ->count(),
         ];
 
@@ -134,10 +133,9 @@ class DashboardController extends Controller
 
         return view('dashboard', compact(
             'kendaraanStats',
+            'kendaraanAktifStats',
             'pajakStats',
-            'servisStats',
             'pajakJatuhTempo',
-            'kendaraanPerGarasi',
             'penugasanAktif',
             'umurData',
             'pajakTerlambat',

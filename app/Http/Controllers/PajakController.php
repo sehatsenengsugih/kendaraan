@@ -42,6 +42,13 @@ class PajakController extends Controller
             $query->where('jenis', $request->jenis);
         }
 
+        // Status kendaraan filter
+        if ($request->filled('status_kendaraan')) {
+            $query->whereHas('kendaraan', function ($q) use ($request) {
+                $q->where('status', $request->status_kendaraan);
+            });
+        }
+
         // Due soon filter (pajak jatuh tempo dalam 30 hari)
         if ($request->boolean('due_soon')) {
             $query->dueWithinDays(30);

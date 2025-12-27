@@ -24,15 +24,52 @@ class KendaraanController extends Controller
     {
         $query = Kendaraan::with(['merk', 'garasi', 'pemegang']);
 
-        // Search filter
+        // Search filter - cari di semua field
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
+                // Field utama kendaraan
                 $q->where('plat_nomor', 'ilike', "%{$search}%")
                     ->orWhere('nama_model', 'ilike', "%{$search}%")
+                    ->orWhere('warna', 'ilike', "%{$search}%")
+                    // Dokumen
                     ->orWhere('nomor_bpkb', 'ilike', "%{$search}%")
-                    ->orWhereHas('merk', function ($q) use ($search) {
-                        $q->where('nama', 'ilike', "%{$search}%");
+                    ->orWhere('nomor_rangka', 'ilike', "%{$search}%")
+                    ->orWhere('nomor_mesin', 'ilike', "%{$search}%")
+                    // Kepemilikan & Pemegang
+                    ->orWhere('pemegang_nama', 'ilike', "%{$search}%")
+                    ->orWhere('nama_pemilik_lembaga', 'ilike', "%{$search}%")
+                    // Pinjam
+                    ->orWhere('dipinjam_oleh', 'ilike', "%{$search}%")
+                    // Tarikan
+                    ->orWhere('tarikan_dari', 'ilike', "%{$search}%")
+                    ->orWhere('tarikan_pemakai', 'ilike', "%{$search}%")
+                    // Jual/Hibah
+                    ->orWhere('nama_pembeli', 'ilike', "%{$search}%")
+                    ->orWhere('nama_penerima_hibah', 'ilike', "%{$search}%")
+                    // Catatan
+                    ->orWhere('catatan', 'ilike', "%{$search}%")
+                    // Relasi: Merk
+                    ->orWhereHas('merk', function ($mq) use ($search) {
+                        $mq->where('nama', 'ilike', "%{$search}%");
+                    })
+                    // Relasi: Garasi
+                    ->orWhereHas('garasi', function ($gq) use ($search) {
+                        $gq->where('nama', 'ilike', "%{$search}%")
+                            ->orWhere('alamat', 'ilike', "%{$search}%")
+                            ->orWhere('kota', 'ilike', "%{$search}%")
+                            ->orWhere('pic_name', 'ilike', "%{$search}%");
+                    })
+                    // Relasi: Riwayat Pemakai
+                    ->orWhereHas('riwayatPemakai', function ($rq) use ($search) {
+                        $rq->where('nama_pemakai', 'ilike', "%{$search}%");
+                    })
+                    // Relasi: Paroki Pinjam/Tarikan
+                    ->orWhereHas('dipinjamParoki', function ($pq) use ($search) {
+                        $pq->where('nama', 'ilike', "%{$search}%");
+                    })
+                    ->orWhereHas('tarikanParoki', function ($tq) use ($search) {
+                        $tq->where('nama', 'ilike', "%{$search}%");
                     });
             });
         }

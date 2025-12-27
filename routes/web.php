@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\GarasiController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\LembagaController;
@@ -44,6 +45,9 @@ Route::middleware('auth')->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Global Search API
+    Route::get('/search', [SearchController::class, 'search'])->name('search');
 
     // Profile (semua user bisa akses)
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -64,7 +64,7 @@
 
     <!-- Filter Card -->
     <div class="mb-6 rounded-lg bg-white p-6 dark:bg-darkblack-600">
-        <form method="GET" action="{{ route('pajak.index') }}" class="grid gap-4 md:grid-cols-5">
+        <form method="GET" action="{{ route('pajak.index') }}" class="grid gap-4 md:grid-cols-6">
             <div>
                 <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Cari</label>
                 <input type="text" name="search" value="{{ request('search') }}"
@@ -72,7 +72,7 @@
                     class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
             </div>
             <div>
-                <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Status</label>
+                <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Status Pajak</label>
                 <select name="status"
                     class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                     <option value="">Semua</option>
@@ -82,7 +82,7 @@
                 </select>
             </div>
             <div>
-                <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Jenis</label>
+                <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Jenis Pajak</label>
                 <select name="jenis"
                     class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                     <option value="">Semua</option>
@@ -91,8 +91,19 @@
                 </select>
             </div>
             <div>
+                <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Status Kendaraan</label>
+                <select name="status_kendaraan"
+                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                    <option value="">Semua</option>
+                    <option value="aktif" {{ request('status_kendaraan') == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                    <option value="nonaktif" {{ request('status_kendaraan') == 'nonaktif' ? 'selected' : '' }}>Non-Aktif</option>
+                    <option value="dijual" {{ request('status_kendaraan') == 'dijual' ? 'selected' : '' }}>Dijual</option>
+                    <option value="dihibahkan" {{ request('status_kendaraan') == 'dihibahkan' ? 'selected' : '' }}>Dihibahkan</option>
+                </select>
+            </div>
+            <div>
                 <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Filter Cepat</label>
-                <div class="flex gap-2">
+                <div class="flex gap-2 py-3">
                     <label class="flex items-center gap-2">
                         <input type="checkbox" name="due_soon" value="1" {{ request('due_soon') ? 'checked' : '' }}
                             class="rounded border-bgray-300 text-success-300 focus:ring-success-300">

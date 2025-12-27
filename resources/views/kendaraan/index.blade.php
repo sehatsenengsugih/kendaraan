@@ -16,54 +16,110 @@
 
     <!-- Filter Card -->
     <div class="mb-6 rounded-lg bg-white p-6 dark:bg-darkblack-600">
-        <form method="GET" action="{{ route('kendaraan.index') }}" class="grid gap-4 md:grid-cols-6">
-            <div class="md:col-span-2">
-                <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Cari</label>
+        <form method="GET" action="{{ route('kendaraan.index') }}">
+            <!-- Baris 1: Search -->
+            <div class="mb-4">
+                <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">
+                    <i class="fa fa-search mr-1 text-bgray-500"></i> Pencarian Lengkap
+                </label>
                 <input type="text" name="search" value="{{ request('search') }}"
-                    placeholder="Plat nomor, model, BPKB..."
+                    placeholder="Cari plat nomor, model, merk, no. BPKB, no. rangka, no. mesin, pemegang, garasi, catatan..."
                     class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                <p class="mt-1 text-xs text-bgray-500 dark:text-bgray-400">
+                    Cari di semua field: identitas, dokumen, pemegang, garasi, riwayat pemakai, dll.
+                </p>
             </div>
-            <div>
-                <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Jenis</label>
-                <select name="jenis"
-                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
-                    <option value="">Semua</option>
-                    <option value="mobil" {{ request('jenis') == 'mobil' ? 'selected' : '' }}>Mobil</option>
-                    <option value="motor" {{ request('jenis') == 'motor' ? 'selected' : '' }}>Motor</option>
-                </select>
+
+            <!-- Baris 2: Filter -->
+            <div class="grid gap-4 md:grid-cols-5">
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Jenis</label>
+                    <select name="jenis"
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                        <option value="">Semua Jenis</option>
+                        <option value="mobil" {{ request('jenis') == 'mobil' ? 'selected' : '' }}>Mobil</option>
+                        <option value="motor" {{ request('jenis') == 'motor' ? 'selected' : '' }}>Motor</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Merk</label>
+                    <select name="merk_id"
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                        <option value="">Semua Merk</option>
+                        @foreach($merk as $m)
+                            <option value="{{ $m->id }}" {{ request('merk_id') == $m->id ? 'selected' : '' }}>
+                                {{ $m->nama }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Garasi</label>
+                    <select name="garasi_id"
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                        <option value="">Semua Garasi</option>
+                        @foreach($garasi as $g)
+                            <option value="{{ $g->id }}" {{ request('garasi_id') == $g->id ? 'selected' : '' }}>
+                                {{ $g->nama }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Status</label>
+                    <select name="status"
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                        <option value="">Semua Status</option>
+                        <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                        <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>Non-Aktif</option>
+                        <option value="dihibahkan" {{ request('status') == 'dihibahkan' ? 'selected' : '' }}>Dihibahkan</option>
+                        <option value="dijual" {{ request('status') == 'dijual' ? 'selected' : '' }}>Dijual</option>
+                    </select>
+                </div>
+                <div class="flex items-end gap-2">
+                    <button type="submit"
+                        class="flex-1 rounded-lg bg-success-300 px-4 py-3 font-semibold text-white transition-all hover:bg-success-400">
+                        <i class="fa fa-search mr-1"></i> Cari
+                    </button>
+                    <a href="{{ route('kendaraan.index') }}"
+                        class="rounded-lg border border-bgray-300 px-4 py-3 text-bgray-600 transition-all hover:bg-bgray-100 dark:border-darkblack-400 dark:text-bgray-50"
+                        title="Reset Filter">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
             </div>
-            <div>
-                <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Status</label>
-                <select name="status"
-                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
-                    <option value="">Semua</option>
-                    <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
-                    <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>Non-Aktif</option>
-                    <option value="dihibahkan" {{ request('status') == 'dihibahkan' ? 'selected' : '' }}>Dihibahkan</option>
-                </select>
+
+            <!-- Active Filters Badge -->
+            @if(request()->hasAny(['search', 'jenis', 'merk_id', 'garasi_id', 'status']))
+            <div class="mt-4 flex flex-wrap items-center gap-2">
+                <span class="text-sm text-bgray-600 dark:text-bgray-300">Filter aktif:</span>
+                @if(request('search'))
+                    <span class="inline-flex items-center gap-1 rounded-full bg-success-50 px-3 py-1 text-xs font-medium text-success-400">
+                        <i class="fa fa-search"></i> "{{ request('search') }}"
+                    </span>
+                @endif
+                @if(request('jenis'))
+                    <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600">
+                        {{ ucfirst(request('jenis')) }}
+                    </span>
+                @endif
+                @if(request('merk_id'))
+                    <span class="inline-flex items-center gap-1 rounded-full bg-purple-50 px-3 py-1 text-xs font-medium text-purple-600">
+                        {{ $merk->find(request('merk_id'))->nama ?? '' }}
+                    </span>
+                @endif
+                @if(request('garasi_id'))
+                    <span class="inline-flex items-center gap-1 rounded-full bg-orange-50 px-3 py-1 text-xs font-medium text-orange-600">
+                        {{ $garasi->find(request('garasi_id'))->nama ?? '' }}
+                    </span>
+                @endif
+                @if(request('status'))
+                    <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+                        {{ ucfirst(request('status')) }}
+                    </span>
+                @endif
             </div>
-            <div>
-                <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Merk</label>
-                <select name="merk_id"
-                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
-                    <option value="">Semua</option>
-                    @foreach($merk as $m)
-                        <option value="{{ $m->id }}" {{ request('merk_id') == $m->id ? 'selected' : '' }}>
-                            {{ $m->nama }} ({{ ucfirst($m->jenis) }})
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="flex items-end gap-2">
-                <button type="submit"
-                    class="rounded-lg bg-success-300 px-4 py-3 font-semibold text-white transition-all hover:bg-success-400">
-                    <i class="fa fa-search"></i>
-                </button>
-                <a href="{{ route('kendaraan.index') }}"
-                    class="rounded-lg border border-bgray-300 px-4 py-3 text-bgray-600 transition-all hover:bg-bgray-100 dark:border-darkblack-400 dark:text-bgray-50">
-                    Reset
-                </a>
-            </div>
+            @endif
         </form>
     </div>
 
@@ -125,9 +181,17 @@
                                     <span class="inline-flex rounded-full bg-warning-50 px-2 py-1 text-xs font-medium text-warning-400">
                                         Non-Aktif
                                     </span>
+                                @elseif($k->status === 'dijual')
+                                    <span class="inline-flex rounded-full bg-error-50 px-2 py-1 text-xs font-medium text-error-300">
+                                        Dijual
+                                    </span>
+                                @elseif($k->status === 'dihibahkan')
+                                    <span class="inline-flex rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-600">
+                                        Dihibahkan
+                                    </span>
                                 @else
                                     <span class="inline-flex rounded-full bg-bgray-100 px-2 py-1 text-xs font-medium text-bgray-600">
-                                        Dihibahkan
+                                        {{ ucfirst($k->status) }}
                                     </span>
                                 @endif
                             </td>
