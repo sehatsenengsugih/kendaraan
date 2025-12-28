@@ -67,13 +67,14 @@
                 </div>
                 <div>
                     <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Status</label>
+                    @php $currentStatus = request('status', 'aktif'); @endphp
                     <select name="status"
                         class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
-                        <option value="">Semua Status</option>
-                        <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
-                        <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>Non-Aktif</option>
-                        <option value="dihibahkan" {{ request('status') == 'dihibahkan' ? 'selected' : '' }}>Dihibahkan</option>
-                        <option value="dijual" {{ request('status') == 'dijual' ? 'selected' : '' }}>Dijual</option>
+                        <option value="semua" {{ $currentStatus == 'semua' ? 'selected' : '' }}>Semua Status</option>
+                        <option value="aktif" {{ $currentStatus == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                        <option value="nonaktif" {{ $currentStatus == 'nonaktif' ? 'selected' : '' }}>Non-Aktif</option>
+                        <option value="dihibahkan" {{ $currentStatus == 'dihibahkan' ? 'selected' : '' }}>Dihibahkan</option>
+                        <option value="dijual" {{ $currentStatus == 'dijual' ? 'selected' : '' }}>Dijual</option>
                     </select>
                 </div>
                 <div class="flex items-end gap-2">

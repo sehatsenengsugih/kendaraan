@@ -12,7 +12,9 @@
         </div>
     </x-slot>
 
-    <div class="max-w-2xl">
+    <div class="grid gap-6 lg:grid-cols-3">
+        <!-- Form Edit User -->
+        <div class="lg:col-span-2">
         <div class="rounded-lg bg-white p-6 shadow-sm dark:bg-darkblack-600">
             <form method="POST" action="{{ route('users.update', $user) }}" enctype="multipart/form-data">
                 @csrf
@@ -113,6 +115,70 @@
                     </button>
                 </div>
             </form>
+        </div>
+        </div>
+
+        <!-- Sidebar - Kendaraan Assigned -->
+        <div class="space-y-6">
+            <div class="rounded-lg bg-white p-6 shadow-sm dark:bg-darkblack-600">
+                <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">
+                    <i class="fa fa-car mr-2 text-accent-300"></i>Kendaraan Assigned
+                </h3>
+
+                @if($kendaraanAssigned->count() > 0)
+                    <div class="space-y-3">
+                        @foreach($kendaraanAssigned as $kendaraan)
+                            <a href="{{ route('kendaraan.show', $kendaraan) }}"
+                               class="block rounded-lg border border-bgray-200 p-3 transition-all hover:border-accent-300 hover:bg-accent-50/50 dark:border-darkblack-400 dark:hover:bg-darkblack-500">
+                                <div class="flex items-center gap-3">
+                                    <!-- Avatar/Icon -->
+                                    <div class="h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg bg-bgray-100 dark:bg-darkblack-500">
+                                        @if($kendaraan->avatar_path)
+                                            <img src="{{ asset('storage/' . $kendaraan->avatar_path) }}"
+                                                 alt="{{ $kendaraan->plat_nomor }}"
+                                                 class="h-full w-full object-cover">
+                                        @else
+                                            <div class="flex h-full w-full items-center justify-center text-bgray-400">
+                                                <i class="fa {{ $kendaraan->jenis === 'motor' ? 'fa-motorcycle' : 'fa-car' }}"></i>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <!-- Info -->
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-mono text-sm font-medium text-bgray-900 dark:text-white truncate">
+                                            {{ $kendaraan->plat_nomor }}
+                                        </p>
+                                        <p class="text-xs text-bgray-500 dark:text-bgray-400 truncate">
+                                            {{ $kendaraan->merk->nama ?? '' }} {{ $kendaraan->nama_model }}
+                                        </p>
+                                    </div>
+                                    <!-- Status Badge -->
+                                    <div>
+                                        @if($kendaraan->status === 'aktif')
+                                            <span class="inline-flex rounded-full bg-accent-50 px-2 py-0.5 text-xs font-medium text-accent-400">
+                                                Aktif
+                                            </span>
+                                        @else
+                                            <span class="inline-flex rounded-full bg-bgray-100 px-2 py-0.5 text-xs font-medium text-bgray-600">
+                                                {{ ucfirst($kendaraan->status) }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                    <p class="mt-3 text-xs text-bgray-500 dark:text-bgray-400">
+                        Total: {{ $kendaraanAssigned->count() }} kendaraan
+                    </p>
+                @else
+                    <div class="text-center py-6 text-bgray-500 dark:text-bgray-400">
+                        <i class="fa fa-car text-3xl text-bgray-300 mb-2"></i>
+                        <p class="text-sm">Belum ada kendaraan yang di-assign</p>
+                        <p class="text-xs mt-1">Assign kendaraan melalui menu Edit Kendaraan</p>
+                    </div>
+                @endif
+            </div>
         </div>
     </div>
 

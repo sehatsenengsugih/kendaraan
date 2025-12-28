@@ -57,7 +57,7 @@ class DashboardController extends Controller
         // Jumlah penugasan aktif
         $penugasanAktif = Penugasan::aktif()->count();
 
-        // Distribusi umur kendaraan berdasarkan tahun pembuatan
+        // Distribusi umur kendaraan berdasarkan tahun pembuatan (hanya kendaraan aktif)
         $currentYear = (int) date('Y');
         $umurKendaraan = Kendaraan::selectRaw("
                 CASE
@@ -69,6 +69,7 @@ class DashboardController extends Controller
                 END as rentang_umur,
                 COUNT(*) as jumlah
             ", [$currentYear, $currentYear, $currentYear, $currentYear])
+            ->where('status', 'aktif')
             ->whereNotNull('tahun_pembuatan')
             ->groupBy('rentang_umur')
             ->orderByRaw('MIN(? - tahun_pembuatan)', [$currentYear])
@@ -113,8 +114,9 @@ class DashboardController extends Controller
             ->orderBy('tanggal_jatuh_tempo', 'asc')
             ->get();
 
-        // Jumlah kendaraan per merk dan jenis (mobil/motor)
+        // Jumlah kendaraan per merk dan jenis (mobil/motor) - hanya kendaraan aktif
         $kendaraanPerMerk = Kendaraan::selectRaw('merk_id, jenis, COUNT(*) as jumlah')
+            ->where('status', 'aktif')
             ->whereNotNull('merk_id')
             ->groupBy('merk_id', 'jenis')
             ->with('merk:id,nama')

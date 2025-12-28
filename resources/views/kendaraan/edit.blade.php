@@ -257,6 +257,28 @@
                             @enderror
                         </div>
 
+                        <!-- Assign ke User (hanya untuk admin/super_admin) -->
+                        @if(count($pengguna) > 0)
+                        <div>
+                            <label for="pemegang_id" class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">
+                                Assign ke User
+                            </label>
+                            <select name="pemegang_id" id="pemegang_id"
+                                class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('pemegang_id') border-error-300 @enderror">
+                                <option value="">-- Tidak di-assign --</option>
+                                @foreach($pengguna as $p)
+                                    <option value="{{ $p->id }}" {{ old('pemegang_id', $kendaraan->pemegang_id) == $p->id ? 'selected' : '' }}>
+                                        {{ $p->name }} ({{ $p->email }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="mt-1 text-xs text-bgray-500">User yang di-assign dapat melihat dan mengelola kendaraan ini</p>
+                            @error('pemegang_id')
+                                <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        @endif
+
                         <!-- Pengguna Saat Ini -->
                         <div>
                             <label for="pemegang_nama" class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">

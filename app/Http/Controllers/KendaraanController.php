@@ -8,6 +8,7 @@ use App\Models\Kendaraan;
 use App\Models\Lembaga;
 use App\Models\Merk;
 use App\Models\Paroki;
+use App\Models\Pengguna;
 use App\Models\RiwayatPemakai;
 use App\Models\StatusBpkb;
 use Illuminate\Http\Request;
@@ -23,6 +24,12 @@ class KendaraanController extends Controller
     public function index(Request $request)
     {
         $query = Kendaraan::with(['merk', 'garasi', 'pemegang']);
+
+        // Role 'user' hanya bisa melihat kendaraan yang dia pakai (pemegang_id = user id)
+        $user = auth()->user();
+        if ($user->role === 'user') {
+            $query->where('pemegang_id', $user->id);
+        }
 
         // Search filter - cari di semua field
         if ($request->filled('search')) {
@@ -79,9 +86,10 @@ class KendaraanController extends Controller
             $query->where('jenis', $request->jenis);
         }
 
-        // Status filter
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
+        // Status filter - default ke 'aktif' jika tidak ada parameter
+        $status = $request->input('status', 'aktif');
+        if ($status && $status !== 'semua') {
+            $query->where('status', $status);
         }
 
         // Merk filter
@@ -316,6 +324,12 @@ class KendaraanController extends Controller
      */
     public function show(Kendaraan $kendaraan)
     {
+        // Role 'user' hanya bisa melihat kendaraan miliknya
+        $user = auth()->user();
+        if ($user->role === 'user' && $kendaraan->pemegang_id !== $user->id) {
+            abort(403, 'Anda tidak memiliki akses ke kendaraan ini.');
+        }
+
         $kendaraan->load(['merk', 'garasi.kevikepan', 'pemegang', 'gambar', 'riwayatPemakai', 'statusBpkb']);
 
         return view('kendaraan.show', compact('kendaraan'));
@@ -326,6 +340,12 @@ class KendaraanController extends Controller
      */
     public function edit(Kendaraan $kendaraan)
     {
+        // Role 'user' hanya bisa edit kendaraan miliknya
+        $user = auth()->user();
+        if ($user->role === 'user' && $kendaraan->pemegang_id !== $user->id) {
+            abort(403, 'Anda tidak memiliki akses ke kendaraan ini.');
+        }
+
         $kendaraan->load(['gambar', 'riwayatPemakai', 'statusBpkb']);
 
         $merk = Merk::orderBy('nama')->get();
@@ -334,7 +354,13 @@ class KendaraanController extends Controller
         $lembaga = Lembaga::where('is_active', true)->orderBy('nama')->get();
         $statusBpkb = StatusBpkb::active()->ordered()->get();
 
-        return view('kendaraan.edit', compact('kendaraan', 'merk', 'garasi', 'paroki', 'lembaga', 'statusBpkb'));
+        // List pengguna untuk dropdown assign pemegang (hanya untuk admin/super_admin)
+        $pengguna = [];
+        if (in_array(auth()->user()->role, ['super_admin', 'admin'])) {
+            $pengguna = Pengguna::where('role', 'user')->orderBy('name')->get();
+        }
+
+        return view('kendaraan.edit', compact('kendaraan', 'merk', 'garasi', 'paroki', 'lembaga', 'statusBpkb', 'pengguna'));
     }
 
     /**
@@ -342,6 +368,12 @@ class KendaraanController extends Controller
      */
     public function update(Request $request, Kendaraan $kendaraan)
     {
+        // Role 'user' hanya bisa update kendaraan miliknya
+        $user = auth()->user();
+        if ($user->role === 'user' && $kendaraan->pemegang_id !== $user->id) {
+            abort(403, 'Anda tidak memiliki akses ke kendaraan ini.');
+        }
+
         $validated = $request->validate([
             'plat_nomor' => ['required', 'string', 'max:20', Rule::unique('kendaraan')->ignore($kendaraan->id)],
             'status_bpkb_id' => 'nullable|exists:status_bpkb,id',
@@ -354,6 +386,7 @@ class KendaraanController extends Controller
             'warna' => 'required|string|max:50',
             'jenis' => 'required|in:mobil,motor',
             'garasi_id' => 'nullable|exists:garasi,id',
+            'pemegang_id' => 'nullable|exists:pengguna,id',
             'pemegang_nama' => 'nullable|string|max:255',
             'status' => 'required|in:aktif,nonaktif,dihibahkan,dijual',
             'status_kepemilikan' => 'required|in:milik_kas,milik_lembaga_lain',
@@ -565,6 +598,12 @@ class KendaraanController extends Controller
      */
     public function destroy(Kendaraan $kendaraan)
     {
+        // Role 'user' hanya bisa hapus kendaraan miliknya
+        $user = auth()->user();
+        if ($user->role === 'user' && $kendaraan->pemegang_id !== $user->id) {
+            abort(403, 'Anda tidak memiliki akses ke kendaraan ini.');
+        }
+
         DB::beginTransaction();
         try {
             // Delete avatar

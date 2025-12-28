@@ -14,14 +14,14 @@
     </x-slot>
 
     <!-- Stats Cards -->
-    <div class="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-        <!-- Total Kendaraan -->
-        <div class="card">
+    <div class="mb-6 grid grid-cols-1 gap-6 md:grid-cols-3">
+        <!-- Total Kendaraan Aktif -->
+        <a href="{{ route('kendaraan.index', ['status' => 'aktif']) }}" class="card hover:shadow-lg transition-shadow">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-bgray-600 dark:text-bgray-300">Total Kendaraan</p>
-                    <h3 class="mt-2 text-3xl font-bold text-bgray-900 dark:text-white">{{ $kendaraanStats['total'] }}</h3>
-                    <p class="mt-1 text-xs text-bgray-500">Mobil: {{ $kendaraanStats['mobil'] }} | Motor: {{ $kendaraanStats['motor'] }}</p>
+                    <p class="text-sm font-medium text-bgray-600 dark:text-bgray-300">Total Kendaraan Aktif</p>
+                    <h3 class="mt-2 text-3xl font-bold text-bgray-900 dark:text-white">{{ $kendaraanAktifStats['total'] }}</h3>
+                    <p class="mt-1 text-xs text-bgray-500">Mobil: {{ $kendaraanAktifStats['mobil'] }} | Motor: {{ $kendaraanAktifStats['motor'] }}</p>
                 </div>
                 <div class="flex h-14 w-14 items-center justify-center rounded-full bg-accent-50">
                     <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -32,7 +32,7 @@
                     </svg>
                 </div>
             </div>
-        </div>
+        </a>
 
         <!-- Pajak Akan Jatuh Tempo -->
         <a href="{{ route('pajak.index', ['due_soon' => 1]) }}" class="card hover:shadow-lg transition-shadow">
@@ -68,25 +68,6 @@
             </div>
         </a>
 
-        <!-- Kendaraan Aktif -->
-        <a href="{{ route('kendaraan.index', ['status' => 'aktif']) }}" class="card hover:shadow-lg transition-shadow">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-bgray-600 dark:text-bgray-300">Kendaraan Aktif</p>
-                    <h3 class="mt-2 text-3xl font-bold text-blue-500">{{ $kendaraanAktifStats['total'] }}</h3>
-                    <p class="mt-1 text-xs text-bgray-500">
-                        <i class="fa fa-car mr-1"></i>{{ $kendaraanAktifStats['mobil'] }} Mobil |
-                        <i class="fa fa-motorcycle mr-1"></i>{{ $kendaraanAktifStats['motor'] }} Motor
-                    </p>
-                </div>
-                <div class="flex h-14 w-14 items-center justify-center rounded-full bg-blue-50">
-                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M14 25.667C20.4433 25.667 25.667 20.4433 25.667 14C25.667 7.55668 20.4433 2.33301 14 2.33301C7.55668 2.33301 2.33301 7.55668 2.33301 14C2.33301 20.4433 7.55668 25.667 14 25.667Z" fill="#3B82F6"/>
-                        <path d="M10.5 14L13 16.5L18 11.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-            </div>
-        </a>
     </div>
 
     <!-- Row 2: Mini Calendar + Pengingat Pajak -->
@@ -630,24 +611,6 @@
                     @endforeach
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Penugasan Aktif -->
-    <div class="mb-6">
-        <div class="card">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-bgray-600 dark:text-bgray-300">Penugasan Aktif</p>
-                    <h3 class="mt-2 text-3xl font-bold text-accent-400">{{ $penugasanAktif }}</h3>
-                </div>
-                <div class="flex h-14 w-14 items-center justify-center rounded-full bg-accent-50">
-                    <i class="fa fa-users text-2xl text-accent-400"></i>
-                </div>
-            </div>
-            <a href="{{ route('penugasan.index', ['status' => 'aktif']) }}" class="mt-4 block text-center text-sm font-medium text-accent-300 hover:underline">
-                Lihat Semua Penugasan
-            </a>
         </div>
     </div>
 

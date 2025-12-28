@@ -71,7 +71,13 @@ class UserController extends Controller
      */
     public function edit(Pengguna $user): View
     {
-        return view('users.edit', compact('user'));
+        // Load kendaraan yang di-assign ke user ini
+        $kendaraanAssigned = \App\Models\Kendaraan::with(['merk', 'garasi'])
+            ->where('pemegang_id', $user->id)
+            ->orderBy('plat_nomor')
+            ->get();
+
+        return view('users.edit', compact('user', 'kendaraanAssigned'));
     }
 
     /**
