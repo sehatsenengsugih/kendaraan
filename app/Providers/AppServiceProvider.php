@@ -49,9 +49,9 @@ class AppServiceProvider extends ServiceProvider
             return in_array($user->role, ['super_admin', 'admin', 'user', 'admin_servis']);
         });
 
-        // Gate untuk akses master data
+        // Gate untuk akses master data (hanya super_admin dan admin)
         Gate::define('access-master-data', function ($user) {
-            return in_array($user->role, ['super_admin', 'admin', 'user']);
+            return in_array($user->role, ['super_admin', 'admin']);
         });
     }
 }

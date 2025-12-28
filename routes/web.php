@@ -85,14 +85,16 @@ Route::middleware('auth')->group(function () {
         Route::get('kendaraan/{kendaraan}', [KendaraanController::class, 'show'])->name('kendaraan.show');
     });
 
-    // Master Data & Pajak (super_admin, admin, user)
-    Route::middleware('can:access-main-menu')->group(function () {
-        // Master Data
+    // Master Data (super_admin, admin only)
+    Route::middleware('can:access-master-data')->group(function () {
         Route::resource('garasi', GarasiController::class);
         Route::resource('merk', MerkController::class);
         Route::resource('paroki', ParokiController::class);
         Route::resource('lembaga', LembagaController::class);
+    });
 
+    // Penugasan & Pajak (super_admin, admin, user)
+    Route::middleware('can:access-main-menu')->group(function () {
         // Penugasan
         Route::post('penugasan/{penugasan}/selesai', [PenugasanController::class, 'selesai'])->name('penugasan.selesai');
         Route::resource('penugasan', PenugasanController::class);
