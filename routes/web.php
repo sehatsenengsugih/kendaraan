@@ -116,9 +116,20 @@ Route::middleware('auth')->group(function () {
     // Calendar
     Route::get('kalender', [CalendarController::class, 'index'])->name('calendar.index');
 
-    // Manual / Panduan Pengguna
+    // Manual / Panduan Pengguna (Public read)
     Route::get('manual', [ManualController::class, 'index'])->name('manual.index');
-    Route::get('manual/{section}', [ManualController::class, 'section'])->name('manual.section');
+    Route::get('manual/section/{section}', [ManualController::class, 'section'])->name('manual.section');
+
+    // Manual Admin (Super Admin only)
+    Route::middleware('can:manage-users')->prefix('manual/admin')->name('manual.admin.')->group(function () {
+        Route::get('/', [ManualController::class, 'adminIndex'])->name('index');
+        Route::get('/create', [ManualController::class, 'create'])->name('create');
+        Route::post('/', [ManualController::class, 'store'])->name('store');
+        Route::get('/{manualSection}/edit', [ManualController::class, 'edit'])->name('edit');
+        Route::put('/{manualSection}', [ManualController::class, 'update'])->name('update');
+        Route::delete('/{manualSection}', [ManualController::class, 'destroy'])->name('destroy');
+        Route::post('/reorder', [ManualController::class, 'reorder'])->name('reorder');
+    });
 
     // Calendar API
     Route::prefix('api/calendar')->group(function () {
