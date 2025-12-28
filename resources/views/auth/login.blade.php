@@ -67,16 +67,16 @@
         <!-- Remember Me & Forgot Password -->
         <div class="mb-7 flex justify-between">
             <div class="flex items-center space-x-3">
-                <input type="checkbox" id="remember" name="remember" class="h-5 w-5 rounded-full border border-bgray-300 text-accent-300 focus:ring-transparent dark:bg-darkblack-500" {{ old('remember') ? 'checked' : '' }}>
+                <input type="checkbox" id="remember" name="remember" class="h-5 w-5 rounded-full border border-bgray-300 text-bgray-900 focus:ring-transparent dark:bg-darkblack-500 dark:text-bgray-300" {{ old('remember') ? 'checked' : '' }}>
                 <label for="remember" class="text-base font-semibold text-bgray-900 dark:text-white">Ingat saya</label>
             </div>
             <div>
-                <a href="{{ route('password.request') }}" class="text-base font-semibold text-accent-300 underline">Lupa Password?</a>
+                <a href="{{ route('password.request') }}" class="text-base font-semibold text-bgray-700 underline hover:text-bgray-900 dark:text-bgray-300 dark:hover:text-white">Lupa Password?</a>
             </div>
         </div>
 
         <!-- Submit Button -->
-        <button type="submit" class="flex w-full items-center justify-center rounded-lg bg-accent-300 py-3.5 font-bold text-white transition-all hover:bg-accent-400">
+        <button type="submit" class="flex w-full items-center justify-center rounded-lg bg-bgray-900 py-3.5 font-bold text-white transition-all hover:bg-bgray-800 dark:bg-bgray-700 dark:hover:bg-bgray-600">
             Masuk
         </button>
     </form>
