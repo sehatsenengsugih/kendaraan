@@ -230,6 +230,18 @@ class KendaraanController extends Controller
 
             $kendaraan = Kendaraan::create($validated);
 
+            // Auto-create initial riwayat if pengguna (pemegang_nama) is set
+            if (!empty($validated['pemegang_nama'])) {
+                RiwayatPemakai::create([
+                    'kendaraan_id' => $kendaraan->id,
+                    'nama_pemakai' => $validated['pemegang_nama'],
+                    'jenis_pemakai' => 'pribadi',
+                    'tanggal_mulai' => $validated['tanggal_perolehan'] ?? now()->toDateString(),
+                    'tanggal_selesai' => null,
+                    'catatan' => 'Pengguna awal saat kendaraan didaftarkan',
+                ]);
+            }
+
             // Handle multiple images
             if ($request->hasFile('gambar')) {
                 $urutan = 0;
@@ -429,6 +441,29 @@ class KendaraanController extends Controller
             // Remove non-model fields
             $riwayatPemakaiData = $validated['riwayat_pemakai'] ?? [];
             unset($validated['avatar'], $validated['gambar'], $validated['delete_gambar'], $validated['riwayat_pemakai'], $validated['delete_riwayat']);
+
+            // Auto-create history when pengguna (pemegang_nama) changes
+            $oldPengguna = $kendaraan->pemegang_nama;
+            $newPengguna = $validated['pemegang_nama'] ?? null;
+
+            if ($oldPengguna !== $newPengguna && !empty($oldPengguna)) {
+                // Close all active riwayat for old pengguna
+                RiwayatPemakai::where('kendaraan_id', $kendaraan->id)
+                    ->whereNull('tanggal_selesai')
+                    ->update(['tanggal_selesai' => now()->toDateString()]);
+
+                // Create new riwayat for new pengguna (if not empty)
+                if (!empty($newPengguna)) {
+                    RiwayatPemakai::create([
+                        'kendaraan_id' => $kendaraan->id,
+                        'nama_pemakai' => $newPengguna,
+                        'jenis_pemakai' => 'pribadi',
+                        'tanggal_mulai' => now()->toDateString(),
+                        'tanggal_selesai' => null,
+                        'catatan' => 'Tercatat otomatis saat pergantian pengguna',
+                    ]);
+                }
+            }
 
             $kendaraan->update($validated);
 

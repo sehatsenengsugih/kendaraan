@@ -284,7 +284,7 @@
                         @endif
                         @if($kendaraan->tarikan_pemakai)
                             <div>
-                                <dt class="text-sm text-bgray-500 dark:text-bgray-50">Pemakai Sebelumnya</dt>
+                                <dt class="text-sm text-bgray-500 dark:text-bgray-50">Pengguna Sebelumnya</dt>
                                 <dd class="font-medium text-bgray-900 dark:text-white">{{ $kendaraan->tarikan_pemakai }}</dd>
                             </div>
                         @endif
@@ -298,15 +298,15 @@
                 </div>
             @endif
 
-            <!-- Riwayat Pemakai -->
+            <!-- Riwayat Pengguna -->
             @if($kendaraan->riwayatPemakai->count() > 0)
                 <div class="rounded-lg bg-white p-6 dark:bg-darkblack-600">
-                    <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">Riwayat Pemakai</h3>
+                    <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">Riwayat Pengguna</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm">
                             <thead class="border-b border-bgray-200 dark:border-darkblack-400">
                                 <tr>
-                                    <th class="py-3 font-semibold text-bgray-900 dark:text-white">Nama Pemakai</th>
+                                    <th class="py-3 font-semibold text-bgray-900 dark:text-white">Nama Pengguna</th>
                                     <th class="py-3 font-semibold text-bgray-900 dark:text-white">Jenis</th>
                                     <th class="py-3 font-semibold text-bgray-900 dark:text-white">Periode</th>
                                     <th class="py-3 font-semibold text-bgray-900 dark:text-white">Durasi</th>
@@ -450,9 +450,9 @@
                 </dl>
             </div>
 
-            <!-- Pemegang -->
+            <!-- Pengguna Saat Ini -->
             <div class="rounded-lg bg-white p-6 dark:bg-darkblack-600">
-                <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">Pemegang</h3>
+                <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">Pengguna Saat Ini</h3>
                 @if($kendaraan->pemegang_nama || $kendaraan->pemegang)
                     <div class="flex items-center gap-3">
                         <div class="flex h-12 w-12 items-center justify-center rounded-full bg-success-50 text-success-400">
@@ -470,7 +470,7 @@
                         </div>
                     </div>
                 @else
-                    <p class="text-bgray-500 dark:text-bgray-50">Tidak ada pemegang</p>
+                    <p class="text-bgray-500 dark:text-bgray-50">Tidak ada pengguna</p>
                 @endif
             </div>
 

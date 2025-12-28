@@ -257,14 +257,14 @@
                             @enderror
                         </div>
 
-                        <!-- Pemegang -->
+                        <!-- Pengguna Saat Ini -->
                         <div>
                             <label for="pemegang_nama" class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">
-                                Pemegang
+                                Pengguna Saat Ini
                             </label>
                             <input type="text" name="pemegang_nama" id="pemegang_nama"
                                 value="{{ old('pemegang_nama', $kendaraan->pemegang_nama) }}"
-                                placeholder="Nama pemegang kendaraan..."
+                                placeholder="Nama pengguna kendaraan saat ini..."
                                 class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('pemegang_nama') border-error-300 @enderror">
                             @error('pemegang_nama')
                                 <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
@@ -530,11 +530,11 @@
 
                                 <div>
                                     <label for="tarikan_pemakai" class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">
-                                        Pemakai Sebelumnya
+                                        Pengguna Sebelumnya
                                     </label>
                                     <input type="text" name="tarikan_pemakai" id="tarikan_pemakai" value="{{ old('tarikan_pemakai', $kendaraan->tarikan_pemakai) }}"
                                         class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('tarikan_pemakai') border-error-300 @enderror"
-                                        placeholder="Nama pemakai sebelumnya">
+                                        placeholder="Nama pengguna sebelumnya">
                                     @error('tarikan_pemakai')
                                         <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
                                     @enderror
@@ -556,10 +556,10 @@
                     </div>
                 </div>
 
-                <!-- Riwayat Pemakai -->
+                <!-- Riwayat Pengguna -->
                 <div class="rounded-lg bg-white p-6 dark:bg-darkblack-600">
                     <div class="mb-4 flex items-center justify-between">
-                        <h3 class="text-lg font-semibold text-bgray-900 dark:text-white">Riwayat Pemakai</h3>
+                        <h3 class="text-lg font-semibold text-bgray-900 dark:text-white">Riwayat Pengguna</h3>
                         <button type="button" id="add-riwayat" class="rounded-lg bg-success-300 px-4 py-2 text-sm font-medium text-white hover:bg-success-400">
                             <i class="fa fa-plus mr-1"></i> Tambah Riwayat
                         </button>
@@ -587,7 +587,7 @@
                                 <input type="hidden" name="riwayat_pemakai[{{ $index }}][id]" value="{{ $riwayat->id }}">
                                 <div class="grid gap-4 md:grid-cols-2">
                                     <div>
-                                        <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Jenis Pemakai</label>
+                                        <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Jenis Pengguna</label>
                                         <select name="riwayat_pemakai[{{ $index }}][jenis_pemakai]" class="jenis-pemakai-select w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                                             <option value="paroki" {{ old("riwayat_pemakai.$index.jenis_pemakai", $riwayat->jenis_pemakai) === 'paroki' ? 'selected' : '' }}>Paroki</option>
                                             <option value="lembaga" {{ old("riwayat_pemakai.$index.jenis_pemakai", $riwayat->jenis_pemakai) === 'lembaga' ? 'selected' : '' }}>Lembaga</option>
@@ -613,7 +613,7 @@
                                         </select>
                                     </div>
                                     <div class="riwayat-pribadi-field {{ old("riwayat_pemakai.$index.jenis_pemakai", $riwayat->jenis_pemakai) === 'pribadi' ? '' : 'hidden' }}">
-                                        <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Nama Pemakai</label>
+                                        <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Nama Pengguna</label>
                                         <input type="text" name="riwayat_pemakai[{{ $index }}][nama_pemakai]" value="{{ old("riwayat_pemakai.$index.nama_pemakai", $riwayat->nama_pemakai) }}"
                                             class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
                                             placeholder="Nama pribadi">
@@ -632,7 +632,7 @@
                                         <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Catatan</label>
                                         <textarea name="riwayat_pemakai[{{ $index }}][catatan]" rows="2"
                                             class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
-                                            placeholder="Catatan tentang pemakaian">{{ old("riwayat_pemakai.$index.catatan", $riwayat->catatan) }}</textarea>
+                                            placeholder="Catatan tentang penggunaan">{{ old("riwayat_pemakai.$index.catatan", $riwayat->catatan) }}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -640,7 +640,7 @@
                     </div>
 
                     <p id="riwayat-empty" class="text-center text-sm text-bgray-500 py-8 {{ $kendaraan->riwayatPemakai->count() > 0 ? 'hidden' : '' }}">
-                        Belum ada riwayat pemakai. Klik "Tambah Riwayat" untuk menambahkan.
+                        Belum ada riwayat pengguna. Klik "Tambah Riwayat" untuk menambahkan.
                     </p>
                 </div>
 
@@ -793,7 +793,7 @@
         const parokiOptions = `@foreach($paroki as $p)<option value="{{ $p->id }}">{{ $p->nama }}</option>@endforeach`;
         const lembagaOptions = `@foreach($lembaga as $l)<option value="{{ $l->id }}">{{ $l->nama }}</option>@endforeach`;
 
-        // Toggle riwayat pemakai fields based on jenis
+        // Toggle riwayat pengguna fields based on jenis
         function setupJenisPemakaiHandler(row) {
             const select = row.querySelector('.jenis-pemakai-select');
             const parokiField = row.querySelector('.riwayat-paroki-field');
@@ -828,7 +828,7 @@
                     </div>
                     <div class="grid gap-4 md:grid-cols-2">
                         <div>
-                            <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Jenis Pemakai</label>
+                            <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Jenis Pengguna</label>
                             <select name="riwayat_pemakai[${riwayatIndex}][jenis_pemakai]" class="jenis-pemakai-select w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                                 <option value="paroki">Paroki</option>
                                 <option value="lembaga">Lembaga</option>
@@ -850,7 +850,7 @@
                             </select>
                         </div>
                         <div class="riwayat-pribadi-field hidden">
-                            <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Nama Pemakai</label>
+                            <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Nama Pengguna</label>
                             <input type="text" name="riwayat_pemakai[${riwayatIndex}][nama_pemakai]"
                                 class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
                                 placeholder="Nama pribadi">
@@ -869,7 +869,7 @@
                             <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Catatan</label>
                             <textarea name="riwayat_pemakai[${riwayatIndex}][catatan]" rows="2"
                                 class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
-                                placeholder="Catatan tentang pemakaian"></textarea>
+                                placeholder="Catatan tentang penggunaan"></textarea>
                         </div>
                     </div>
                 </div>

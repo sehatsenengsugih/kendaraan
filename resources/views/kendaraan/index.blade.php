@@ -23,10 +23,10 @@
                     <i class="fa fa-search mr-1 text-bgray-500"></i> Pencarian Lengkap
                 </label>
                 <input type="text" name="search" value="{{ request('search') }}"
-                    placeholder="Cari plat nomor, model, merk, no. BPKB, no. rangka, no. mesin, pemegang, garasi, catatan..."
+                    placeholder="Cari plat nomor, model, merk, no. BPKB, no. rangka, no. mesin, pengguna, garasi, catatan..."
                     class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                 <p class="mt-1 text-xs text-bgray-500 dark:text-bgray-400">
-                    Cari di semua field: identitas, dokumen, pemegang, garasi, riwayat pemakai, dll.
+                    Cari di semua field: identitas, dokumen, pengguna, garasi, riwayat pengguna, dll.
                 </p>
             </div>
 
@@ -136,7 +136,7 @@
                             <x-sortable-header column="plat_nomor" label="Plat Nomor" :currentSort="$sortColumn" :currentDirection="$sortDirection" />
                         </th>
                         <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">Garasi</th>
-                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">Pemegang</th>
+                        <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">Pengguna</th>
                         <th class="px-6 py-4 text-sm font-semibold text-bgray-600 dark:text-bgray-50">
                             <x-sortable-header column="status" label="Status" :currentSort="$sortColumn" :currentDirection="$sortDirection" />
                         </th>
