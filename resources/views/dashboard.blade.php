@@ -617,7 +617,7 @@
     <!-- Quick Actions -->
     <div class="mt-6">
         <h3 class="mb-4 text-lg font-bold text-bgray-900 dark:text-white">Aksi Cepat</h3>
-        <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div class="grid grid-cols-3 gap-4">
             <a href="{{ route('kendaraan.create') }}" class="flex flex-col items-center rounded-lg bg-white p-4 text-center hover:shadow-lg transition-shadow dark:bg-darkblack-600">
                 <div class="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-accent-50">
                     <i class="fa fa-car text-accent-400"></i>
@@ -635,12 +635,6 @@
                     <i class="fa fa-wrench text-purple"></i>
                 </div>
                 <span class="text-sm font-medium text-bgray-900 dark:text-white">Tambah Servis</span>
-            </a>
-            <a href="{{ route('penugasan.create') }}" class="flex flex-col items-center rounded-lg bg-white p-4 text-center hover:shadow-lg transition-shadow dark:bg-darkblack-600">
-                <div class="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-blue-50">
-                    <i class="fa fa-user-plus text-blue-500"></i>
-                </div>
-                <span class="text-sm font-medium text-bgray-900 dark:text-white">Tambah Penugasan</span>
             </a>
         </div>
     </div>
