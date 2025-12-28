@@ -27,7 +27,7 @@ return new class extends Migration
             ['id' => 1, 'nama' => 'Ada', 'keterangan' => 'BPKB tersedia dan dimiliki', 'urutan' => 1, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
             ['id' => 2, 'nama' => 'Pinjam Nama', 'keterangan' => 'BPKB atas nama pihak lain', 'urutan' => 2, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
             ['id' => 3, 'nama' => 'Dalam Proses', 'keterangan' => 'BPKB sedang dalam proses pengurusan', 'urutan' => 3, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 4, 'nama' => 'Diberikan', 'keterangan' => 'BPKB sudah diberikan ke pihak lain', 'urutan' => 4, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 4, 'nama' => 'Diserahkan', 'keterangan' => 'BPKB sudah diserahkan ke pihak lain', 'urutan' => 4, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
         ]);
 
         // 3. Add foreign key column to kendaraan
