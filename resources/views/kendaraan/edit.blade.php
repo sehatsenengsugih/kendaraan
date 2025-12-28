@@ -328,7 +328,7 @@
                             </label>
                             <div class="relative">
                                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-bgray-500">Rp</span>
-                                <input type="number" name="harga_beli" id="harga_beli" value="{{ old('harga_beli', $kendaraan->harga_beli) }}" min="0" step="1000"
+                                <input type="number" name="harga_beli" id="harga_beli" value="{{ old('harga_beli', $kendaraan->harga_beli) }}" min="0" step="1"
                                     class="w-full rounded-lg border border-bgray-200 pl-12 pr-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('harga_beli') border-error-300 @enderror"
                                     placeholder="0">
                             </div>
@@ -397,7 +397,7 @@
                             </label>
                             <div class="relative">
                                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-bgray-500">Rp</span>
-                                <input type="number" name="harga_jual" id="harga_jual" value="{{ old('harga_jual', $kendaraan->harga_jual) }}" min="0" step="1000"
+                                <input type="number" name="harga_jual" id="harga_jual" value="{{ old('harga_jual', $kendaraan->harga_jual) }}" min="0" step="1"
                                     class="w-full rounded-lg border border-bgray-200 pl-12 pr-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('harga_jual') border-error-300 @enderror"
                                     placeholder="0">
                             </div>
@@ -688,20 +688,39 @@
                 <!-- Existing Gallery -->
                 @if($kendaraan->gambar->count() > 0)
                     <div class="rounded-lg bg-white p-6 dark:bg-darkblack-600">
-                        <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">Foto Saat Ini</h3>
-                        <div class="grid grid-cols-2 gap-2">
-                            @foreach($kendaraan->gambar as $gambar)
-                                <div class="relative aspect-square overflow-hidden rounded-lg bg-bgray-100">
-                                    <img src="{{ $gambar->url }}" class="h-full w-full object-cover">
-                                    <label class="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/50 opacity-0 transition-opacity hover:opacity-100">
-                                        <input type="checkbox" name="delete_gambar[]" value="{{ $gambar->id }}"
-                                            class="h-5 w-5 rounded border-white text-error-300">
-                                        <span class="ml-2 text-sm text-white">Hapus</span>
-                                    </label>
+                        <div class="mb-4 flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-bgray-900 dark:text-white">Foto Saat Ini</h3>
+                            <span class="text-xs text-bgray-500"><i class="fa fa-arrows-alt mr-1"></i> Drag untuk ubah urutan</span>
+                        </div>
+                        <div id="gallery-sortable" class="grid grid-cols-2 gap-2">
+                            @foreach($kendaraan->gambar->sortBy('urutan') as $gambar)
+                                <div class="gallery-item group relative aspect-square overflow-hidden rounded-lg bg-bgray-100 cursor-move" data-id="{{ $gambar->id }}">
+                                    <img src="{{ $gambar->url }}" class="h-full w-full object-cover pointer-events-none">
+                                    <!-- Overlay dengan tombol aksi -->
+                                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+                                        <button type="button" onclick="event.stopPropagation(); setAsAvatar({{ $gambar->id }})"
+                                            class="rounded-lg bg-success-300 px-3 py-1.5 text-xs font-medium text-white hover:bg-success-400">
+                                            <i class="fa fa-star mr-1"></i> Jadikan Avatar
+                                        </button>
+                                        <button type="button" onclick="event.stopPropagation(); toggleDelete(this, {{ $gambar->id }})"
+                                            class="flex items-center rounded-lg bg-error-300 px-3 py-1.5 text-xs font-medium text-white hover:bg-error-400">
+                                            <i class="fa fa-trash mr-1"></i> Hapus
+                                        </button>
+                                        <input type="checkbox" name="delete_gambar[]" value="{{ $gambar->id }}" class="hidden delete-checkbox">
+                                    </div>
+                                    <!-- Delete indicator (clickable to cancel) -->
+                                    <div class="delete-indicator absolute right-1 top-1 z-20 hidden cursor-pointer rounded-full bg-error-300 p-2 hover:bg-error-200"
+                                         onclick="event.stopPropagation(); cancelDelete(this)"
+                                         title="Klik untuk batal hapus">
+                                        <i class="fa fa-times text-sm text-white"></i>
+                                    </div>
                                 </div>
                             @endforeach
                         </div>
-                        <p class="mt-2 text-xs text-bgray-500">Centang foto yang ingin dihapus.</p>
+                        <p class="mt-2 text-xs text-bgray-500">
+                            Hover gambar untuk aksi. Gambar dengan tanda <span class="text-error-300">X merah</span> akan dihapus saat klik <strong>Simpan</strong>.
+                            Klik tanda X untuk membatalkan.
+                        </p>
                     </div>
                 @endif
 
@@ -902,6 +921,153 @@
                 });
             }
         });
+
+        // Toggle delete for gallery images
+        function toggleDelete(btn, gambarId) {
+            const galleryItem = btn.closest('.gallery-item');
+            const checkbox = galleryItem.querySelector('.delete-checkbox');
+            const indicator = galleryItem.querySelector('.delete-indicator');
+
+            checkbox.checked = !checkbox.checked;
+            indicator.classList.toggle('hidden', !checkbox.checked);
+
+            // Update button text
+            if (checkbox.checked) {
+                btn.innerHTML = '<i class="fa fa-undo mr-1"></i> Batal Hapus';
+                btn.classList.remove('bg-error-300', 'hover:bg-error-400');
+                btn.classList.add('bg-warning-300', 'hover:bg-warning-200');
+            } else {
+                btn.innerHTML = '<i class="fa fa-trash mr-1"></i> Hapus';
+                btn.classList.remove('bg-warning-300', 'hover:bg-warning-200');
+                btn.classList.add('bg-error-300', 'hover:bg-error-400');
+            }
+        }
+
+        // Cancel delete by clicking the X indicator
+        function cancelDelete(indicator) {
+            const galleryItem = indicator.closest('.gallery-item');
+            const checkbox = galleryItem.querySelector('.delete-checkbox');
+            const hapusBtn = galleryItem.querySelector('button:has(.fa-undo), button:has(.fa-trash)');
+
+            // Uncheck and hide indicator
+            checkbox.checked = false;
+            indicator.classList.add('hidden');
+
+            // Reset button if found
+            if (hapusBtn) {
+                hapusBtn.innerHTML = '<i class="fa fa-trash mr-1"></i> Hapus';
+                hapusBtn.classList.remove('bg-warning-300', 'hover:bg-warning-200');
+                hapusBtn.classList.add('bg-error-300', 'hover:bg-error-400');
+            }
+        }
+
+        // Drag and Drop Sortable
+        const gallerySortable = document.getElementById('gallery-sortable');
+        if (gallerySortable) {
+            let draggedItem = null;
+
+            gallerySortable.querySelectorAll('.gallery-item').forEach(item => {
+                item.setAttribute('draggable', 'true');
+
+                item.addEventListener('dragstart', function(e) {
+                    draggedItem = this;
+                    this.classList.add('opacity-50');
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+
+                item.addEventListener('dragend', function(e) {
+                    this.classList.remove('opacity-50');
+                    draggedItem = null;
+                    saveGalleryOrder();
+                });
+
+                item.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                });
+
+                item.addEventListener('dragenter', function(e) {
+                    e.preventDefault();
+                    if (this !== draggedItem) {
+                        this.classList.add('ring-2', 'ring-success-300');
+                    }
+                });
+
+                item.addEventListener('dragleave', function(e) {
+                    this.classList.remove('ring-2', 'ring-success-300');
+                });
+
+                item.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('ring-2', 'ring-success-300');
+
+                    if (this !== draggedItem) {
+                        const allItems = [...gallerySortable.querySelectorAll('.gallery-item')];
+                        const draggedIdx = allItems.indexOf(draggedItem);
+                        const droppedIdx = allItems.indexOf(this);
+
+                        if (draggedIdx < droppedIdx) {
+                            this.parentNode.insertBefore(draggedItem, this.nextSibling);
+                        } else {
+                            this.parentNode.insertBefore(draggedItem, this);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Save gallery order via AJAX
+        function saveGalleryOrder() {
+            const items = document.querySelectorAll('#gallery-sortable .gallery-item');
+            const order = Array.from(items).map(item => item.dataset.id);
+
+            fetch('{{ route("kendaraan.gambar.reorder", $kendaraan) }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ order: order })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Optional: show success toast
+                    console.log('Urutan gambar berhasil disimpan');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Set image as avatar
+        function setAsAvatar(gambarId) {
+            if (!confirm('Jadikan gambar ini sebagai foto utama (avatar)?')) return;
+
+            fetch('{{ url("kendaraan/" . $kendaraan->id . "/gambar") }}/' + gambarId + '/set-avatar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update avatar preview
+                    const avatarPreview = document.getElementById('avatar-preview');
+                    avatarPreview.innerHTML = '<img src="' + data.avatar_url + '" class="h-full w-full object-cover">';
+                    alert('Avatar berhasil diperbarui!');
+                } else {
+                    alert('Gagal: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat mengubah avatar');
+            });
+        }
     </script>
     @endpush
 </x-app-layout>

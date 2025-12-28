@@ -557,6 +557,56 @@ class KendaraanController extends Controller
     }
 
     /**
+     * Reorder gallery images.
+     */
+    public function reorderGambar(Request $request, Kendaraan $kendaraan)
+    {
+        $request->validate([
+            'order' => 'required|array',
+            'order.*' => 'integer|exists:gambar_kendaraan,id',
+        ]);
+
+        $order = $request->input('order');
+
+        foreach ($order as $index => $gambarId) {
+            GambarKendaraan::where('id', $gambarId)
+                ->where('kendaraan_id', $kendaraan->id)
+                ->update(['urutan' => $index]);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Urutan gambar berhasil diperbarui']);
+    }
+
+    /**
+     * Set a gallery image as the main avatar.
+     */
+    public function setGambarAsAvatar(Kendaraan $kendaraan, GambarKendaraan $gambar)
+    {
+        // Verify the image belongs to this kendaraan
+        if ($gambar->kendaraan_id !== $kendaraan->id) {
+            return response()->json(['success' => false, 'message' => 'Gambar tidak ditemukan'], 404);
+        }
+
+        // Delete old avatar if exists
+        if ($kendaraan->avatar_path && Storage::disk('public')->exists($kendaraan->avatar_path)) {
+            Storage::disk('public')->delete($kendaraan->avatar_path);
+        }
+
+        // Copy the gallery image to avatars folder
+        $newAvatarPath = 'kendaraan/avatars/' . uniqid() . '_' . time() . '.' . pathinfo($gambar->file_path, PATHINFO_EXTENSION);
+        Storage::disk('public')->copy($gambar->file_path, $newAvatarPath);
+
+        // Update kendaraan avatar
+        $kendaraan->update(['avatar_path' => $newAvatarPath]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Avatar berhasil diperbarui',
+            'avatar_url' => asset('storage/' . $newAvatarPath),
+        ]);
+    }
+
+    /**
      * Upload image helper.
      */
     private function uploadImage($file, string $directory): string

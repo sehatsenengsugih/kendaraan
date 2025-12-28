@@ -330,7 +330,7 @@
                             </label>
                             <div class="relative">
                                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-bgray-500">Rp</span>
-                                <input type="number" name="harga_beli" id="harga_beli" value="{{ old('harga_beli') }}" min="0" step="1000"
+                                <input type="number" name="harga_beli" id="harga_beli" value="{{ old('harga_beli') }}" min="0" step="1"
                                     class="w-full rounded-lg border border-bgray-200 pl-12 pr-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('harga_beli') border-error-300 @enderror"
                                     placeholder="0">
                             </div>
@@ -397,7 +397,7 @@
                             </label>
                             <div class="relative">
                                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-bgray-500">Rp</span>
-                                <input type="number" name="harga_jual" id="harga_jual" value="{{ old('harga_jual') }}" min="0" step="1000"
+                                <input type="number" name="harga_jual" id="harga_jual" value="{{ old('harga_jual') }}" min="0" step="1"
                                     class="w-full rounded-lg border border-bgray-200 pl-12 pr-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('harga_jual') border-error-300 @enderror"
                                     placeholder="0">
                             </div>

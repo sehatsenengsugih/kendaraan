@@ -67,6 +67,10 @@ Route::middleware('auth')->group(function () {
         Route::get('kendaraan/{kendaraan}/edit', [KendaraanController::class, 'edit'])->name('kendaraan.edit');
         Route::put('kendaraan/{kendaraan}', [KendaraanController::class, 'update'])->name('kendaraan.update');
         Route::delete('kendaraan/{kendaraan}', [KendaraanController::class, 'destroy'])->name('kendaraan.destroy');
+
+        // Kendaraan Image Management
+        Route::post('kendaraan/{kendaraan}/gambar/reorder', [KendaraanController::class, 'reorderGambar'])->name('kendaraan.gambar.reorder');
+        Route::post('kendaraan/{kendaraan}/gambar/{gambar}/set-avatar', [KendaraanController::class, 'setGambarAsAvatar'])->name('kendaraan.gambar.set-avatar');
     });
 
     // Kendaraan read-only (index & show) - termasuk admin_servis
