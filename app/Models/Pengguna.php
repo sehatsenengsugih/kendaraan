@@ -23,6 +23,7 @@ class Pengguna extends Authenticatable
     protected $fillable = [
         'name',
         'avatar_path',
+        'accent_color',
         'email',
         'phone',
         'role',
@@ -67,6 +68,90 @@ class Pengguna extends Authenticatable
      */
     public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';
+
+    /**
+     * Default accent color (green)
+     */
+    public const DEFAULT_ACCENT_COLOR = '#22C55E';
+
+    /**
+     * Preset accent colors with their palettes
+     */
+    public const ACCENT_PRESETS = [
+        '#22C55E' => ['name' => 'Hijau', '50' => '#D9FBE6', '100' => '#B7FFD1', '200' => '#4ADE80', '300' => '#22C55E', '400' => '#16A34A'],
+        '#3B82F6' => ['name' => 'Biru', '50' => '#DBEAFE', '100' => '#BFDBFE', '200' => '#60A5FA', '300' => '#3B82F6', '400' => '#2563EB'],
+        '#8B5CF6' => ['name' => 'Ungu', '50' => '#EDE9FE', '100' => '#DDD6FE', '200' => '#A78BFA', '300' => '#8B5CF6', '400' => '#7C3AED'],
+        '#EF4444' => ['name' => 'Merah', '50' => '#FEE2E2', '100' => '#FECACA', '200' => '#F87171', '300' => '#EF4444', '400' => '#DC2626'],
+        '#F97316' => ['name' => 'Orange', '50' => '#FFEDD5', '100' => '#FED7AA', '200' => '#FB923C', '300' => '#F97316', '400' => '#EA580C'],
+        '#EC4899' => ['name' => 'Pink', '50' => '#FCE7F3', '100' => '#FBCFE8', '200' => '#F472B6', '300' => '#EC4899', '400' => '#DB2777'],
+    ];
+
+    /**
+     * Get the user's accent color or default
+     */
+    public function getAccentColor(): string
+    {
+        return $this->accent_color ?? self::DEFAULT_ACCENT_COLOR;
+    }
+
+    /**
+     * Get the accent color palette for this user
+     */
+    public function getAccentPalette(): array
+    {
+        $color = $this->getAccentColor();
+
+        // Check if it's a preset color
+        if (isset(self::ACCENT_PRESETS[$color])) {
+            return self::ACCENT_PRESETS[$color];
+        }
+
+        // For custom colors, generate a basic palette
+        return $this->generatePalette($color);
+    }
+
+    /**
+     * Generate a color palette from a single hex color
+     */
+    private function generatePalette(string $hex): array
+    {
+        // Convert hex to RGB
+        $hex = ltrim($hex, '#');
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+
+        // Generate lighter and darker variants
+        return [
+            'name' => 'Custom',
+            '50' => $this->adjustBrightness($r, $g, $b, 0.9),
+            '100' => $this->adjustBrightness($r, $g, $b, 0.8),
+            '200' => $this->adjustBrightness($r, $g, $b, 0.4),
+            '300' => '#' . $hex,
+            '400' => $this->adjustBrightness($r, $g, $b, -0.15),
+        ];
+    }
+
+    /**
+     * Adjust color brightness
+     */
+    private function adjustBrightness(int $r, int $g, int $b, float $percent): string
+    {
+        if ($percent > 0) {
+            // Lighten - mix with white
+            $r = $r + (255 - $r) * $percent;
+            $g = $g + (255 - $g) * $percent;
+            $b = $b + (255 - $b) * $percent;
+        } else {
+            // Darken - reduce values
+            $factor = 1 + $percent;
+            $r = $r * $factor;
+            $g = $g * $factor;
+            $b = $b * $factor;
+        }
+
+        return sprintf('#%02X%02X%02X', min(255, max(0, (int)$r)), min(255, max(0, (int)$g)), min(255, max(0, (int)$b)));
+    }
 
     /**
      * Check if user is super admin
@@ -200,7 +285,8 @@ class Pengguna extends Authenticatable
             return asset('storage/' . $this->avatar_path);
         }
 
-        // Fallback to ui-avatars.com
-        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=22C55E&color=fff';
+        // Fallback to ui-avatars.com with user's accent color
+        $bgColor = ltrim($this->getAccentColor(), '#');
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=' . $bgColor . '&color=fff';
     }
 }

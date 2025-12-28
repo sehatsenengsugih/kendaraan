@@ -2,7 +2,7 @@
     <!-- Logo -->
     <div class="sidebar-header relative z-30 flex h-[108px] w-full items-center border-b border-r border-b-bgray-200 border-r-bgray-200 pl-[50px] dark:border-darkblack-400">
         <a href="{{ route('dashboard') }}" class="flex items-center">
-            <span class="text-2xl font-bold text-success-300">Kendaraan</span>
+            <span class="text-2xl font-bold text-accent-300">Kendaraan</span>
             <span class="text-xl font-medium text-bgray-900 dark:text-white">KAS</span>
         </a>
         <!-- Close Button (Mobile) -->
@@ -12,7 +12,7 @@
             </svg>
         </button>
         <!-- Toggle Button (Desktop) - moved inside sidebar boundary -->
-        <button type="button" class="drawer-btn absolute right-2 top-1/2 -translate-y-1/2 hidden xl:flex items-center justify-center w-8 h-8 bg-success-300 rounded-full hover:bg-success-400 transition-colors" title="Toggle Sidebar (Ctrl+B)">
+        <button type="button" class="drawer-btn absolute right-2 top-1/2 -translate-y-1/2 hidden xl:flex items-center justify-center w-8 h-8 bg-accent-300 rounded-full hover:bg-accent-400 transition-colors" title="Toggle Sidebar (Ctrl+B)">
             <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>

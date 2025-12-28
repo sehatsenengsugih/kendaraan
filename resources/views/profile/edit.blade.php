@@ -47,6 +47,45 @@
                     @enderror
                 </div>
 
+                <!-- Accent Color Picker -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-bgray-700 dark:text-bgray-300 mb-3">Warna Aksen</label>
+                    <p class="text-xs text-bgray-500 dark:text-bgray-400 mb-4">Pilih warna aksen untuk tampilan aplikasi Anda</p>
+
+                    <!-- Preset Colors -->
+                    <div class="flex flex-wrap gap-3 mb-4">
+                        @foreach($accentPresets as $hex => $preset)
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="accent_color" value="{{ $hex }}"
+                                    class="sr-only peer"
+                                    {{ (old('accent_color', $user->accent_color) ?? '#22C55E') === $hex ? 'checked' : '' }}
+                                    onchange="updateAccentPreview('{{ $hex }}')">
+                                <div class="w-10 h-10 rounded-full border-2 border-transparent peer-checked:border-bgray-900 dark:peer-checked:border-white peer-checked:ring-2 peer-checked:ring-offset-2 ring-offset-white dark:ring-offset-darkblack-600 transition-all"
+                                    style="background-color: {{ $hex }};"
+                                    title="{{ $preset['name'] }}">
+                                </div>
+                                <span class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] text-bgray-500 dark:text-bgray-400 whitespace-nowrap">{{ $preset['name'] }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+
+                    <!-- Custom Color Picker -->
+                    <div class="mt-8 flex items-center gap-3">
+                        <label class="text-sm text-bgray-600 dark:text-bgray-400">Atau pilih warna kustom:</label>
+                        <div class="relative">
+                            <input type="color" id="custom-color-picker"
+                                value="{{ old('accent_color', $user->accent_color) ?? '#22C55E' }}"
+                                class="w-10 h-10 rounded-lg border border-bgray-200 dark:border-darkblack-400 cursor-pointer"
+                                onchange="selectCustomColor(this.value)">
+                        </div>
+                        <span id="custom-color-hex" class="text-xs text-bgray-500 dark:text-bgray-400 font-mono">{{ old('accent_color', $user->accent_color) ?? '#22C55E' }}</span>
+                    </div>
+
+                    @error('accent_color')
+                        <p class="mt-2 text-sm text-error-300">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <div class="space-y-4">
                     <div>
                         <label for="name" class="block text-sm font-medium text-bgray-700 dark:text-bgray-300 mb-1">Nama</label>
@@ -128,6 +167,86 @@
             };
             reader.readAsDataURL(input.files[0]);
         }
+    }
+
+    // Accent color functions
+    function updateAccentPreview(hex) {
+        // Update CSS variables in real-time
+        const palette = generatePalette(hex);
+        document.documentElement.style.setProperty('--accent-50', palette['50']);
+        document.documentElement.style.setProperty('--accent-100', palette['100']);
+        document.documentElement.style.setProperty('--accent-200', palette['200']);
+        document.documentElement.style.setProperty('--accent-300', palette['300']);
+        document.documentElement.style.setProperty('--accent-400', palette['400']);
+
+        // Update custom color picker
+        document.getElementById('custom-color-picker').value = hex;
+        document.getElementById('custom-color-hex').textContent = hex.toUpperCase();
+    }
+
+    function selectCustomColor(hex) {
+        // Uncheck all preset radios
+        document.querySelectorAll('input[name="accent_color"]').forEach(radio => {
+            radio.checked = false;
+        });
+
+        // Create hidden input for custom color if not exists
+        let customInput = document.getElementById('custom-accent-input');
+        if (!customInput) {
+            customInput = document.createElement('input');
+            customInput.type = 'hidden';
+            customInput.name = 'accent_color';
+            customInput.id = 'custom-accent-input';
+            document.querySelector('form').appendChild(customInput);
+        }
+        customInput.value = hex;
+
+        // Update preview
+        updateAccentPreview(hex);
+    }
+
+    function generatePalette(hex) {
+        // Preset palettes
+        const presets = @json($accentPresets);
+        if (presets[hex]) {
+            return presets[hex];
+        }
+
+        // Generate palette from single color
+        const rgb = hexToRgb(hex);
+        return {
+            '50': adjustBrightness(rgb.r, rgb.g, rgb.b, 0.9),
+            '100': adjustBrightness(rgb.r, rgb.g, rgb.b, 0.8),
+            '200': adjustBrightness(rgb.r, rgb.g, rgb.b, 0.4),
+            '300': hex,
+            '400': adjustBrightness(rgb.r, rgb.g, rgb.b, -0.15)
+        };
+    }
+
+    function hexToRgb(hex) {
+        hex = hex.replace('#', '');
+        return {
+            r: parseInt(hex.substring(0, 2), 16),
+            g: parseInt(hex.substring(2, 4), 16),
+            b: parseInt(hex.substring(4, 6), 16)
+        };
+    }
+
+    function adjustBrightness(r, g, b, percent) {
+        if (percent > 0) {
+            r = r + (255 - r) * percent;
+            g = g + (255 - g) * percent;
+            b = b + (255 - b) * percent;
+        } else {
+            const factor = 1 + percent;
+            r = r * factor;
+            g = g * factor;
+            b = b * factor;
+        }
+        return '#' + [r, g, b].map(x => {
+            const hex = Math.min(255, Math.max(0, Math.round(x))).toString(16);
+            return hex.length === 1 ? '0' + hex : hex;
+        }).join('').toUpperCase();
     }
     </script>
 </x-app-layout>

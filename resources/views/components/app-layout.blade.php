@@ -20,6 +20,32 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ asset('assets/css/font-awesome-all.min.css') }}">
 
+    <!-- Accent Color CSS Variables -->
+    @auth
+    @php
+        $palette = auth()->user()->getAccentPalette();
+    @endphp
+    <style>
+        :root {
+            --accent-50: {{ $palette['50'] }};
+            --accent-100: {{ $palette['100'] }};
+            --accent-200: {{ $palette['200'] }};
+            --accent-300: {{ $palette['300'] }};
+            --accent-400: {{ $palette['400'] }};
+        }
+    </style>
+    @else
+    <style>
+        :root {
+            --accent-50: #D9FBE6;
+            --accent-100: #B7FFD1;
+            --accent-200: #4ADE80;
+            --accent-300: #22C55E;
+            --accent-400: #16A34A;
+        }
+    </style>
+    @endauth
+
     @stack('styles')
 </head>
 <body class="bg-bgray-50 dark:bg-darkblack-700">

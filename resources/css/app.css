@@ -4,6 +4,37 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Accent Color Utilities - using CSS variables */
+.bg-accent-50 { background-color: var(--accent-50); }
+.bg-accent-100 { background-color: var(--accent-100); }
+.bg-accent-200 { background-color: var(--accent-200); }
+.bg-accent-300 { background-color: var(--accent-300); }
+.bg-accent-400 { background-color: var(--accent-400); }
+
+.text-accent-50 { color: var(--accent-50); }
+.text-accent-100 { color: var(--accent-100); }
+.text-accent-200 { color: var(--accent-200); }
+.text-accent-300 { color: var(--accent-300); }
+.text-accent-400 { color: var(--accent-400); }
+
+.border-accent-50 { border-color: var(--accent-50); }
+.border-accent-100 { border-color: var(--accent-100); }
+.border-accent-200 { border-color: var(--accent-200); }
+.border-accent-300 { border-color: var(--accent-300); }
+.border-accent-400 { border-color: var(--accent-400); }
+
+.ring-accent-300 { --tw-ring-color: var(--accent-300); }
+.focus\:ring-accent-300:focus { --tw-ring-color: var(--accent-300); }
+.focus\:border-accent-300:focus { border-color: var(--accent-300); }
+
+.hover\:bg-accent-300:hover { background-color: var(--accent-300); }
+.hover\:bg-accent-400:hover { background-color: var(--accent-400); }
+.hover\:text-accent-300:hover { color: var(--accent-300); }
+.hover\:text-accent-400:hover { color: var(--accent-400); }
+
+.fill-accent-300 { fill: var(--accent-300); }
+.fill-accent-100 { fill: var(--accent-100); }
+
 /* Base Styles */
 html {
     background: #fafafa;
@@ -111,6 +142,19 @@ body.modal-open {
     transition: all 0.3s ease-in-out;
 }
 
+/* Default accent color for sidebar icons path-2 */
+:is(.sidebar-wrapper, .sidebar-wrapper-collapse)
+    .sidebar-body
+    .item-wrapper
+    ul
+    li.item
+    .item-ico
+    svg
+    .path-2 {
+    fill: var(--accent-300);
+    stroke: var(--accent-300);
+}
+
 :is(.sidebar-wrapper, .sidebar-wrapper-collapse)
     .sidebar-body
     .item-wrapper
@@ -124,8 +168,8 @@ body.modal-open {
     .item-wrapper
     ul
     li.item:hover {
-    fill: #22c55e;
-    color: #22c55e;
+    fill: var(--accent-300);
+    color: var(--accent-300);
 }
 
 :is(.sidebar-wrapper, .sidebar-wrapper-collapse)
@@ -136,7 +180,7 @@ body.modal-open {
     .item-ico
     svg
     .path-2 {
-    fill: #b7ffd1;
+    fill: var(--accent-100);
 }
 
 .sidebar-wrapper .sidebar-body .nav-wrapper ul li.item .sub-menu {
@@ -184,8 +228,8 @@ body.modal-open {
     .item-wrapper
     ul
     li.item:hover {
-    fill: #27DA68;
-    color: #27DA68;
+    fill: var(--accent-200);
+    color: var(--accent-200);
 }
 
 /* Component Layer */

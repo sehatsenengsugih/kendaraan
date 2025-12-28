@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\Pengguna;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -21,6 +22,7 @@ class ProfileController extends Controller
     {
         return view('profile.edit', [
             'user' => auth()->user(),
+            'accentPresets' => Pengguna::ACCENT_PRESETS,
         ]);
     }
 
@@ -35,10 +37,12 @@ class ProfileController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('pengguna')->ignore($user->id)],
             'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'accent_color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
         ]);
 
         $user->name = $validated['name'];
         $user->email = $validated['email'];
+        $user->accent_color = $validated['accent_color'] ?? null;
 
         // Handle avatar upload
         if ($request->hasFile('avatar')) {
