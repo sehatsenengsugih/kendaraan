@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\ManualController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\GarasiController;
@@ -114,6 +115,10 @@ Route::middleware('auth')->group(function () {
 
     // Calendar
     Route::get('kalender', [CalendarController::class, 'index'])->name('calendar.index');
+
+    // Manual / Panduan Pengguna
+    Route::get('manual', [ManualController::class, 'index'])->name('manual.index');
+    Route::get('manual/{section}', [ManualController::class, 'section'])->name('manual.section');
 
     // Calendar API
     Route::prefix('api/calendar')->group(function () {

@@ -119,6 +119,24 @@
                             </div>
                         </a>
                     </li>
+
+                    <!-- Panduan -->
+                    <li class="item py-[11px] text-bgray-900 dark:text-white {{ request()->routeIs('manual.*') ? 'active' : '' }}">
+                        <a href="{{ route('manual.index') }}">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2.5">
+                                    <span class="item-ico">
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path class="path-1" d="M3 4C3 2.89543 3.89543 2 5 2H15C16.1046 2 17 2.89543 17 4V16C17 17.1046 16.1046 18 15 18H5C3.89543 18 3 17.1046 3 16V4Z" fill="#1A202C"/>
+                                            <path class="path-2" d="M6 6H14M6 10H14M6 14H10" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round"/>
+                                            <circle class="path-2" cx="14" cy="14" r="2" fill="#22C55E"/>
+                                        </svg>
+                                    </span>
+                                    <span class="item-text text-lg font-medium leading-none">Panduan</span>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
                 </ul>
             </div>
 
