@@ -185,8 +185,8 @@
         <!-- User Dropdown -->
         <div class="relative" x-data="{ open: false }">
             <button @click="open = !open" type="button" class="flex items-center space-x-3">
-                <div class="h-10 w-10 overflow-hidden rounded-full bg-success-100">
-                    <img src="{{ Auth::user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name ?? 'User') . '&background=22C55E&color=fff' }}" alt="User" class="h-full w-full object-cover">
+                <div class="h-[52px] w-[52px] overflow-hidden rounded-xl border border-bgray-300 dark:border-darkblack-400">
+                    <img src="{{ Auth::user()->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name ?? 'User') . '&background=22C55E&color=fff' }}" alt="User" class="h-full w-full object-cover">
                 </div>
                 <div class="hidden text-left lg:block">
                     <h4 class="text-sm font-bold text-bgray-900 dark:text-white">{{ Auth::user()->name ?? 'User' }}</h4>
@@ -196,6 +196,8 @@
                                 Super Admin
                             @elseif(Auth::user()->role === 'admin')
                                 Admin
+                            @elseif(Auth::user()->role === 'admin_servis')
+                                Admin Servis
                             @else
                                 User
                             @endif

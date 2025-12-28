@@ -22,6 +22,7 @@ class Pengguna extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'avatar_path',
         'email',
         'phone',
         'role',
@@ -188,5 +189,18 @@ class Pengguna extends Authenticatable
             return $this->name . ' (' . $this->organization_name . ')';
         }
         return $this->name;
+    }
+
+    /**
+     * Get avatar URL with fallback to ui-avatars.com
+     */
+    public function getAvatarUrlAttribute(): string
+    {
+        if ($this->avatar_path) {
+            return asset('storage/' . $this->avatar_path);
+        }
+
+        // Fallback to ui-avatars.com
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=22C55E&color=fff';
     }
 }

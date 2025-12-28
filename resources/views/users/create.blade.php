@@ -14,8 +14,31 @@
 
     <div class="max-w-2xl">
         <div class="rounded-lg bg-white p-6 shadow-sm dark:bg-darkblack-600">
-            <form method="POST" action="{{ route('users.store') }}">
+            <form method="POST" action="{{ route('users.store') }}" enctype="multipart/form-data">
                 @csrf
+
+                <!-- Avatar Upload -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-bgray-700 dark:text-bgray-300 mb-3">Foto Profil</label>
+                    <div class="flex items-center gap-6">
+                        <div class="relative">
+                            <div id="avatar-preview" class="h-24 w-24 overflow-hidden rounded-xl border-2 border-bgray-200 dark:border-darkblack-400 bg-bgray-100 dark:bg-darkblack-500">
+                                <img id="preview-img" src="https://ui-avatars.com/api/?name=User&background=22C55E&color=fff&size=96" alt="Avatar" class="h-full w-full object-cover">
+                            </div>
+                            <label for="avatar" class="absolute -bottom-1 -right-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-success-300 text-white hover:bg-success-400 transition-colors">
+                                <i class="fa fa-camera text-xs"></i>
+                            </label>
+                        </div>
+                        <div class="flex-1">
+                            <input type="file" name="avatar" id="avatar" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="previewAvatar(this)">
+                            <p class="text-sm text-bgray-600 dark:text-bgray-400">Upload foto profil (opsional)</p>
+                            <p class="text-xs text-bgray-500 dark:text-bgray-400 mt-1">Format: JPG, PNG, WebP. Maks 2MB</p>
+                        </div>
+                    </div>
+                    @error('avatar')
+                        <p class="mt-2 text-sm text-error-300">{{ $message }}</p>
+                    @enderror
+                </div>
 
                 <div class="space-y-4">
                     <div>
@@ -82,4 +105,16 @@
             </form>
         </div>
     </div>
+
+    <script>
+    function previewAvatar(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('preview-img').src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    </script>
 </x-app-layout>

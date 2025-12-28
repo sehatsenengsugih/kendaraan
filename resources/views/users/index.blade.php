@@ -29,8 +29,8 @@
                     <tr class="hover:bg-bgray-50 dark:hover:bg-darkblack-500">
                         <td class="px-6 py-4">
                             <div class="flex items-center">
-                                <div class="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full bg-success-100">
-                                    <img src="{{ $user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=22C55E&color=fff' }}" alt="{{ $user->name }}" class="h-full w-full object-cover">
+                                <div class="h-10 w-10 flex-shrink-0 overflow-hidden rounded-xl border border-bgray-200 dark:border-darkblack-400">
+                                    <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="h-full w-full object-cover">
                                 </div>
                                 <div class="ml-4">
                                     <p class="font-medium text-bgray-900 dark:text-white">{{ $user->name }}</p>
