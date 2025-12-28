@@ -89,18 +89,123 @@
         </a>
     </div>
 
-    <!-- Reminder Pajak Section (Row 2) -->
-    <div class="mb-6">
-        <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-xl font-bold text-bgray-900 dark:text-white">
-                <i class="fa fa-bell mr-2 text-warning-400"></i>
-                Pengingat Pajak Kendaraan
-            </h3>
-            <a href="{{ route('pajak.index') }}" class="text-sm font-medium text-success-300 hover:underline">Lihat Semua Pajak</a>
+    <!-- Row 2: Mini Calendar + Pengingat Pajak -->
+    <div class="mb-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
+        <!-- Mini Calendar Widget -->
+        <div class="card xl:col-span-1" x-data="miniCalendar()" x-init="init()">
+            <!-- Header with Navigation -->
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                    <button @click="prevMonth()" class="p-1 rounded-lg hover:bg-bgray-100 dark:hover:bg-darkblack-500 text-bgray-500 hover:text-bgray-700 dark:text-bgray-400 dark:hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </button>
+                    <h3 class="text-lg font-bold text-bgray-900 dark:text-white min-w-[140px] text-center" x-text="monthName">
+                        {{ now()->translatedFormat('F Y') }}
+                    </h3>
+                    <button @click="nextMonth()" class="p-1 rounded-lg hover:bg-bgray-100 dark:hover:bg-darkblack-500 text-bgray-500 hover:text-bgray-700 dark:text-bgray-400 dark:hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button @click="goToToday()" x-show="!isCurrentMonth" class="text-xs text-success-300 hover:underline">
+                        Hari Ini
+                    </button>
+                    <a href="{{ route('calendar.index') }}" class="text-sm font-medium text-success-300 hover:underline">
+                        Buka
+                    </a>
+                </div>
+            </div>
+
+            <!-- Calendar Grid -->
+            <div class="select-none">
+                <!-- Day Headers -->
+                <div class="grid grid-cols-7 gap-1 mb-2">
+                    <template x-for="day in ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab']">
+                        <div class="text-center text-xs font-medium text-bgray-500 dark:text-bgray-400 py-1" x-text="day"></div>
+                    </template>
+                </div>
+
+                <!-- Loading State -->
+                <div x-show="loading" class="grid grid-cols-7 gap-1">
+                    <template x-for="i in 35">
+                        <div class="aspect-square rounded-lg bg-bgray-100 dark:bg-darkblack-500 animate-pulse"></div>
+                    </template>
+                </div>
+
+                <!-- Calendar Days -->
+                <div x-show="!loading" class="grid grid-cols-7 gap-1">
+                    <!-- Empty cells before first day -->
+                    <template x-for="i in startDayOfWeek">
+                        <div class="aspect-square"></div>
+                    </template>
+
+                    <!-- Days of month -->
+                    <template x-for="day in daysInMonth">
+                        <a :href="'{{ route('calendar.index') }}?date=' + getDateStr(day)"
+                           class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm transition-all"
+                           :class="{
+                               'bg-success-300 text-white font-bold': isToday(day),
+                               'bg-bgray-100 dark:bg-darkblack-500 hover:bg-bgray-200 dark:hover:bg-darkblack-400': hasEvents(day) && !isToday(day),
+                               'hover:bg-bgray-50 dark:hover:bg-darkblack-500 text-bgray-700 dark:text-bgray-300': !hasEvents(day) && !isToday(day)
+                           }">
+                            <span :class="{ 'text-white': isToday(day) }" x-text="day"></span>
+                            <div x-show="hasEvents(day)" class="flex gap-0.5 mt-0.5">
+                                <template x-for="color in getEventColors(day).slice(0, 3)">
+                                    <span class="w-1.5 h-1.5 rounded-full"
+                                          :class="{
+                                              'bg-white': isToday(day),
+                                              'bg-error-400': !isToday(day) && color === 'error',
+                                              'bg-orange-400': !isToday(day) && color === 'warning',
+                                              'bg-blue-400': !isToday(day) && color === 'blue',
+                                              'bg-purple': !isToday(day) && color === 'purple',
+                                              'bg-indigo-400': !isToday(day) && color === 'indigo'
+                                          }"></span>
+                                </template>
+                            </div>
+                        </a>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="mt-4 pt-3 border-t border-bgray-100 dark:border-darkblack-400">
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div class="flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-error-400"></span>
+                        <span class="text-bgray-500 dark:text-bgray-400">Pajak Terlambat</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-orange-400"></span>
+                        <span class="text-bgray-500 dark:text-bgray-400">Pajak ≤7 hari</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                        <span class="text-bgray-500 dark:text-bgray-400">Pajak ≤30 hari</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-purple"></span>
+                        <span class="text-bgray-500 dark:text-bgray-400">Servis</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Summary Cards -->
-        <div class="mb-4 grid grid-cols-2 gap-4 md:grid-cols-4">
+        <!-- Pengingat Pajak Section -->
+        <div class="xl:col-span-2">
+            <div class="mb-4 flex items-center justify-between">
+                <h3 class="text-lg font-bold text-bgray-900 dark:text-white">
+                    <i class="fa fa-bell mr-2 text-warning-400"></i>
+                    Pengingat Pajak
+                </h3>
+                <a href="{{ route('pajak.index') }}" class="text-sm font-medium text-success-300 hover:underline">Lihat Semua</a>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="mb-4 grid grid-cols-2 gap-3 md:grid-cols-4">
             <div class="rounded-lg bg-error-50 p-4 border-l-4 border-error-400">
                 <div class="flex items-center justify-between">
                     <div>
@@ -389,6 +494,7 @@
                 </div>
             </div>
         </div>
+        </div>
     </div>
 
     <!-- Chart: Umur Kendaraan -->
@@ -576,6 +682,93 @@
         </div>
     </div>
 @push('scripts')
+<script>
+// Mini Calendar Alpine.js Component
+function miniCalendar() {
+    return {
+        year: {{ now()->year }},
+        month: {{ now()->month }},
+        monthName: '{{ now()->translatedFormat('F Y') }}',
+        daysInMonth: {{ now()->daysInMonth }},
+        startDayOfWeek: {{ now()->startOfMonth()->dayOfWeek }},
+        events: {!! json_encode($calendarEvents) !!},
+        loading: false,
+        todayYear: {{ now()->year }},
+        todayMonth: {{ now()->month }},
+        todayDay: {{ now()->day }},
+
+        get isCurrentMonth() {
+            return this.year === this.todayYear && this.month === this.todayMonth;
+        },
+
+        init() {
+            // Data already loaded from server for current month
+        },
+
+        async fetchMonth() {
+            this.loading = true;
+            try {
+                const response = await fetch(`/api/calendar/mini-events?year=${this.year}&month=${this.month}`);
+                const data = await response.json();
+                this.monthName = data.monthName;
+                this.daysInMonth = data.daysInMonth;
+                this.startDayOfWeek = data.startDayOfWeek;
+                this.events = data.events;
+            } catch (error) {
+                console.error('Failed to fetch calendar data:', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        prevMonth() {
+            this.month--;
+            if (this.month < 1) {
+                this.month = 12;
+                this.year--;
+            }
+            this.fetchMonth();
+        },
+
+        nextMonth() {
+            this.month++;
+            if (this.month > 12) {
+                this.month = 1;
+                this.year++;
+            }
+            this.fetchMonth();
+        },
+
+        goToToday() {
+            this.year = this.todayYear;
+            this.month = this.todayMonth;
+            this.fetchMonth();
+        },
+
+        isToday(day) {
+            return this.year === this.todayYear &&
+                   this.month === this.todayMonth &&
+                   day === this.todayDay;
+        },
+
+        getDateStr(day) {
+            const m = String(this.month).padStart(2, '0');
+            const d = String(day).padStart(2, '0');
+            return `${this.year}-${m}-${d}`;
+        },
+
+        hasEvents(day) {
+            const dateStr = this.getDateStr(day);
+            return this.events && this.events[dateStr] && this.events[dateStr].length > 0;
+        },
+
+        getEventColors(day) {
+            const dateStr = this.getDateStr(day);
+            return this.events && this.events[dateStr] ? this.events[dateStr] : [];
+        }
+    };
+}
+</script>
 <script src="{{ asset('assets/js/chart.js') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {

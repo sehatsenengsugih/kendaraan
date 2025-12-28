@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\GarasiController;
@@ -14,7 +15,11 @@ use App\Http\Controllers\PenugasanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServisController;
 use App\Http\Controllers\UserController;
+use App\Models\Pengguna;
 use Illuminate\Support\Facades\Route;
+
+// Route model binding for 'user' parameter to use Pengguna model
+Route::model('user', Pengguna::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -105,5 +110,21 @@ Route::middleware('auth')->group(function () {
     Route::middleware('can:view-audit-logs')->group(function () {
         Route::get('audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
         Route::get('audit-logs/{auditLog}', [AuditLogController::class, 'show'])->name('audit-logs.show');
+    });
+
+    // Calendar
+    Route::get('kalender', [CalendarController::class, 'index'])->name('calendar.index');
+
+    // Calendar API
+    Route::prefix('api/calendar')->group(function () {
+        Route::get('events', [CalendarController::class, 'events'])->name('api.calendar.events');
+        Route::get('mini-events', [CalendarController::class, 'miniCalendarEvents'])->name('api.calendar.mini-events');
+        Route::post('pajak', [CalendarController::class, 'storePajak'])->name('api.calendar.pajak.store');
+        Route::put('pajak/{pajak}', [CalendarController::class, 'updatePajak'])->name('api.calendar.pajak.update');
+        Route::delete('pajak/{pajak}', [CalendarController::class, 'destroyPajak'])->name('api.calendar.pajak.destroy');
+        Route::post('servis', [CalendarController::class, 'storeServis'])->name('api.calendar.servis.store');
+        Route::put('servis/{servis}', [CalendarController::class, 'updateServis'])->name('api.calendar.servis.update');
+        Route::delete('servis/{servis}', [CalendarController::class, 'destroyServis'])->name('api.calendar.servis.destroy');
+        Route::post('{type}/{id}/move', [CalendarController::class, 'moveEvent'])->name('api.calendar.move');
     });
 });

@@ -101,6 +101,24 @@
                         </a>
                     </li>
                     @endcan
+
+                    <!-- Kalender -->
+                    <li class="item py-[11px] text-bgray-900 dark:text-white {{ request()->routeIs('calendar.*') ? 'active' : '' }}">
+                        <a href="{{ route('calendar.index') }}">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2.5">
+                                    <span class="item-ico">
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path class="path-1" d="M3 5C3 3.89543 3.89543 3 5 3H15C16.1046 3 17 3.89543 17 5V15C17 16.1046 16.1046 17 15 17H5C3.89543 17 3 16.1046 3 15V5Z" fill="#1A202C"/>
+                                            <path class="path-2" d="M7 1V3M13 1V3M3 7H17" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round"/>
+                                            <circle class="path-2" cx="10" cy="11" r="1.5" fill="#22C55E"/>
+                                        </svg>
+                                    </span>
+                                    <span class="item-text text-lg font-medium leading-none">Kalender</span>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
                 </ul>
             </div>
 
@@ -232,9 +250,27 @@
             @endcan
         </div>
 
-        <!-- Bottom Section: Theme Toggle & User Info -->
-        <div class="absolute bottom-0 left-0 right-0 border-t border-bgray-200 bg-white p-4 dark:border-darkblack-400 dark:bg-darkblack-600">
-            <div class="flex items-center justify-between">
+        <!-- Bottom Section: User Profile & Actions -->
+        <div class="absolute bottom-0 left-0 right-0 border-t border-bgray-200 bg-white dark:border-darkblack-400 dark:bg-darkblack-600">
+            <!-- User Profile -->
+            <div class="flex items-center gap-3 p-4 border-b border-bgray-100 dark:border-darkblack-400">
+                <div class="h-10 w-10 flex-shrink-0 overflow-hidden rounded-xl border border-bgray-200 dark:border-darkblack-400">
+                    <img src="{{ Auth::user()->avatar_url }}" alt="{{ Auth::user()->name }}" class="h-full w-full object-cover">
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold text-bgray-900 dark:text-white truncate">{{ Auth::user()->name }}</p>
+                    <p class="text-xs text-bgray-500 dark:text-bgray-400 truncate">{{ Auth::user()->email }}</p>
+                </div>
+                <a href="{{ route('profile.edit') }}" class="flex-shrink-0 rounded-lg p-2 text-bgray-500 hover:bg-bgray-100 dark:hover:bg-darkblack-500" title="Edit Profil">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center justify-between p-3">
                 <!-- Theme Toggle -->
                 <button type="button" id="theme-toggle-sidebar" class="flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-bgray-700 hover:bg-bgray-100 dark:text-white dark:hover:bg-darkblack-500 transition-colors">
                     <svg class="hidden dark:block w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
@@ -243,8 +279,8 @@
                     <svg class="block dark:hidden w-5 h-5 text-bgray-600" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
                     </svg>
-                    <span class="hidden dark:inline">Light Mode</span>
-                    <span class="inline dark:hidden">Dark Mode</span>
+                    <span class="hidden dark:inline">Light</span>
+                    <span class="inline dark:hidden">Dark</span>
                 </button>
 
                 <!-- Logout -->
@@ -254,6 +290,7 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                         </svg>
+                        <span>Keluar</span>
                     </button>
                 </form>
             </div>
