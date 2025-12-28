@@ -31,6 +31,7 @@
 .hover\:bg-accent-400:hover { background-color: var(--accent-400); }
 .hover\:text-accent-300:hover { color: var(--accent-300); }
 .hover\:text-accent-400:hover { color: var(--accent-400); }
+.hover\:border-accent-300:hover { border-color: var(--accent-300); }
 
 .fill-accent-300 { fill: var(--accent-300); }
 .fill-accent-100 { fill: var(--accent-100); }

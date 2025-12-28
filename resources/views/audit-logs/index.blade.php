@@ -17,12 +17,12 @@
                 <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Cari</label>
                 <input type="text" name="search" value="{{ request('search') }}"
                     placeholder="Deskripsi, label..."
-                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
             </div>
             <div>
                 <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Aksi</label>
                 <select name="action"
-                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                     <option value="">Semua</option>
                     @foreach($actions as $action)
                         <option value="{{ $action }}" {{ request('action') == $action ? 'selected' : '' }}>
@@ -34,7 +34,7 @@
             <div>
                 <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Model</label>
                 <select name="model_type"
-                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                     <option value="">Semua</option>
                     @foreach($modelTypes as $type)
                         <option value="{{ $type }}" {{ request('model_type') == $type ? 'selected' : '' }}>
@@ -46,16 +46,16 @@
             <div>
                 <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Dari Tanggal</label>
                 <input type="date" name="date_from" value="{{ request('date_from') }}"
-                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
             </div>
             <div>
                 <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Sampai Tanggal</label>
                 <input type="date" name="date_to" value="{{ request('date_to') }}"
-                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
             </div>
             <div class="flex items-end gap-2">
                 <button type="submit"
-                    class="rounded-lg bg-success-300 px-4 py-3 font-semibold text-white transition-all hover:bg-success-400">
+                    class="rounded-lg bg-accent-300 px-4 py-3 font-semibold text-white transition-all hover:bg-accent-400">
                     <i class="fa fa-search"></i>
                 </button>
                 <a href="{{ route('audit-logs.index') }}"
@@ -97,7 +97,7 @@
                                 <span class="inline-flex rounded-full px-2 py-1 text-xs font-medium
                                     @switch($log->action_color)
                                         @case('success')
-                                            bg-success-50 text-success-400
+                                            bg-accent-50 text-accent-400
                                             @break
                                         @case('warning')
                                             bg-warning-50 text-warning-400

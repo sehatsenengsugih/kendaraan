@@ -25,7 +25,7 @@
                    @keydown.arrow-up.prevent="navigateUp()"
                    @keydown.enter.prevent="selectResult()"
                    placeholder="Cari kendaraan, plat nomor... (Ctrl+K)"
-                   class="w-[350px] rounded-lg border border-bgray-200 py-3 pl-12 pr-4 text-sm text-bgray-800 placeholder:text-bgray-500 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white dark:placeholder:text-bgray-300">
+                   class="w-[350px] rounded-lg border border-bgray-200 py-3 pl-12 pr-4 text-sm text-bgray-800 placeholder:text-bgray-500 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white dark:placeholder:text-bgray-300">
 
             <!-- Loading Indicator -->
             <div x-show="loading" class="absolute right-4 top-1/2 -translate-y-1/2">
@@ -150,8 +150,8 @@
                                     <i class="fa {{ $notification['icon'] }} text-warning-300 text-sm"></i>
                                 </span>
                                 @else
-                                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-success-50">
-                                    <i class="fa {{ $notification['icon'] }} text-success-300 text-sm"></i>
+                                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-accent-50">
+                                    <i class="fa {{ $notification['icon'] }} text-accent-300 text-sm"></i>
                                 </span>
                                 @endif
                             </div>
@@ -174,9 +174,9 @@
 
                 @if($notificationCount > 0)
                 <div class="px-4 py-3 border-t border-bgray-200 dark:border-darkblack-400 text-center">
-                    <a href="{{ route('pajak.index') }}" class="text-sm text-success-300 hover:text-success-400 font-medium">Lihat Semua Pajak</a>
+                    <a href="{{ route('pajak.index') }}" class="text-sm text-accent-300 hover:text-accent-400 font-medium">Lihat Semua Pajak</a>
                     <span class="text-bgray-300 mx-2">|</span>
-                    <a href="{{ route('servis.index') }}" class="text-sm text-success-300 hover:text-success-400 font-medium">Lihat Semua Servis</a>
+                    <a href="{{ route('servis.index') }}" class="text-sm text-accent-300 hover:text-accent-400 font-medium">Lihat Semua Servis</a>
                 </div>
                 @endif
             </div>
@@ -248,7 +248,7 @@
 
     <!-- Logo -->
     <a href="{{ route('dashboard') }}" class="flex items-center">
-        <span class="text-xl font-bold text-success-300">Kendaraan</span>
+        <span class="text-xl font-bold text-accent-300">Kendaraan</span>
         <span class="text-lg font-medium text-bgray-900 dark:text-white">KAS</span>
     </a>
 
@@ -289,8 +289,8 @@
                                     <i class="fa {{ $notification['icon'] }} text-warning-300 text-xs"></i>
                                 </span>
                                 @else
-                                <span class="flex h-6 w-6 items-center justify-center rounded-full bg-success-50">
-                                    <i class="fa {{ $notification['icon'] }} text-success-300 text-xs"></i>
+                                <span class="flex h-6 w-6 items-center justify-center rounded-full bg-accent-50">
+                                    <i class="fa {{ $notification['icon'] }} text-accent-300 text-xs"></i>
                                 </span>
                                 @endif
                             </div>

@@ -8,7 +8,7 @@
                 <p class="text-sm text-bgray-600 dark:text-bgray-50">Kelola pajak tahunan dan 5 tahunan</p>
             </div>
             <a href="{{ route('pajak.create') }}"
-                class="inline-flex items-center justify-center rounded-lg bg-success-300 px-4 py-3 font-semibold text-white transition-all hover:bg-success-400">
+                class="inline-flex items-center justify-center rounded-lg bg-accent-300 px-4 py-3 font-semibold text-white transition-all hover:bg-accent-400">
                 <i class="fa fa-plus mr-2"></i> Tambah Pajak
             </a>
         </div>
@@ -69,12 +69,12 @@
                 <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Cari</label>
                 <input type="text" name="search" value="{{ request('search') }}"
                     placeholder="Plat nomor..."
-                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
             </div>
             <div>
                 <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Status Pajak</label>
                 <select name="status"
-                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                     <option value="">Semua</option>
                     <option value="belum_bayar" {{ request('status') == 'belum_bayar' ? 'selected' : '' }}>Belum Bayar</option>
                     <option value="lunas" {{ request('status') == 'lunas' ? 'selected' : '' }}>Lunas</option>
@@ -84,7 +84,7 @@
             <div>
                 <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Jenis Pajak</label>
                 <select name="jenis"
-                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                     <option value="">Semua</option>
                     <option value="tahunan" {{ request('jenis') == 'tahunan' ? 'selected' : '' }}>Tahunan</option>
                     <option value="lima_tahunan" {{ request('jenis') == 'lima_tahunan' ? 'selected' : '' }}>5 Tahunan</option>
@@ -93,7 +93,7 @@
             <div>
                 <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Status Kendaraan</label>
                 <select name="status_kendaraan"
-                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                     <option value="">Semua</option>
                     <option value="aktif" {{ request('status_kendaraan') == 'aktif' ? 'selected' : '' }}>Aktif</option>
                     <option value="nonaktif" {{ request('status_kendaraan') == 'nonaktif' ? 'selected' : '' }}>Non-Aktif</option>
@@ -106,14 +106,14 @@
                 <div class="flex gap-2 py-3">
                     <label class="flex items-center gap-2">
                         <input type="checkbox" name="due_soon" value="1" {{ request('due_soon') ? 'checked' : '' }}
-                            class="rounded border-bgray-300 text-success-300 focus:ring-success-300">
+                            class="rounded border-bgray-300 text-accent-300 focus:ring-accent-300">
                         <span class="text-sm text-bgray-600 dark:text-bgray-50">Jatuh Tempo</span>
                     </label>
                 </div>
             </div>
             <div class="flex items-end gap-2">
                 <button type="submit"
-                    class="rounded-lg bg-success-300 px-4 py-3 font-semibold text-white transition-all hover:bg-success-400">
+                    class="rounded-lg bg-accent-300 px-4 py-3 font-semibold text-white transition-all hover:bg-accent-400">
                     <i class="fa fa-search"></i>
                 </button>
                 <a href="{{ route('pajak.index') }}"
@@ -150,7 +150,7 @@
                     @forelse($pajak as $p)
                         <tr class="border-b border-bgray-200 last:border-0 dark:border-darkblack-400 {{ $p->isOverdue() ? 'bg-error-50/30' : ($p->isDueSoon() ? 'bg-warning-50/30' : '') }}">
                             <td class="px-6 py-4">
-                                <a href="{{ route('kendaraan.show', $p->kendaraan) }}" class="font-medium text-bgray-900 hover:text-success-300 dark:text-white">
+                                <a href="{{ route('kendaraan.show', $p->kendaraan) }}" class="font-medium text-bgray-900 hover:text-accent-300 dark:text-white">
                                     {{ $p->kendaraan->plat_nomor }}
                                 </a>
                                 <p class="text-sm text-bgray-500 dark:text-bgray-50">
@@ -187,7 +187,7 @@
                             </td>
                             <td class="px-6 py-4">
                                 @if($p->status === 'lunas')
-                                    <span class="inline-flex rounded-full bg-success-50 px-2 py-1 text-xs font-medium text-success-400">
+                                    <span class="inline-flex rounded-full bg-accent-50 px-2 py-1 text-xs font-medium text-accent-400">
                                         <i class="fa fa-check mr-1"></i> Lunas
                                     </span>
                                 @elseif($p->isOverdue())

@@ -35,11 +35,11 @@
                 <p class="text-sm text-bgray-500 dark:text-bgray-50">Total Kendaraan dengan Merk Ini</p>
                 <p class="text-3xl font-bold text-bgray-900 dark:text-white">{{ $merk->kendaraan_count }}</p>
             </div>
-            <div class="rounded-full bg-success-50 p-4">
+            <div class="rounded-full bg-accent-50 p-4">
                 @if($merk->jenis === 'mobil')
-                    <i class="fa fa-car text-2xl text-success-400"></i>
+                    <i class="fa fa-car text-2xl text-accent-400"></i>
                 @else
-                    <i class="fa fa-motorcycle text-2xl text-success-400"></i>
+                    <i class="fa fa-motorcycle text-2xl text-accent-400"></i>
                 @endif
             </div>
         </div>
@@ -52,7 +52,7 @@
                 Daftar Kendaraan
             </h3>
             <a href="{{ route('kendaraan.create', ['merk_id' => $merk->id]) }}"
-                class="text-sm font-semibold text-success-300 hover:underline">
+                class="text-sm font-semibold text-accent-300 hover:underline">
                 <i class="fa fa-plus mr-1"></i> Tambah Kendaraan
             </a>
         </div>
@@ -73,7 +73,7 @@
                         @foreach($merk->kendaraan as $k)
                             <tr class="border-b border-bgray-200 last:border-0 dark:border-darkblack-400">
                                 <td class="px-6 py-4">
-                                    <a href="{{ route('kendaraan.show', $k) }}" class="font-medium text-bgray-900 hover:text-success-300 dark:text-white">
+                                    <a href="{{ route('kendaraan.show', $k) }}" class="font-medium text-bgray-900 hover:text-accent-300 dark:text-white">
                                         {{ $k->nama_model }}
                                     </a>
                                     <p class="text-sm text-bgray-500 dark:text-bgray-50">{{ $k->warna }}</p>
@@ -89,7 +89,7 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     @if($k->status === 'aktif')
-                                        <span class="inline-flex rounded-full bg-success-50 px-2 py-1 text-xs font-medium text-success-400">
+                                        <span class="inline-flex rounded-full bg-accent-50 px-2 py-1 text-xs font-medium text-accent-400">
                                             Aktif
                                         </span>
                                     @elseif($k->status === 'nonaktif')
@@ -111,7 +111,7 @@
             @if($merk->kendaraan_count > 20)
                 <div class="border-t border-bgray-200 p-4 text-center dark:border-darkblack-400">
                     <a href="{{ route('kendaraan.index', ['merk_id' => $merk->id]) }}"
-                        class="text-sm font-semibold text-success-300 hover:underline">
+                        class="text-sm font-semibold text-accent-300 hover:underline">
                         Lihat semua {{ $merk->kendaraan_count }} kendaraan
                     </a>
                 </div>
@@ -121,7 +121,7 @@
                 <i class="fa fa-car mb-4 text-4xl text-bgray-300"></i>
                 <p class="text-bgray-500 dark:text-bgray-50">Belum ada kendaraan dengan merk ini</p>
                 <a href="{{ route('kendaraan.create', ['merk_id' => $merk->id]) }}"
-                    class="mt-2 inline-block text-success-300 hover:underline">
+                    class="mt-2 inline-block text-accent-300 hover:underline">
                     Tambah kendaraan pertama
                 </a>
             </div>

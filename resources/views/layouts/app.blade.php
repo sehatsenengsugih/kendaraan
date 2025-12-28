@@ -39,7 +39,7 @@
                 <main class="w-full px-6 pb-6 pt-6 xl:px-12 xl:pb-12">
                     <!-- Flash Messages -->
                     @if(session('success'))
-                        <div class="mb-4 rounded-lg bg-success-50 p-4 text-success-400" role="alert">
+                        <div class="mb-4 rounded-lg bg-accent-50 p-4 text-accent-400" role="alert">
                             {{ session('success') }}
                         </div>
                     @endif

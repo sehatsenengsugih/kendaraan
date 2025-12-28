@@ -61,7 +61,7 @@
                             <div>
                                 <dt class="text-sm text-bgray-500 dark:text-bgray-50">Telepon</dt>
                                 <dd>
-                                    <a href="tel:{{ $garasi->pic_phone }}" class="text-success-300 hover:underline">
+                                    <a href="tel:{{ $garasi->pic_phone }}" class="text-accent-300 hover:underline">
                                         {{ $garasi->pic_phone }}
                                     </a>
                                 </dd>
@@ -90,12 +90,12 @@
                 <div class="flex items-center justify-between border-b border-bgray-200 p-6 dark:border-darkblack-400">
                     <h3 class="text-lg font-semibold text-bgray-900 dark:text-white">
                         Daftar Kendaraan
-                        <span class="ml-2 rounded-full bg-success-50 px-2 py-1 text-sm text-success-400">
+                        <span class="ml-2 rounded-full bg-accent-50 px-2 py-1 text-sm text-accent-400">
                             {{ $garasi->kendaraan->count() }} unit
                         </span>
                     </h3>
                     <a href="{{ route('kendaraan.create', ['garasi_id' => $garasi->id]) }}"
-                        class="text-sm font-semibold text-success-300 hover:underline">
+                        class="text-sm font-semibold text-accent-300 hover:underline">
                         <i class="fa fa-plus mr-1"></i> Tambah Kendaraan
                     </a>
                 </div>
@@ -115,7 +115,7 @@
                                 @foreach($garasi->kendaraan as $k)
                                     <tr class="border-b border-bgray-200 last:border-0 dark:border-darkblack-400">
                                         <td class="px-6 py-4">
-                                            <a href="{{ route('kendaraan.show', $k) }}" class="font-medium text-bgray-900 hover:text-success-300 dark:text-white">
+                                            <a href="{{ route('kendaraan.show', $k) }}" class="font-medium text-bgray-900 hover:text-accent-300 dark:text-white">
                                                 {{ $k->merk->nama ?? '' }} {{ $k->nama_model }}
                                             </a>
                                             <p class="text-sm text-bgray-500 dark:text-bgray-50">
@@ -130,7 +130,7 @@
                                         </td>
                                         <td class="px-6 py-4">
                                             @if($k->status === 'aktif')
-                                                <span class="inline-flex rounded-full bg-success-50 px-2 py-1 text-xs font-medium text-success-400">
+                                                <span class="inline-flex rounded-full bg-accent-50 px-2 py-1 text-xs font-medium text-accent-400">
                                                     Aktif
                                                 </span>
                                             @elseif($k->status === 'nonaktif')
@@ -153,7 +153,7 @@
                         <i class="fa fa-car mb-4 text-4xl text-bgray-300"></i>
                         <p class="text-bgray-500 dark:text-bgray-50">Belum ada kendaraan di garasi ini</p>
                         <a href="{{ route('kendaraan.create', ['garasi_id' => $garasi->id]) }}"
-                            class="mt-2 inline-block text-success-300 hover:underline">
+                            class="mt-2 inline-block text-accent-300 hover:underline">
                             Tambah kendaraan pertama
                         </a>
                     </div>

@@ -36,7 +36,7 @@
                     <span class="inline-flex rounded-full px-2 py-1 text-xs font-medium
                         @switch($auditLog->action_color)
                             @case('success')
-                                bg-success-50 text-success-400
+                                bg-accent-50 text-accent-400
                                 @break
                             @case('warning')
                                 bg-warning-50 text-warning-400
@@ -140,7 +140,7 @@
             @if($auditLog->new_values)
                 <div class="rounded-lg bg-white p-6 dark:bg-darkblack-600">
                     <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">
-                        <i class="fa fa-arrow-right mr-2 text-success-400"></i>
+                        <i class="fa fa-arrow-right mr-2 text-accent-400"></i>
                         Nilai Sesudah
                     </h3>
                     <div class="overflow-x-auto">

@@ -25,7 +25,7 @@
                         Nama Garasi <span class="text-error-300">*</span>
                     </label>
                     <input type="text" name="nama" id="nama" value="{{ old('nama') }}" required
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('nama') border-error-300 @enderror"
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('nama') border-error-300 @enderror"
                         placeholder="Contoh: Garasi Paroki St. Yoseph Gedangan">
                     @error('nama')
                         <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
@@ -38,7 +38,7 @@
                         Kevikepan <span class="text-error-300">*</span>
                     </label>
                     <select name="kevikepan_id" id="kevikepan_id" required
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('kevikepan_id') border-error-300 @enderror">
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('kevikepan_id') border-error-300 @enderror">
                         <option value="">Pilih Kevikepan</option>
                         @foreach($kevikepan as $kev)
                             <option value="{{ $kev->id }}" {{ old('kevikepan_id') == $kev->id ? 'selected' : '' }}>
@@ -57,7 +57,7 @@
                         Kota <span class="text-error-300">*</span>
                     </label>
                     <input type="text" name="kota" id="kota" value="{{ old('kota') }}" required
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('kota') border-error-300 @enderror"
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('kota') border-error-300 @enderror"
                         placeholder="Contoh: Semarang">
                     @error('kota')
                         <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
@@ -70,7 +70,7 @@
                         Alamat Lengkap <span class="text-error-300">*</span>
                     </label>
                     <textarea name="alamat" id="alamat" rows="3" required
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('alamat') border-error-300 @enderror"
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('alamat') border-error-300 @enderror"
                         placeholder="Masukkan alamat lengkap garasi">{{ old('alamat') }}</textarea>
                     @error('alamat')
                         <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
@@ -83,7 +83,7 @@
                         Kode Pos
                     </label>
                     <input type="text" name="kode_pos" id="kode_pos" value="{{ old('kode_pos') }}"
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('kode_pos') border-error-300 @enderror"
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('kode_pos') border-error-300 @enderror"
                         placeholder="Contoh: 50211">
                     @error('kode_pos')
                         <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
@@ -104,7 +104,7 @@
                         Nama PIC
                     </label>
                     <input type="text" name="pic_name" id="pic_name" value="{{ old('pic_name') }}"
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('pic_name') border-error-300 @enderror"
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('pic_name') border-error-300 @enderror"
                         placeholder="Nama penanggung jawab garasi">
                     @error('pic_name')
                         <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
@@ -117,7 +117,7 @@
                         No. Telepon PIC
                     </label>
                     <input type="text" name="pic_phone" id="pic_phone" value="{{ old('pic_phone') }}"
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('pic_phone') border-error-300 @enderror"
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('pic_phone') border-error-300 @enderror"
                         placeholder="Contoh: 08123456789">
                     @error('pic_phone')
                         <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
@@ -128,7 +128,7 @@
             <!-- Submit Buttons -->
             <div class="mt-6 flex items-center gap-4">
                 <button type="submit"
-                    class="rounded-lg bg-success-300 px-6 py-3 font-semibold text-white transition-all hover:bg-success-400">
+                    class="rounded-lg bg-accent-300 px-6 py-3 font-semibold text-white transition-all hover:bg-accent-400">
                     <i class="fa fa-save mr-2"></i> Simpan Garasi
                 </button>
                 <a href="{{ route('garasi.index') }}"

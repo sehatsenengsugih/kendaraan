@@ -5,7 +5,7 @@
                 <h2 class="text-2xl font-bold text-bgray-900 dark:text-white">Manajemen User</h2>
                 <p class="text-sm text-bgray-600 dark:text-bgray-400 mt-1">Kelola pengguna sistem</p>
             </div>
-            <a href="{{ route('users.create') }}" class="inline-flex items-center rounded-lg bg-success-300 px-4 py-2 text-sm font-medium text-white hover:bg-success-400 transition-colors">
+            <a href="{{ route('users.create') }}" class="inline-flex items-center rounded-lg bg-accent-300 px-4 py-2 text-sm font-medium text-white hover:bg-accent-400 transition-colors">
                 <i class="fa fa-plus mr-2"></i> Tambah User
             </a>
         </div>
@@ -44,7 +44,7 @@
                             @if($user->role === 'super_admin')
                                 <span class="inline-flex items-center rounded-full bg-purple-100 px-3 py-1 text-xs font-medium text-purple-800 dark:bg-purple-900 dark:text-purple-200">Super Admin</span>
                             @elseif($user->role === 'admin')
-                                <span class="inline-flex items-center rounded-full bg-success-50 px-3 py-1 text-xs font-medium text-success-400">Admin</span>
+                                <span class="inline-flex items-center rounded-full bg-accent-50 px-3 py-1 text-xs font-medium text-accent-400">Admin</span>
                             @elseif($user->role === 'admin_servis')
                                 <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">Admin Servis</span>
                             @else

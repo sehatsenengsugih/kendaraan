@@ -95,7 +95,7 @@
                                 Kendaraan <span class="text-error-300">*</span>
                             </label>
                             <select name="kendaraan_id" id="kendaraan_id" required
-                                class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                                class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                                 <option value="">Pilih Kendaraan</option>
                                 @foreach($kendaraanList as $kendaraan)
                                     <option value="{{ $kendaraan->id }}">
@@ -112,7 +112,7 @@
                                     Jenis Pajak <span class="text-error-300">*</span>
                                 </label>
                                 <select name="pajak_jenis" id="pajak_jenis"
-                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                                     <option value="tahunan">Pajak Tahunan</option>
                                     <option value="lima_tahunan">Pajak 5 Tahunan (Ganti Plat)</option>
                                 </select>
@@ -123,20 +123,20 @@
                                     Tanggal Jatuh Tempo <span class="text-error-300">*</span>
                                 </label>
                                 <input type="date" name="tanggal_jatuh_tempo" id="tanggal_jatuh_tempo"
-                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                             </div>
 
                             <div class="mb-4">
                                 <label for="pajak_nominal" class="block text-sm font-medium text-bgray-700 dark:text-bgray-300 mb-1">Nominal</label>
                                 <input type="number" name="pajak_nominal" id="pajak_nominal" min="0" step="1000"
-                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
+                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
                                     placeholder="0">
                             </div>
 
                             <div id="pajakStatusField" class="mb-4 hidden">
                                 <label for="pajak_status" class="block text-sm font-medium text-bgray-700 dark:text-bgray-300 mb-1">Status</label>
                                 <select name="pajak_status" id="pajak_status"
-                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                                     <option value="belum_bayar">Belum Bayar</option>
                                     <option value="lunas">Lunas</option>
                                     <option value="terlambat">Terlambat</option>
@@ -146,7 +146,7 @@
                             <div>
                                 <label for="pajak_catatan" class="block text-sm font-medium text-bgray-700 dark:text-bgray-300 mb-1">Catatan</label>
                                 <textarea name="pajak_catatan" id="pajak_catatan" rows="2"
-                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
+                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
                                     placeholder="Catatan tambahan (opsional)"></textarea>
                             </div>
                         </div>
@@ -158,7 +158,7 @@
                                     Jenis Servis <span class="text-error-300">*</span>
                                 </label>
                                 <select name="servis_jenis" id="servis_jenis"
-                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                                     <option value="rutin">Servis Rutin</option>
                                     <option value="perbaikan">Perbaikan</option>
                                     <option value="darurat">Perbaikan Darurat</option>
@@ -171,27 +171,27 @@
                                     Tanggal Servis <span class="text-error-300">*</span>
                                 </label>
                                 <input type="date" name="tanggal_servis" id="tanggal_servis"
-                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                             </div>
 
                             <div class="mb-4">
                                 <label for="servis_bengkel" class="block text-sm font-medium text-bgray-700 dark:text-bgray-300 mb-1">Bengkel</label>
                                 <input type="text" name="servis_bengkel" id="servis_bengkel"
-                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
+                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
                                     placeholder="Nama bengkel">
                             </div>
 
                             <div class="mb-4">
                                 <label for="servis_biaya" class="block text-sm font-medium text-bgray-700 dark:text-bgray-300 mb-1">Estimasi Biaya</label>
                                 <input type="number" name="servis_biaya" id="servis_biaya" min="0" step="1000"
-                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
+                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
                                     placeholder="0">
                             </div>
 
                             <div id="servisStatusField" class="mb-4 hidden">
                                 <label for="servis_status" class="block text-sm font-medium text-bgray-700 dark:text-bgray-300 mb-1">Status</label>
                                 <select name="servis_status" id="servis_status"
-                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                                     <option value="dijadwalkan">Dijadwalkan</option>
                                     <option value="dalam_proses">Dalam Proses</option>
                                     <option value="selesai">Selesai</option>
@@ -202,7 +202,7 @@
                             <div>
                                 <label for="servis_deskripsi" class="block text-sm font-medium text-bgray-700 dark:text-bgray-300 mb-1">Deskripsi</label>
                                 <textarea name="servis_deskripsi" id="servis_deskripsi" rows="2"
-                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
+                                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
                                     placeholder="Deskripsi servis (opsional)"></textarea>
                             </div>
                         </div>
@@ -218,7 +218,7 @@
                             <button type="button" onclick="closeModal()" class="rounded-lg border border-bgray-300 px-4 py-2 text-sm font-medium text-bgray-700 hover:bg-bgray-50 dark:border-darkblack-400 dark:text-bgray-300 dark:hover:bg-darkblack-500 transition-colors">
                                 Batal
                             </button>
-                            <button type="submit" id="submitBtn" class="rounded-lg bg-success-300 px-4 py-2 text-sm font-medium text-white hover:bg-success-400 transition-colors">
+                            <button type="submit" id="submitBtn" class="rounded-lg bg-accent-300 px-4 py-2 text-sm font-medium text-white hover:bg-accent-400 transition-colors">
                                 <span id="submitText">Simpan</span>
                             </button>
                         </div>
@@ -661,7 +661,7 @@
 
         function showNotification(message, type) {
             // Simple notification - you can enhance this
-            const bgColor = type === 'success' ? 'bg-success-50 border-success-300 text-success-700' : 'bg-error-50 border-error-300 text-error-700';
+            const bgColor = type === 'success' ? 'bg-accent-50 border-accent-300 text-accent-400' : 'bg-error-50 border-error-300 text-error-700';
             const notification = document.createElement('div');
             notification.className = `fixed top-4 right-4 z-[100] px-4 py-3 rounded-lg border ${bgColor} shadow-lg transition-opacity duration-300`;
             notification.innerHTML = `

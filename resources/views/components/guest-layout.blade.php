@@ -27,7 +27,7 @@
                 <!-- Logo -->
                 <header>
                     <a href="/" class="flex items-center">
-                        <span class="text-2xl font-bold text-success-300">Kendaraan</span>
+                        <span class="text-2xl font-bold text-accent-300">Kendaraan</span>
                         <span class="ml-1 text-xl font-medium text-bgray-900 dark:text-white">KAS</span>
                     </a>
                 </header>

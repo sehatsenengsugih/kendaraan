@@ -8,7 +8,7 @@
                 <p class="text-sm text-bgray-600 dark:text-bgray-50">Kelola riwayat dan jadwal servis</p>
             </div>
             <a href="{{ route('servis.create') }}"
-                class="inline-flex items-center justify-center rounded-lg bg-success-300 px-4 py-3 font-semibold text-white transition-all hover:bg-success-400">
+                class="inline-flex items-center justify-center rounded-lg bg-accent-300 px-4 py-3 font-semibold text-white transition-all hover:bg-accent-400">
                 <i class="fa fa-plus mr-2"></i> Tambah Servis
             </a>
         </div>
@@ -53,10 +53,10 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-bgray-500 dark:text-bgray-50">Selesai (Bulan Ini)</p>
-                    <p class="text-2xl font-bold text-success-400">{{ $stats['selesai_bulan_ini'] }}</p>
+                    <p class="text-2xl font-bold text-accent-400">{{ $stats['selesai_bulan_ini'] }}</p>
                 </div>
-                <div class="rounded-full bg-success-50 p-3">
-                    <i class="fa fa-check-circle text-success-400"></i>
+                <div class="rounded-full bg-accent-50 p-3">
+                    <i class="fa fa-check-circle text-accent-400"></i>
                 </div>
             </div>
         </div>
@@ -80,12 +80,12 @@
                 <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Cari</label>
                 <input type="text" name="search" value="{{ request('search') }}"
                     placeholder="Deskripsi, bengkel, plat..."
-                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
             </div>
             <div>
                 <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Kendaraan</label>
                 <select name="kendaraan_id"
-                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                     <option value="">Semua</option>
                     @foreach($kendaraan as $k)
                         <option value="{{ $k->id }}" {{ request('kendaraan_id') == $k->id ? 'selected' : '' }}>
@@ -97,7 +97,7 @@
             <div>
                 <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Status</label>
                 <select name="status"
-                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                     <option value="">Semua</option>
                     <option value="dijadwalkan" {{ request('status') == 'dijadwalkan' ? 'selected' : '' }}>Dijadwalkan</option>
                     <option value="dalam_proses" {{ request('status') == 'dalam_proses' ? 'selected' : '' }}>Dalam Proses</option>
@@ -108,7 +108,7 @@
             <div>
                 <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Jenis</label>
                 <select name="jenis"
-                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                     <option value="">Semua</option>
                     <option value="rutin" {{ request('jenis') == 'rutin' ? 'selected' : '' }}>Servis Rutin</option>
                     <option value="perbaikan" {{ request('jenis') == 'perbaikan' ? 'selected' : '' }}>Perbaikan</option>
@@ -118,7 +118,7 @@
             </div>
             <div class="flex items-end gap-2">
                 <button type="submit"
-                    class="rounded-lg bg-success-300 px-4 py-3 font-semibold text-white transition-all hover:bg-success-400">
+                    class="rounded-lg bg-accent-300 px-4 py-3 font-semibold text-white transition-all hover:bg-accent-400">
                     <i class="fa fa-search"></i>
                 </button>
                 <a href="{{ route('servis.index') }}"
@@ -156,7 +156,7 @@
                     @forelse($servis as $s)
                         <tr class="border-b border-bgray-200 last:border-0 dark:border-darkblack-400">
                             <td class="px-6 py-4">
-                                <a href="{{ route('kendaraan.show', $s->kendaraan) }}" class="font-medium text-bgray-900 hover:text-success-300 dark:text-white">
+                                <a href="{{ route('kendaraan.show', $s->kendaraan) }}" class="font-medium text-bgray-900 hover:text-accent-300 dark:text-white">
                                     {{ $s->kendaraan->plat_nomor }}
                                 </a>
                                 <p class="text-sm text-bgray-500 dark:text-bgray-50">
@@ -200,7 +200,7 @@
                             </td>
                             <td class="px-6 py-4">
                                 @if($s->status === 'selesai')
-                                    <span class="inline-flex rounded-full bg-success-50 px-2 py-1 text-xs font-medium text-success-400">
+                                    <span class="inline-flex rounded-full bg-accent-50 px-2 py-1 text-xs font-medium text-accent-400">
                                         <i class="fa fa-check mr-1"></i> Selesai
                                     </span>
                                 @elseif($s->status === 'dalam_proses')

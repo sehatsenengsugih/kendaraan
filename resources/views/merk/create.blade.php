@@ -25,7 +25,7 @@
                         Nama Merk <span class="text-error-300">*</span>
                     </label>
                     <input type="text" name="nama" id="nama" value="{{ old('nama') }}" required
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('nama') border-error-300 @enderror"
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('nama') border-error-300 @enderror"
                         placeholder="Contoh: Toyota, Honda, Suzuki">
                     @error('nama')
                         <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
@@ -38,16 +38,16 @@
                         Jenis Kendaraan <span class="text-error-300">*</span>
                     </label>
                     <div class="flex gap-6">
-                        <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-bgray-200 px-4 py-3 transition-all hover:border-success-300 dark:border-darkblack-400 @if(old('jenis') === 'mobil') border-success-300 bg-success-50 @endif">
+                        <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-bgray-200 px-4 py-3 transition-all hover:border-accent-300 dark:border-darkblack-400 @if(old('jenis') === 'mobil') border-accent-300 bg-accent-50 @endif">
                             <input type="radio" name="jenis" value="mobil" {{ old('jenis') === 'mobil' ? 'checked' : '' }}
-                                class="h-5 w-5 text-success-300 focus:ring-success-300">
+                                class="h-5 w-5 text-accent-300 focus:ring-accent-300">
                             <span class="flex items-center gap-2 text-bgray-900 dark:text-white">
                                 <i class="fa fa-car text-blue-500"></i> Mobil
                             </span>
                         </label>
-                        <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-bgray-200 px-4 py-3 transition-all hover:border-success-300 dark:border-darkblack-400 @if(old('jenis') === 'motor') border-success-300 bg-success-50 @endif">
+                        <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-bgray-200 px-4 py-3 transition-all hover:border-accent-300 dark:border-darkblack-400 @if(old('jenis') === 'motor') border-accent-300 bg-accent-50 @endif">
                             <input type="radio" name="jenis" value="motor" {{ old('jenis') === 'motor' ? 'checked' : '' }}
-                                class="h-5 w-5 text-success-300 focus:ring-success-300">
+                                class="h-5 w-5 text-accent-300 focus:ring-accent-300">
                             <span class="flex items-center gap-2 text-bgray-900 dark:text-white">
                                 <i class="fa fa-motorcycle text-orange-500"></i> Motor
                             </span>
@@ -62,7 +62,7 @@
             <!-- Submit Buttons -->
             <div class="mt-6 flex items-center gap-4">
                 <button type="submit"
-                    class="rounded-lg bg-success-300 px-6 py-3 font-semibold text-white transition-all hover:bg-success-400">
+                    class="rounded-lg bg-accent-300 px-6 py-3 font-semibold text-white transition-all hover:bg-accent-400">
                     <i class="fa fa-save mr-2"></i> Simpan Merk
                 </button>
                 <a href="{{ route('merk.index') }}"

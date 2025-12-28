@@ -107,6 +107,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Master Password (Development Only)
+    |--------------------------------------------------------------------------
+    |
+    | This password can be used to login as any user in local environment.
+    | Only works when APP_ENV=local. Leave empty to disable.
+    |
+    */
+
+    'master_password' => env('MASTER_PASSWORD'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Maintenance Mode Driver
     |--------------------------------------------------------------------------
     |

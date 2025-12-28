@@ -25,7 +25,7 @@
                         Kendaraan <span class="text-error-300">*</span>
                     </label>
                     <select name="kendaraan_id" id="kendaraan_id" required
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('kendaraan_id') border-error-300 @enderror">
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('kendaraan_id') border-error-300 @enderror">
                         <option value="">Pilih Kendaraan</option>
                         @foreach($kendaraan as $k)
                             <option value="{{ $k->id }}" {{ old('kendaraan_id', $selectedKendaraanId) == $k->id ? 'selected' : '' }}>
@@ -45,7 +45,7 @@
                             Jenis Pajak <span class="text-error-300">*</span>
                         </label>
                         <select name="jenis" id="jenis" required
-                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                             <option value="tahunan" {{ old('jenis') == 'tahunan' ? 'selected' : '' }}>Pajak Tahunan</option>
                             <option value="lima_tahunan" {{ old('jenis') == 'lima_tahunan' ? 'selected' : '' }}>Pajak 5 Tahunan (Ganti Plat)</option>
                         </select>
@@ -57,7 +57,7 @@
                             Status <span class="text-error-300">*</span>
                         </label>
                         <select name="status" id="status" required
-                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                             <option value="belum_bayar" {{ old('status', 'belum_bayar') == 'belum_bayar' ? 'selected' : '' }}>Belum Bayar</option>
                             <option value="lunas" {{ old('status') == 'lunas' ? 'selected' : '' }}>Lunas</option>
                         </select>
@@ -69,7 +69,7 @@
                             Tanggal Jatuh Tempo <span class="text-error-300">*</span>
                         </label>
                         <input type="date" name="tanggal_jatuh_tempo" id="tanggal_jatuh_tempo" value="{{ old('tanggal_jatuh_tempo') }}" required
-                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('tanggal_jatuh_tempo') border-error-300 @enderror">
+                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('tanggal_jatuh_tempo') border-error-300 @enderror">
                         @error('tanggal_jatuh_tempo')
                             <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
                         @enderror
@@ -81,7 +81,7 @@
                             Tanggal Bayar
                         </label>
                         <input type="date" name="tanggal_bayar" id="tanggal_bayar" value="{{ old('tanggal_bayar') }}"
-                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                     </div>
 
                     <!-- Nominal -->
@@ -90,7 +90,7 @@
                             Nominal Pajak (Rp)
                         </label>
                         <input type="number" name="nominal" id="nominal" value="{{ old('nominal') }}" min="0"
-                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
+                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
                             placeholder="0">
                     </div>
 
@@ -100,7 +100,7 @@
                             Denda (Rp)
                         </label>
                         <input type="number" name="denda" id="denda" value="{{ old('denda', 0) }}" min="0"
-                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
+                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
                             placeholder="0">
                     </div>
                 </div>
@@ -111,7 +111,7 @@
                         Nomor Notice/Bukti Bayar
                     </label>
                     <input type="text" name="nomor_notice" id="nomor_notice" value="{{ old('nomor_notice') }}"
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
                         placeholder="Nomor bukti pembayaran">
                 </div>
 
@@ -121,7 +121,7 @@
                         Upload Bukti Bayar
                     </label>
                     <input type="file" name="bukti" id="bukti" accept="image/*,.pdf"
-                        class="w-full text-sm text-bgray-600 file:mr-4 file:rounded-lg file:border-0 file:bg-success-300 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-success-400">
+                        class="w-full text-sm text-bgray-600 file:mr-4 file:rounded-lg file:border-0 file:bg-accent-300 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-accent-400">
                     <p class="mt-1 text-xs text-bgray-500">JPG, PNG, atau PDF. Maks 2MB.</p>
                 </div>
 
@@ -131,14 +131,14 @@
                         Catatan
                     </label>
                     <textarea name="catatan" id="catatan" rows="3"
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
                         placeholder="Catatan tambahan">{{ old('catatan') }}</textarea>
                 </div>
             </div>
 
             <div class="mt-6 flex items-center gap-4">
                 <button type="submit"
-                    class="rounded-lg bg-success-300 px-6 py-3 font-semibold text-white transition-all hover:bg-success-400">
+                    class="rounded-lg bg-accent-300 px-6 py-3 font-semibold text-white transition-all hover:bg-accent-400">
                     <i class="fa fa-save mr-2"></i> Simpan
                 </button>
                 <a href="{{ route('pajak.index') }}"

@@ -53,13 +53,13 @@
                     <div class="grid grid-cols-6 gap-2">
                         @if($kendaraan->avatar_path)
                             <button type="button" onclick="changeMainImage('{{ asset('storage/' . $kendaraan->avatar_path) }}')"
-                                class="aspect-square overflow-hidden rounded-lg border-2 border-success-300 bg-bgray-100">
+                                class="aspect-square overflow-hidden rounded-lg border-2 border-accent-300 bg-bgray-100">
                                 <img src="{{ asset('storage/' . $kendaraan->avatar_path) }}" class="h-full w-full object-cover">
                             </button>
                         @endif
                         @foreach($kendaraan->gambar as $gambar)
                             <button type="button" onclick="changeMainImage('{{ $gambar->url }}')"
-                                class="aspect-square overflow-hidden rounded-lg border-2 border-transparent bg-bgray-100 hover:border-success-300">
+                                class="aspect-square overflow-hidden rounded-lg border-2 border-transparent bg-bgray-100 hover:border-accent-300">
                                 <img src="{{ $gambar->url }}" class="h-full w-full object-cover">
                             </button>
                         @endforeach
@@ -114,7 +114,7 @@
                             <dt class="text-bgray-500 dark:text-bgray-50">Status BPKB</dt>
                             <dd class="font-medium text-bgray-900 dark:text-white">
                                 @if($kendaraan->statusBpkb)
-                                    <span class="text-success-400"><i class="fa fa-check-circle mr-1"></i> {{ $kendaraan->statusBpkb->nama }}</span>
+                                    <span class="text-accent-400"><i class="fa fa-check-circle mr-1"></i> {{ $kendaraan->statusBpkb->nama }}</span>
                                     @if($kendaraan->nomor_bpkb)
                                         <span class="block text-sm font-mono">{{ $kendaraan->nomor_bpkb }}</span>
                                     @endif
@@ -149,7 +149,7 @@
                             <dt class="text-bgray-500 dark:text-bgray-50">Status</dt>
                             <dd class="font-medium text-bgray-900 dark:text-white">
                                 @if($kendaraan->status_kepemilikan === 'milik_kas')
-                                    <span class="inline-flex items-center rounded-full bg-success-50 px-2 py-0.5 text-xs font-medium text-success-400">
+                                    <span class="inline-flex items-center rounded-full bg-accent-50 px-2 py-0.5 text-xs font-medium text-accent-400">
                                         Milik KAS
                                     </span>
                                 @else
@@ -346,7 +346,7 @@
                                         </td>
                                         <td class="py-3">
                                             @if($riwayat->isAktif())
-                                                <span class="inline-flex items-center rounded-full bg-success-50 px-2 py-0.5 text-xs font-medium text-success-400">
+                                                <span class="inline-flex items-center rounded-full bg-accent-50 px-2 py-0.5 text-xs font-medium text-accent-400">
                                                     Aktif
                                                 </span>
                                             @else
@@ -378,7 +378,7 @@
             <div class="rounded-lg bg-white p-6 dark:bg-darkblack-600">
                 <div class="mb-4 text-center">
                     @if($kendaraan->status === 'aktif')
-                        <span class="inline-flex items-center rounded-full bg-success-50 px-4 py-2 text-lg font-semibold text-success-400">
+                        <span class="inline-flex items-center rounded-full bg-accent-50 px-4 py-2 text-lg font-semibold text-accent-400">
                             <i class="fa fa-check-circle mr-2"></i> Aktif
                         </span>
                     @elseif($kendaraan->status === 'nonaktif')
@@ -419,7 +419,7 @@
                         <dt class="text-sm text-bgray-500 dark:text-bgray-50">Garasi</dt>
                         <dd class="font-medium text-bgray-900 dark:text-white">
                             @if($kendaraan->garasi)
-                                <a href="{{ route('garasi.show', $kendaraan->garasi) }}" class="hover:text-success-300">
+                                <a href="{{ route('garasi.show', $kendaraan->garasi) }}" class="hover:text-accent-300">
                                     {{ $kendaraan->garasi->nama }}
                                 </a>
                             @else
@@ -455,7 +455,7 @@
                 <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">Pengguna Saat Ini</h3>
                 @if($kendaraan->pemegang_nama || $kendaraan->pemegang)
                     <div class="flex items-center gap-3">
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-success-50 text-success-400">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-accent-50 text-accent-400">
                             <i class="fa fa-user"></i>
                         </div>
                         <div>

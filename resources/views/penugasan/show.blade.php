@@ -16,7 +16,7 @@
             <div class="flex gap-2">
                 @if($penugasan->isAktif())
                     <button onclick="document.getElementById('selesai-modal').classList.remove('hidden')"
-                        class="inline-flex items-center rounded-lg bg-success-300 px-4 py-2 font-semibold text-white hover:bg-success-400">
+                        class="inline-flex items-center rounded-lg bg-accent-300 px-4 py-2 font-semibold text-white hover:bg-accent-400">
                         <i class="fa fa-check mr-2"></i> Selesaikan
                     </button>
                     <a href="{{ route('penugasan.edit', $penugasan) }}"
@@ -37,7 +37,7 @@
                     <div>
                         <p class="text-sm text-bgray-500 dark:text-bgray-50">Status Penugasan</p>
                         @if($penugasan->status === 'aktif')
-                            <span class="inline-flex items-center rounded-full bg-success-50 px-4 py-2 text-lg font-semibold text-success-400">
+                            <span class="inline-flex items-center rounded-full bg-accent-50 px-4 py-2 text-lg font-semibold text-accent-400">
                                 <i class="fa fa-play-circle mr-2"></i> Aktif
                             </span>
                         @elseif($penugasan->status === 'selesai')
@@ -102,7 +102,7 @@
             <div class="rounded-lg bg-white p-6 dark:bg-darkblack-600">
                 <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">Pemegang</h3>
                 <div class="flex items-center gap-4">
-                    <div class="flex h-16 w-16 items-center justify-center rounded-full bg-success-50 text-2xl font-bold text-success-400">
+                    <div class="flex h-16 w-16 items-center justify-center rounded-full bg-accent-50 text-2xl font-bold text-accent-400">
                         {{ strtoupper(substr($penugasan->pemegang->name, 0, 1)) }}
                     </div>
                     <div>
@@ -152,7 +152,7 @@
                     </div>
                 </dl>
                 <a href="{{ route('kendaraan.show', $penugasan->kendaraan) }}"
-                    class="mt-4 block text-center text-sm font-semibold text-success-300 hover:underline">
+                    class="mt-4 block text-center text-sm font-semibold text-accent-300 hover:underline">
                     Lihat Detail Kendaraan
                 </a>
             </div>
@@ -193,18 +193,18 @@
                         </label>
                         <input type="date" name="tanggal_selesai" value="{{ now()->format('Y-m-d') }}" required
                             min="{{ $penugasan->tanggal_mulai->format('Y-m-d') }}"
-                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                     </div>
                     <div>
                         <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Catatan</label>
                         <textarea name="catatan" rows="3"
-                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
+                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
                             placeholder="Catatan penyelesaian...">{{ $penugasan->catatan }}</textarea>
                     </div>
                 </div>
                 <div class="mt-6 flex gap-3">
                     <button type="submit"
-                        class="flex-1 rounded-lg bg-success-300 py-3 font-semibold text-white hover:bg-success-400">
+                        class="flex-1 rounded-lg bg-accent-300 py-3 font-semibold text-white hover:bg-accent-400">
                         <i class="fa fa-check mr-2"></i> Selesaikan
                     </button>
                     <button type="button" onclick="document.getElementById('selesai-modal').classList.add('hidden')"

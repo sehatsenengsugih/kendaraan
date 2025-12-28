@@ -37,7 +37,7 @@
                         Pemegang <span class="text-error-300">*</span>
                     </label>
                     <select name="pemegang_id" id="pemegang_id" required
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                         @foreach($pemegang as $p)
                             <option value="{{ $p->id }}" {{ old('pemegang_id', $penugasan->pemegang_id) == $p->id ? 'selected' : '' }}>
                                 {{ $p->name }} ({{ $p->lembaga ?? $p->type }})
@@ -54,7 +54,7 @@
                         </label>
                         <input type="date" name="tanggal_mulai" id="tanggal_mulai"
                             value="{{ old('tanggal_mulai', $penugasan->tanggal_mulai?->format('Y-m-d')) }}" required
-                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                     </div>
 
                     <!-- Tanggal Selesai -->
@@ -64,7 +64,7 @@
                         </label>
                         <input type="date" name="tanggal_selesai" id="tanggal_selesai"
                             value="{{ old('tanggal_selesai', $penugasan->tanggal_selesai?->format('Y-m-d')) }}"
-                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                     </div>
                 </div>
 
@@ -74,7 +74,7 @@
                         Status <span class="text-error-300">*</span>
                     </label>
                     <select name="status" id="status" required
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                         <option value="aktif" {{ old('status', $penugasan->status) == 'aktif' ? 'selected' : '' }}>Aktif</option>
                         <option value="selesai" {{ old('status', $penugasan->status) == 'selesai' ? 'selected' : '' }}>Selesai</option>
                         <option value="dibatalkan" {{ old('status', $penugasan->status) == 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
@@ -88,7 +88,7 @@
                         Tujuan Penugasan
                     </label>
                     <textarea name="tujuan" id="tujuan" rows="3"
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">{{ old('tujuan', $penugasan->tujuan) }}</textarea>
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">{{ old('tujuan', $penugasan->tujuan) }}</textarea>
                 </div>
 
                 <!-- Catatan -->
@@ -97,13 +97,13 @@
                         Catatan
                     </label>
                     <textarea name="catatan" id="catatan" rows="2"
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">{{ old('catatan', $penugasan->catatan) }}</textarea>
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">{{ old('catatan', $penugasan->catatan) }}</textarea>
                 </div>
             </div>
 
             <div class="mt-6 flex items-center gap-4">
                 <button type="submit"
-                    class="rounded-lg bg-success-300 px-6 py-3 font-semibold text-white transition-all hover:bg-success-400">
+                    class="rounded-lg bg-accent-300 px-6 py-3 font-semibold text-white transition-all hover:bg-accent-400">
                     <i class="fa fa-save mr-2"></i> Simpan
                 </button>
                 <a href="{{ route('penugasan.show', $penugasan) }}"

@@ -16,7 +16,7 @@
             <div class="flex gap-2">
                 @if(!$servis->isSelesai() && $servis->status !== 'dibatalkan')
                     <button onclick="document.getElementById('selesai-modal').classList.remove('hidden')"
-                        class="inline-flex items-center rounded-lg bg-success-300 px-4 py-2 font-semibold text-white hover:bg-success-400">
+                        class="inline-flex items-center rounded-lg bg-accent-300 px-4 py-2 font-semibold text-white hover:bg-accent-400">
                         <i class="fa fa-check mr-2"></i> Tandai Selesai
                     </button>
                     <a href="{{ route('servis.edit', $servis) }}"
@@ -37,7 +37,7 @@
                     <div>
                         <p class="text-sm text-bgray-500 dark:text-bgray-50">Status Servis</p>
                         @if($servis->status === 'selesai')
-                            <span class="inline-flex items-center rounded-full bg-success-50 px-4 py-2 text-lg font-semibold text-success-400">
+                            <span class="inline-flex items-center rounded-full bg-accent-50 px-4 py-2 text-lg font-semibold text-accent-400">
                                 <i class="fa fa-check-circle mr-2"></i> Selesai
                             </span>
                         @elseif($servis->status === 'dalam_proses')
@@ -105,7 +105,7 @@
                     </div>
                     <div class="md:col-span-2">
                         <dt class="text-sm text-bgray-500 dark:text-bgray-50">Biaya</dt>
-                        <dd class="text-xl font-bold text-success-400">
+                        <dd class="text-xl font-bold text-accent-400">
                             {{ $servis->biaya ? $servis->biaya_formatted : '-' }}
                         </dd>
                     </div>
@@ -135,7 +135,7 @@
                     <div class="mt-4 border-t border-bgray-200 pt-4 dark:border-darkblack-400">
                         <h4 class="mb-2 font-medium text-bgray-900 dark:text-white">Bukti / Nota</h4>
                         <a href="{{ $servis->bukti_url }}" target="_blank"
-                            class="inline-flex items-center text-success-300 hover:underline">
+                            class="inline-flex items-center text-accent-300 hover:underline">
                             <i class="fa fa-file-image mr-2"></i> Lihat Bukti
                         </a>
                     </div>
@@ -209,7 +209,7 @@
                     </div>
                 </dl>
                 <a href="{{ route('kendaraan.show', $servis->kendaraan) }}"
-                    class="mt-4 block text-center text-sm font-semibold text-success-300 hover:underline">
+                    class="mt-4 block text-center text-sm font-semibold text-accent-300 hover:underline">
                     Lihat Detail Kendaraan
                 </a>
             </div>
@@ -270,17 +270,17 @@
                         </label>
                         <input type="date" name="tanggal_selesai" value="{{ now()->format('Y-m-d') }}" required
                             min="{{ $servis->tanggal_servis->format('Y-m-d') }}"
-                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                     </div>
                     <div>
                         <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Biaya (Rp)</label>
                         <input type="number" name="biaya" value="{{ $servis->biaya }}" min="0"
-                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                     </div>
                     <div>
                         <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Upload Bukti / Nota</label>
                         <input type="file" name="bukti" accept="image/*,.pdf"
-                            class="w-full text-sm text-bgray-600 file:mr-4 file:rounded-lg file:border-0 file:bg-success-300 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white">
+                            class="w-full text-sm text-bgray-600 file:mr-4 file:rounded-lg file:border-0 file:bg-accent-300 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white">
                     </div>
                     <div class="rounded-lg border border-bgray-200 p-4 dark:border-darkblack-400">
                         <h4 class="mb-3 text-sm font-medium text-bgray-900 dark:text-white">Jadwal Servis Berikutnya</h4>
@@ -288,19 +288,19 @@
                             <div>
                                 <label class="mb-1 block text-xs text-bgray-500">Tanggal</label>
                                 <input type="date" name="servis_berikutnya" value="{{ $servis->servis_berikutnya?->format('Y-m-d') }}"
-                                    class="w-full rounded-lg border border-bgray-200 px-3 py-2 text-sm text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                                    class="w-full rounded-lg border border-bgray-200 px-3 py-2 text-sm text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                             </div>
                             <div>
                                 <label class="mb-1 block text-xs text-bgray-500">Kilometer</label>
                                 <input type="number" name="km_berikutnya" value="{{ $servis->km_berikutnya }}" min="0"
-                                    class="w-full rounded-lg border border-bgray-200 px-3 py-2 text-sm text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                                    class="w-full rounded-lg border border-bgray-200 px-3 py-2 text-sm text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="mt-6 flex gap-3">
                     <button type="submit"
-                        class="flex-1 rounded-lg bg-success-300 py-3 font-semibold text-white hover:bg-success-400">
+                        class="flex-1 rounded-lg bg-accent-300 py-3 font-semibold text-white hover:bg-accent-400">
                         <i class="fa fa-check mr-2"></i> Tandai Selesai
                     </button>
                     <button type="button" onclick="document.getElementById('selesai-modal').classList.add('hidden')"

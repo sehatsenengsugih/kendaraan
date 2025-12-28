@@ -8,7 +8,7 @@
                 <p class="text-sm text-bgray-600 dark:text-bgray-50">Kelola semua kendaraan Keuskupan Agung Semarang</p>
             </div>
             <a href="{{ route('kendaraan.create') }}"
-                class="inline-flex items-center justify-center rounded-lg bg-success-300 px-4 py-3 font-semibold text-white transition-all hover:bg-success-400">
+                class="inline-flex items-center justify-center rounded-lg bg-accent-300 px-4 py-3 font-semibold text-white transition-all hover:bg-accent-400">
                 <i class="fa fa-plus mr-2"></i> Tambah Kendaraan
             </a>
         </div>
@@ -24,7 +24,7 @@
                 </label>
                 <input type="text" name="search" value="{{ request('search') }}"
                     placeholder="Cari plat nomor, model, merk, no. BPKB, no. rangka, no. mesin, pengguna, garasi, catatan..."
-                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                    class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                 <p class="mt-1 text-xs text-bgray-500 dark:text-bgray-400">
                     Cari di semua field: identitas, dokumen, pengguna, garasi, riwayat pengguna, dll.
                 </p>
@@ -35,7 +35,7 @@
                 <div>
                     <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Jenis</label>
                     <select name="jenis"
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                         <option value="">Semua Jenis</option>
                         <option value="mobil" {{ request('jenis') == 'mobil' ? 'selected' : '' }}>Mobil</option>
                         <option value="motor" {{ request('jenis') == 'motor' ? 'selected' : '' }}>Motor</option>
@@ -44,7 +44,7 @@
                 <div>
                     <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Merk</label>
                     <select name="merk_id"
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                         <option value="">Semua Merk</option>
                         @foreach($merk as $m)
                             <option value="{{ $m->id }}" {{ request('merk_id') == $m->id ? 'selected' : '' }}>
@@ -56,7 +56,7 @@
                 <div>
                     <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Garasi</label>
                     <select name="garasi_id"
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                         <option value="">Semua Garasi</option>
                         @foreach($garasi as $g)
                             <option value="{{ $g->id }}" {{ request('garasi_id') == $g->id ? 'selected' : '' }}>
@@ -68,7 +68,7 @@
                 <div>
                     <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Status</label>
                     <select name="status"
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                         <option value="">Semua Status</option>
                         <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
                         <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>Non-Aktif</option>
@@ -78,7 +78,7 @@
                 </div>
                 <div class="flex items-end gap-2">
                     <button type="submit"
-                        class="flex-1 rounded-lg bg-success-300 px-4 py-3 font-semibold text-white transition-all hover:bg-success-400">
+                        class="flex-1 rounded-lg bg-accent-300 px-4 py-3 font-semibold text-white transition-all hover:bg-accent-400">
                         <i class="fa fa-search mr-1"></i> Cari
                     </button>
                     <a href="{{ route('kendaraan.index') }}"
@@ -94,7 +94,7 @@
             <div class="mt-4 flex flex-wrap items-center gap-2">
                 <span class="text-sm text-bgray-600 dark:text-bgray-300">Filter aktif:</span>
                 @if(request('search'))
-                    <span class="inline-flex items-center gap-1 rounded-full bg-success-50 px-3 py-1 text-xs font-medium text-success-400">
+                    <span class="inline-flex items-center gap-1 rounded-full bg-accent-50 px-3 py-1 text-xs font-medium text-accent-400">
                         <i class="fa fa-search"></i> "{{ request('search') }}"
                     </span>
                 @endif
@@ -160,7 +160,7 @@
                                         @endif
                                     </div>
                                     <div>
-                                        <a href="{{ route('kendaraan.show', $k) }}" class="font-medium text-bgray-900 hover:text-success-300 dark:text-white">
+                                        <a href="{{ route('kendaraan.show', $k) }}" class="font-medium text-bgray-900 hover:text-accent-300 dark:text-white">
                                             {{ $k->merk->nama ?? '' }} {{ $k->nama_model }}
                                         </a>
                                         <p class="text-sm text-bgray-500 dark:text-bgray-50">
@@ -180,7 +180,7 @@
                             </td>
                             <td class="px-6 py-4">
                                 @if($k->status === 'aktif')
-                                    <span class="inline-flex rounded-full bg-success-50 px-2 py-1 text-xs font-medium text-success-400">
+                                    <span class="inline-flex rounded-full bg-accent-50 px-2 py-1 text-xs font-medium text-accent-400">
                                         Aktif
                                     </span>
                                 @elseif($k->status === 'nonaktif')
@@ -231,7 +231,7 @@
                             <td colspan="6" class="px-6 py-12 text-center text-bgray-500 dark:text-bgray-50">
                                 <i class="fa fa-car mb-4 text-4xl text-bgray-300"></i>
                                 <p>Belum ada data kendaraan</p>
-                                <a href="{{ route('kendaraan.create') }}" class="mt-2 inline-block text-success-300 hover:underline">
+                                <a href="{{ route('kendaraan.create') }}" class="mt-2 inline-block text-accent-300 hover:underline">
                                     Tambah kendaraan pertama
                                 </a>
                             </td>

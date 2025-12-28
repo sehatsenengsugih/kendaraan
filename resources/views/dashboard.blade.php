@@ -23,7 +23,7 @@
                     <h3 class="mt-2 text-3xl font-bold text-bgray-900 dark:text-white">{{ $kendaraanStats['total'] }}</h3>
                     <p class="mt-1 text-xs text-bgray-500">Mobil: {{ $kendaraanStats['mobil'] }} | Motor: {{ $kendaraanStats['motor'] }}</p>
                 </div>
-                <div class="flex h-14 w-14 items-center justify-center rounded-full bg-success-50">
+                <div class="flex h-14 w-14 items-center justify-center rounded-full bg-accent-50">
                     <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M23.333 11.667H4.66699C3.19424 11.667 2.00033 12.8609 2.00033 14.3337V22.0003C2.00033 23.4731 3.19424 24.667 4.66699 24.667H23.333C24.8058 24.667 25.9997 23.4731 25.9997 22.0003V14.3337C25.9997 12.8609 24.8058 11.667 23.333 11.667Z" fill="#22C55E"/>
                         <path d="M5.33301 19.333C6.06939 19.333 6.66634 18.7361 6.66634 17.9997C6.66634 17.2633 6.06939 16.6663 5.33301 16.6663C4.59663 16.6663 3.99967 17.2633 3.99967 17.9997C3.99967 18.7361 4.59663 19.333 5.33301 19.333Z" fill="white"/>
@@ -111,10 +111,10 @@
                     </button>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button @click="goToToday()" x-show="!isCurrentMonth" class="text-xs text-success-300 hover:underline">
+                    <button @click="goToToday()" x-show="!isCurrentMonth" class="text-xs text-accent-300 hover:underline">
                         Hari Ini
                     </button>
-                    <a href="{{ route('calendar.index') }}" class="text-sm font-medium text-success-300 hover:underline">
+                    <a href="{{ route('calendar.index') }}" class="text-sm font-medium text-accent-300 hover:underline">
                         Buka
                     </a>
                 </div>
@@ -148,7 +148,7 @@
                         <a :href="'{{ route('calendar.index') }}?date=' + getDateStr(day)"
                            class="aspect-square flex flex-col items-center justify-center rounded-lg text-sm transition-all"
                            :class="{
-                               'bg-success-300 text-white font-bold': isToday(day),
+                               'bg-accent-300 text-white font-bold': isToday(day),
                                'bg-bgray-100 dark:bg-darkblack-500 hover:bg-bgray-200 dark:hover:bg-darkblack-400': hasEvents(day) && !isToday(day),
                                'hover:bg-bgray-50 dark:hover:bg-darkblack-500 text-bgray-700 dark:text-bgray-300': !hasEvents(day) && !isToday(day)
                            }">
@@ -201,7 +201,7 @@
                     <i class="fa fa-bell mr-2 text-warning-400"></i>
                     Pengingat Pajak
                 </h3>
-                <a href="{{ route('pajak.index') }}" class="text-sm font-medium text-success-300 hover:underline">Lihat Semua</a>
+                <a href="{{ route('pajak.index') }}" class="text-sm font-medium text-accent-300 hover:underline">Lihat Semua</a>
             </div>
 
             <!-- Summary Cards -->
@@ -334,7 +334,7 @@
                         </div>
                     @else
                         <div class="py-8 text-center">
-                            <i class="fa fa-check-circle text-4xl text-success-300 mb-2"></i>
+                            <i class="fa fa-check-circle text-4xl text-accent-300 mb-2"></i>
                             <p class="text-bgray-500">Tidak ada pajak yang terlambat</p>
                         </div>
                     @endif
@@ -385,7 +385,7 @@
                         </div>
                     @else
                         <div class="py-8 text-center">
-                            <i class="fa fa-calendar-check text-4xl text-success-300 mb-2"></i>
+                            <i class="fa fa-calendar-check text-4xl text-accent-300 mb-2"></i>
                             <p class="text-bgray-500">Tidak ada pajak jatuh tempo dalam 7 hari ke depan</p>
                         </div>
                     @endif
@@ -436,7 +436,7 @@
                         </div>
                     @else
                         <div class="py-8 text-center">
-                            <i class="fa fa-calendar-check text-4xl text-success-300 mb-2"></i>
+                            <i class="fa fa-calendar-check text-4xl text-accent-300 mb-2"></i>
                             <p class="text-bgray-500">Tidak ada pajak jatuh tempo dalam 8-30 hari ke depan</p>
                         </div>
                     @endif
@@ -487,7 +487,7 @@
                         </div>
                     @else
                         <div class="py-8 text-center">
-                            <i class="fa fa-calendar-check text-4xl text-success-300 mb-2"></i>
+                            <i class="fa fa-calendar-check text-4xl text-accent-300 mb-2"></i>
                             <p class="text-bgray-500">Tidak ada pajak jatuh tempo dalam 6 bulan ke depan</p>
                         </div>
                     @endif
@@ -502,7 +502,7 @@
         <!-- Bar Chart -->
         <div class="card">
             <h3 class="mb-4 text-lg font-bold text-bgray-900 dark:text-white">
-                <i class="fa fa-chart-bar mr-2 text-success-300"></i>
+                <i class="fa fa-chart-bar mr-2 text-accent-300"></i>
                 Distribusi Umur Kendaraan
             </h3>
             <div class="relative h-64">
@@ -522,7 +522,7 @@
             <div class="space-y-3">
                 @php
                     $colors = [
-                        '0-5 tahun' => ['bg' => 'bg-success-100', 'text' => 'text-success-500', 'bar' => 'bg-success-400'],
+                        '0-5 tahun' => ['bg' => 'bg-accent-100', 'text' => 'text-accent-400', 'bar' => 'bg-accent-400'],
                         '6-10 tahun' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-500', 'bar' => 'bg-blue-400'],
                         '11-15 tahun' => ['bg' => 'bg-warning-100', 'text' => 'text-warning-500', 'bar' => 'bg-warning-400'],
                         '16-20 tahun' => ['bg' => 'bg-orange-100', 'text' => 'text-orange-500', 'bar' => 'bg-orange-400'],
@@ -639,13 +639,13 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-bgray-600 dark:text-bgray-300">Penugasan Aktif</p>
-                    <h3 class="mt-2 text-3xl font-bold text-success-400">{{ $penugasanAktif }}</h3>
+                    <h3 class="mt-2 text-3xl font-bold text-accent-400">{{ $penugasanAktif }}</h3>
                 </div>
-                <div class="flex h-14 w-14 items-center justify-center rounded-full bg-success-50">
-                    <i class="fa fa-users text-2xl text-success-400"></i>
+                <div class="flex h-14 w-14 items-center justify-center rounded-full bg-accent-50">
+                    <i class="fa fa-users text-2xl text-accent-400"></i>
                 </div>
             </div>
-            <a href="{{ route('penugasan.index', ['status' => 'aktif']) }}" class="mt-4 block text-center text-sm font-medium text-success-300 hover:underline">
+            <a href="{{ route('penugasan.index', ['status' => 'aktif']) }}" class="mt-4 block text-center text-sm font-medium text-accent-300 hover:underline">
                 Lihat Semua Penugasan
             </a>
         </div>
@@ -656,8 +656,8 @@
         <h3 class="mb-4 text-lg font-bold text-bgray-900 dark:text-white">Aksi Cepat</h3>
         <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
             <a href="{{ route('kendaraan.create') }}" class="flex flex-col items-center rounded-lg bg-white p-4 text-center hover:shadow-lg transition-shadow dark:bg-darkblack-600">
-                <div class="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-success-50">
-                    <i class="fa fa-car text-success-400"></i>
+                <div class="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-accent-50">
+                    <i class="fa fa-car text-accent-400"></i>
                 </div>
                 <span class="text-sm font-medium text-bgray-900 dark:text-white">Tambah Kendaraan</span>
             </a>

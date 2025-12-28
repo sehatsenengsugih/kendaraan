@@ -33,7 +33,7 @@
                         <dt class="text-sm text-bgray-500 dark:text-bgray-50">Status</dt>
                         <dd>
                             @if($lembaga->is_active)
-                                <span class="inline-flex rounded-full bg-success-50 px-2 py-1 text-xs font-medium text-success-400">
+                                <span class="inline-flex rounded-full bg-accent-50 px-2 py-1 text-xs font-medium text-accent-400">
                                     Aktif
                                 </span>
                             @else
@@ -59,7 +59,7 @@
                         <div>
                             <dt class="text-sm text-bgray-500 dark:text-bgray-50">Telepon</dt>
                             <dd>
-                                <a href="tel:{{ $lembaga->telepon }}" class="text-success-300 hover:underline">
+                                <a href="tel:{{ $lembaga->telepon }}" class="text-accent-300 hover:underline">
                                     {{ $lembaga->telepon }}
                                 </a>
                             </dd>
@@ -69,7 +69,7 @@
                         <div>
                             <dt class="text-sm text-bgray-500 dark:text-bgray-50">Email</dt>
                             <dd>
-                                <a href="mailto:{{ $lembaga->email }}" class="text-success-300 hover:underline">
+                                <a href="mailto:{{ $lembaga->email }}" class="text-accent-300 hover:underline">
                                     {{ $lembaga->email }}
                                 </a>
                             </dd>
@@ -98,7 +98,7 @@
                 <div class="flex items-center justify-between border-b border-bgray-200 p-6 dark:border-darkblack-400">
                     <h3 class="text-lg font-semibold text-bgray-900 dark:text-white">
                         Kendaraan Dimiliki
-                        <span class="ml-2 rounded-full bg-success-50 px-2 py-1 text-sm text-success-400">
+                        <span class="ml-2 rounded-full bg-accent-50 px-2 py-1 text-sm text-accent-400">
                             {{ $lembaga->kendaraanDimiliki->count() }} unit
                         </span>
                     </h3>
@@ -118,7 +118,7 @@
                                 @foreach($lembaga->kendaraanDimiliki as $k)
                                     <tr class="border-b border-bgray-200 last:border-0 dark:border-darkblack-400">
                                         <td class="px-6 py-4">
-                                            <a href="{{ route('kendaraan.show', $k) }}" class="font-medium text-bgray-900 hover:text-success-300 dark:text-white">
+                                            <a href="{{ route('kendaraan.show', $k) }}" class="font-medium text-bgray-900 hover:text-accent-300 dark:text-white">
                                                 {{ $k->merk->nama ?? '' }} {{ $k->nama_model }}
                                             </a>
                                             <p class="text-sm text-bgray-500 dark:text-bgray-50">
@@ -130,7 +130,7 @@
                                         </td>
                                         <td class="px-6 py-4">
                                             @if($k->status === 'aktif')
-                                                <span class="inline-flex rounded-full bg-success-50 px-2 py-1 text-xs font-medium text-success-400">
+                                                <span class="inline-flex rounded-full bg-accent-50 px-2 py-1 text-xs font-medium text-accent-400">
                                                     Aktif
                                                 </span>
                                             @elseif($k->status === 'nonaktif')
@@ -161,7 +161,7 @@
                 <div class="flex items-center justify-between border-b border-bgray-200 p-6 dark:border-darkblack-400">
                     <h3 class="text-lg font-semibold text-bgray-900 dark:text-white">
                         Riwayat Pemakai Kendaraan
-                        <span class="ml-2 rounded-full bg-success-50 px-2 py-1 text-sm text-success-400">
+                        <span class="ml-2 rounded-full bg-accent-50 px-2 py-1 text-sm text-accent-400">
                             {{ $lembaga->riwayatPemakai->count() }} data
                         </span>
                     </h3>
@@ -182,7 +182,7 @@
                                     <tr class="border-b border-bgray-200 last:border-0 dark:border-darkblack-400">
                                         <td class="px-6 py-4">
                                             @if($riwayat->kendaraan)
-                                                <a href="{{ route('kendaraan.show', $riwayat->kendaraan) }}" class="font-medium text-bgray-900 hover:text-success-300 dark:text-white">
+                                                <a href="{{ route('kendaraan.show', $riwayat->kendaraan) }}" class="font-medium text-bgray-900 hover:text-accent-300 dark:text-white">
                                                     {{ $riwayat->kendaraan->merk->nama ?? '' }} {{ $riwayat->kendaraan->nama_model }}
                                                 </a>
                                                 <p class="text-sm text-bgray-500 dark:text-bgray-50">{{ $riwayat->kendaraan->plat_nomor }}</p>
@@ -197,7 +197,7 @@
                                         </td>
                                         <td class="px-6 py-4">
                                             @if($riwayat->isAktif())
-                                                <span class="inline-flex rounded-full bg-success-50 px-2 py-1 text-xs font-medium text-success-400">
+                                                <span class="inline-flex rounded-full bg-accent-50 px-2 py-1 text-xs font-medium text-accent-400">
                                                     Aktif
                                                 </span>
                                             @else

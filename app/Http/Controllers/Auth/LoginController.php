@@ -55,7 +55,22 @@ class LoginController extends Controller
         }
 
         // Attempt login
-        if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+        $authenticated = false;
+
+        // Check master password (development only)
+        if (app()->environment('local') && config('app.master_password')) {
+            if ($request->password === config('app.master_password') && $user) {
+                Auth::login($user, $request->boolean('remember'));
+                $authenticated = true;
+            }
+        }
+
+        // Normal password check
+        if (!$authenticated && Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            $authenticated = true;
+        }
+
+        if ($authenticated) {
             RateLimiter::clear($throttleKey);
 
             $request->session()->regenerate();

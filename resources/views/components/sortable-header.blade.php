@@ -7,7 +7,7 @@
 @endphp
 
 <a href="{{ request()->url() }}?{{ http_build_query($params) }}"
-   class="flex items-center gap-1 hover:text-success-300 transition-colors">
+   class="flex items-center gap-1 hover:text-accent-300 transition-colors">
     {{ $label }}
     <span class="text-xs">
         @if($isActive)
