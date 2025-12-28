@@ -45,6 +45,7 @@
                             class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-success-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white">
                             <option value="user" {{ old('role', $user->role) === 'user' ? 'selected' : '' }}>User</option>
                             <option value="admin" {{ old('role', $user->role) === 'admin' ? 'selected' : '' }}>Admin</option>
+                            <option value="admin_servis" {{ old('role', $user->role) === 'admin_servis' ? 'selected' : '' }}>Admin Servis</option>
                             <option value="super_admin" {{ old('role', $user->role) === 'super_admin' ? 'selected' : '' }}>Super Admin</option>
                         </select>
                         @error('role')

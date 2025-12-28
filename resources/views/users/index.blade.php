@@ -45,6 +45,8 @@
                                 <span class="inline-flex items-center rounded-full bg-purple-100 px-3 py-1 text-xs font-medium text-purple-800 dark:bg-purple-900 dark:text-purple-200">Super Admin</span>
                             @elseif($user->role === 'admin')
                                 <span class="inline-flex items-center rounded-full bg-success-50 px-3 py-1 text-xs font-medium text-success-400">Admin</span>
+                            @elseif($user->role === 'admin_servis')
+                                <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">Admin Servis</span>
                             @else
                                 <span class="inline-flex items-center rounded-full bg-bgray-100 px-3 py-1 text-xs font-medium text-bgray-600 dark:bg-darkblack-400 dark:text-bgray-300">User</span>
                             @endif

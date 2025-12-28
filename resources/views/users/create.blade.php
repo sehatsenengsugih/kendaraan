@@ -45,6 +45,7 @@
                             <option value="">Pilih Role</option>
                             <option value="user" {{ old('role') === 'user' ? 'selected' : '' }}>User</option>
                             <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Admin</option>
+                            <option value="admin_servis" {{ old('role') === 'admin_servis' ? 'selected' : '' }}>Admin Servis</option>
                             <option value="super_admin" {{ old('role') === 'super_admin' ? 'selected' : '' }}>Super Admin</option>
                         </select>
                         @error('role')
