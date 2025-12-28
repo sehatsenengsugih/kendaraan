@@ -106,9 +106,8 @@
                     <label for="content" class="block text-sm font-medium text-bgray-700 dark:text-bgray-300 mb-1">
                         Konten <span class="text-error-300">*</span>
                     </label>
-                    <p class="text-xs text-bgray-500 dark:text-bgray-400 mb-2">Gunakan HTML untuk format konten. Contoh: &lt;h3&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;ol&gt;, &lt;img&gt;, dll.</p>
-                    <textarea name="content" id="content" rows="20" required
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white font-mono text-sm">{{ old('content', $section->content) }}</textarea>
+                    <p class="text-xs text-bgray-500 dark:text-bgray-400 mb-2">Gunakan editor di bawah untuk menulis dan memformat konten panduan.</p>
+                    <textarea name="content" id="content">{{ old('content', $section->content) }}</textarea>
                     @error('content')
                         <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
                     @enderror
@@ -145,4 +144,52 @@
             </form>
         </div>
     </div>
+
+    {{-- TinyMCE CDN --}}
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+    // Initialize TinyMCE
+    tinymce.init({
+        selector: '#content',
+        height: 500,
+        language: 'id',
+        plugins: [
+            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+            'insertdatetime', 'media', 'table', 'help', 'wordcount'
+        ],
+        toolbar: 'undo redo | blocks | ' +
+            'bold italic forecolor backcolor | alignleft aligncenter ' +
+            'alignright alignjustify | bullist numlist outdent indent | ' +
+            'link image table | removeformat code | help',
+        menubar: 'file edit view insert format tools table help',
+        content_style: `
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+                padding: 12px;
+            }
+            h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+            h4 { font-size: 1.1rem; font-weight: 500; margin-top: 1rem; margin-bottom: 0.5rem; }
+            p { margin-bottom: 0.75rem; }
+            ul, ol { margin-bottom: 0.75rem; padding-left: 1.5rem; }
+            li { margin-bottom: 0.25rem; }
+            table { border-collapse: collapse; width: 100%; margin-bottom: 1rem; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f5f5f5; }
+            img { max-width: 100%; height: auto; border-radius: 8px; }
+            a { color: #22C55E; }
+        `,
+        branding: false,
+        promotion: false,
+        skin: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oxide-dark' : 'oxide',
+        content_css: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default',
+        setup: function(editor) {
+            editor.on('change', function() {
+                tinymce.triggerSave();
+            });
+        }
+    });
+    </script>
 </x-app-layout>
