@@ -1,66 +1,255 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Aplikasi Pengelola Kendaraan KAS
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem manajemen aset kendaraan terpusat untuk **Keuskupan Agung Semarang (KAS)**.
 
-## About Laravel
+Aplikasi web untuk mengelola data kendaraan (mobil & motor) milik keuskupan, paroki, dan lembaga gerejawi secara efisien.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Fitur Utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Manajemen Kendaraan
+- Inventarisasi lengkap kendaraan (mobil & motor)
+- Data identitas, dokumen (BPKB, STNK), dan kepemilikan
+- Galeri foto dengan avatar
+- Riwayat pemakai (single source of truth)
+- Status: aktif, nonaktif, dihibahkan, dijual
+- Fitur pinjam dan tarikan kendaraan
 
-## Learning Laravel
+### Manajemen Pajak
+- Pencatatan pajak tahunan dan 5 tahunan
+- Pengingat otomatis berdasarkan jatuh tempo
+- Dashboard kategori: terlambat, 7 hari, 30 hari, 6 bulan
+- Upload bukti pembayaran
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Manajemen Servis
+- Pencatatan servis rutin, perbaikan, darurat, overhaul
+- Jadwal servis berikutnya
+- Upload bukti/nota servis
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Master Data
+- **Kevikepan**: 6 wilayah keuskupan
+- **Paroki**: Data paroki dengan relasi kevikepan
+- **Lembaga**: Data lembaga gerejawi
+- **Garasi**: Lokasi penyimpanan kendaraan
+- **Merk**: Daftar merk kendaraan
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Dashboard & Laporan
+- Statistik kendaraan (total, aktif, per jenis)
+- Grafik distribusi umur kendaraan
+- Grafik kendaraan per merk
+- Pengingat pajak dengan tabs interaktif
+- Distribusi kendaraan per garasi
 
-## Laravel Sponsors
+### Keamanan & Audit
+- Multi-role access control (Super Admin, Admin, Admin Servis, User)
+- Audit log untuk semua perubahan data
+- Google SSO integration
+- Session-based authentication dengan Redis
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## Tech Stack
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+| Layer | Teknologi | Versi |
+|-------|-----------|-------|
+| Backend | PHP | 8.3+ |
+| Framework | Laravel | 11.x |
+| Database | PostgreSQL | 16+ |
+| Cache/Session | Redis | 7+ |
+| CSS | Tailwind CSS | 3.4+ |
+| JavaScript | Alpine.js | 3.x |
+| Charts | Chart.js | 4.x |
+| Build Tool | Vite | 5.x |
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Requirements
 
-## Code of Conduct
+- PHP 8.3+ dengan extensions: pgsql, redis, gd, mbstring, xml, curl, zip
+- PostgreSQL 16+
+- Redis 7+
+- Composer 2.x
+- Node.js 20+ & NPM
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## Instalasi
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/sehatsenengsugih/kendaraan.git
+cd kendaraan
+```
+
+### 2. Install Dependencies
+
+```bash
+composer install
+npm install
+```
+
+### 3. Environment Setup
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+Edit `.env` dan sesuaikan:
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=kendaraan
+DB_USERNAME=postgres
+DB_PASSWORD=secret
+
+CACHE_DRIVER=redis
+SESSION_DRIVER=redis
+REDIS_HOST=127.0.0.1
+```
+
+### 4. Database Setup
+
+```bash
+php artisan migrate
+php artisan db:seed
+php artisan storage:link
+```
+
+### 5. Build Assets
+
+```bash
+npm run build
+```
+
+### 6. Run Development Server
+
+```bash
+php artisan serve
+```
+
+Akses aplikasi di: `http://localhost:8000`
+
+---
+
+## Login Default
+
+| Role | Email | Password |
+|------|-------|----------|
+| Super Admin | superadmin@kas.or.id | password |
+| Admin | admin@kas.or.id | password |
+
+---
+
+## Role & Hak Akses
+
+| Role | Hak Akses |
+|------|-----------|
+| **Super Admin** | Akses penuh + audit log + kelola admin |
+| **Admin** | CRUD kendaraan, master data, pajak, servis, kelola user |
+| **Admin Servis** | Kelola servis, lihat kendaraan (read-only) |
+| **User** | Lihat kendaraan sendiri, input laporan servis |
+
+---
+
+## Struktur Direktori
+
+```
+kendaraan-app/
+├── app/
+│   ├── Http/Controllers/    # Controllers
+│   ├── Models/              # Eloquent Models
+│   ├── Traits/              # Auditable trait
+│   └── Console/Commands/    # Import commands
+├── database/
+│   ├── migrations/          # Database schema
+│   └── seeders/             # Data seeders
+├── resources/views/         # Blade templates
+│   ├── components/          # Reusable UI components
+│   ├── partials/            # Sidebar, header
+│   ├── kendaraan/           # CRUD views
+│   └── ...
+├── routes/web.php           # Web routes
+├── public/storage/          # Uploaded files
+├── CLAUDE.md                # Panduan developer
+├── PLANNING.md              # Arsitektur & tech stack
+└── TASK.md                  # Progress tracker
+```
+
+---
+
+## Import Data
+
+Aplikasi mendukung import data via CLI:
+
+```bash
+# Import kendaraan dari CSV
+php artisan kendaraan:import data.csv --dry-run
+
+# Import paroki
+php artisan paroki:import paroki.csv
+
+# Import lembaga
+php artisan lembaga:import lembaga.csv
+
+# Import garasi
+php artisan garasi:import garasi.csv
+```
+
+Gunakan `--dry-run` untuk preview tanpa menyimpan ke database.
+
+---
+
+## Dokumentasi Developer
+
+| File | Deskripsi |
+|------|-----------|
+| `CLAUDE.md` | Panduan lengkap untuk developer |
+| `PLANNING.md` | Visi, arsitektur, dan tech stack |
+| `TASK.md` | Milestone dan progress tracker |
+
+---
+
+## Glossary
+
+| Istilah | Definisi |
+|---------|----------|
+| **KAS** | Keuskupan Agung Semarang |
+| **Kevikepan** | Wilayah administratif dalam Keuskupan |
+| **Paroki** | Komunitas umat Katolik di suatu wilayah |
+| **Lembaga** | Institusi di bawah naungan Keuskupan |
+| **Garasi** | Lokasi fisik penyimpanan kendaraan |
+| **Tarikan** | Kendaraan yang ditarik dari pemakai sebelumnya |
+| **BPKB** | Buku Pemilik Kendaraan Bermotor |
+| **STNK** | Surat Tanda Nomor Kendaraan |
+
+---
+
+## Troubleshooting
+
+```bash
+# Clear all cache
+php artisan cache:clear && php artisan view:clear && php artisan route:clear
+
+# Recreate database
+php artisan migrate:fresh --seed
+
+# Fix storage symlink
+php artisan storage:link
+
+# Autoload classes
+composer dump-autoload
+```
+
+---
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Aplikasi ini dikembangkan untuk keperluan internal Keuskupan Agung Semarang.
+
+---
+
+**Dikembangkan dengan Laravel 11 & Tailwind CSS**
