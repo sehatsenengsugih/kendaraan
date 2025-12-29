@@ -56,9 +56,15 @@
                     <label for="kota" class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">
                         Kota <span class="text-error-300">*</span>
                     </label>
-                    <input type="text" name="kota" id="kota" value="{{ old('kota') }}" required
-                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('kota') border-error-300 @enderror"
-                        placeholder="Contoh: Semarang">
+                    <select name="kota" id="kota" required
+                        class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('kota') border-error-300 @enderror">
+                        <option value="">Pilih Kota</option>
+                        @foreach(\App\Models\Paroki::getKotaList() as $id => $nama)
+                            <option value="{{ $nama }}" {{ old('kota') == $nama ? 'selected' : '' }}>
+                                {{ $nama }}
+                            </option>
+                        @endforeach
+                    </select>
                     @error('kota')
                         <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
                     @enderror
