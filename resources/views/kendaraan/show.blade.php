@@ -5,7 +5,7 @@
         <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex items-center gap-4">
                 <a href="{{ route('kendaraan.index') }}"
-                    class="rounded-lg p-2 text-bgray-600 hover:bg-bgray-100 dark:text-bgray-50 dark:hover:bg-darkblack-500">
+                    class="flex items-center justify-center min-w-[44px] min-h-[44px] rounded-lg p-2 text-bgray-600 hover:bg-bgray-100 dark:text-bgray-50 dark:hover:bg-darkblack-500">
                     <i class="fa fa-arrow-left"></i>
                 </a>
                 <div>
@@ -50,7 +50,7 @@
                 </div>
 
                 @if($kendaraan->gambar->count() > 0)
-                    <div class="grid grid-cols-6 gap-2">
+                    <div class="grid grid-cols-4 sm:grid-cols-6 gap-2">
                         @if($kendaraan->avatar_path)
                             <button type="button" onclick="changeMainImage('{{ asset('storage/' . $kendaraan->avatar_path) }}')"
                                 class="aspect-square overflow-hidden rounded-lg border-2 border-accent-300 bg-bgray-100">
@@ -339,7 +339,67 @@
             @if($kendaraan->riwayatPemakai->count() > 0)
                 <div class="rounded-lg bg-white p-6 dark:bg-darkblack-600">
                     <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">Riwayat Pengguna</h3>
-                    <div class="overflow-x-auto">
+
+                    <!-- Mobile Card View -->
+                    <div class="md:hidden space-y-4">
+                        @foreach($kendaraan->riwayatPemakai as $riwayat)
+                            <div class="rounded-lg border border-bgray-200 dark:border-darkblack-400 p-4">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div>
+                                        <p class="font-medium text-bgray-900 dark:text-white">{{ $riwayat->nama_pemakai }}</p>
+                                        @if($riwayat->jenis_pemakai === 'paroki')
+                                            <span class="inline-flex items-center rounded-full bg-accent-50 px-2 py-0.5 text-xs font-medium text-accent-400 mt-1">
+                                                Paroki
+                                            </span>
+                                        @elseif($riwayat->jenis_pemakai === 'lembaga')
+                                            <span class="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600 mt-1">
+                                                Lembaga
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center rounded-full bg-purple-50 px-2 py-0.5 text-xs font-medium text-purple-600 mt-1">
+                                                Pribadi
+                                            </span>
+                                        @endif
+                                    </div>
+                                    @if($riwayat->isAktif())
+                                        <span class="inline-flex items-center rounded-full bg-accent-50 px-2 py-0.5 text-xs font-medium text-accent-400">
+                                            Aktif
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center rounded-full bg-bgray-100 px-2 py-0.5 text-xs font-medium text-bgray-600">
+                                            Selesai
+                                        </span>
+                                    @endif
+                                </div>
+                                <div class="text-sm text-bgray-600 dark:text-bgray-50 space-y-1">
+                                    <p>
+                                        <span class="text-bgray-500">Periode:</span>
+                                        {{ $riwayat->tanggal_mulai->format('d M Y') }}
+                                        @if($riwayat->tanggal_selesai)
+                                            - {{ $riwayat->tanggal_selesai->format('d M Y') }}
+                                        @else
+                                            - sekarang
+                                        @endif
+                                    </p>
+                                    <p><span class="text-bgray-500">Durasi:</span> {{ $riwayat->durasi }} hari</p>
+                                </div>
+                                @if($riwayat->catatan)
+                                    <p class="text-xs text-bgray-500 mt-2 border-t border-bgray-100 dark:border-darkblack-400 pt-2">{{ Str::limit($riwayat->catatan, 80) }}</p>
+                                @endif
+                                @if($riwayat->dokumen_serah_terima_path)
+                                    <div class="mt-3 pt-2 border-t border-bgray-100 dark:border-darkblack-400">
+                                        <a href="{{ asset('storage/' . $riwayat->dokumen_serah_terima_path) }}" target="_blank"
+                                            class="inline-flex items-center gap-1 rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100 min-h-[44px]">
+                                            <i class="fa fa-file-pdf"></i> Lihat Dokumen Serah Terima
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <!-- Desktop Table View -->
+                    <div class="hidden md:block overflow-x-auto">
                         <table class="w-full text-left text-sm">
                             <thead class="border-b border-bgray-200 dark:border-darkblack-400">
                                 <tr>

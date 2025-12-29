@@ -10,20 +10,22 @@
     </div>
 
     <!-- Logo (Desktop only) -->
-    <div class="sidebar-header relative z-30 hidden h-[108px] w-full items-center justify-between border-b border-r border-b-bgray-200 border-r-bgray-200 px-4 xl:flex dark:border-darkblack-400">
-        <a href="{{ route('dashboard') }}" class="flex items-center">
-            <img src="{{ asset('images/logo.png') }}" alt="motoreKAS" class="h-16 w-auto">
+    <div class="sidebar-header relative z-30 hidden h-[120px] w-full items-center justify-center border-b border-r border-b-bgray-200 border-r-bgray-200 px-6 xl:flex dark:border-darkblack-400">
+        <!-- Centered Logo -->
+        <a href="{{ route('dashboard') }}" class="flex flex-col items-center justify-center">
+            <img src="{{ asset('images/logo.png') }}" alt="motoreKAS" class="h-20 w-auto mb-1">
+            <span class="text-sm font-medium text-bgray-500 dark:text-bgray-400">Keuskupan Agung Semarang</span>
         </a>
-        <!-- Toggle Button (Desktop) -->
-        <button type="button" class="drawer-btn flex items-center justify-center w-8 h-8 bg-accent-300 rounded-full hover:bg-accent-400 transition-colors" title="Toggle Sidebar (Ctrl+B)">
-            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <!-- Toggle Button (Absolute positioned) -->
+        <button type="button" class="drawer-btn absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 bg-bgray-100 hover:bg-accent-300 rounded-full transition-colors group dark:bg-darkblack-500 dark:hover:bg-accent-300" title="Toggle Sidebar (Ctrl+B)">
+            <svg class="w-4 h-4 text-bgray-500 group-hover:text-white dark:text-bgray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
         </button>
     </div>
 
-    <!-- Sidebar Body -->
-    <div class="sidebar-body overflow-style-none relative z-30 flex-1 w-full overflow-y-auto pl-[48px] pt-[14px] xl:h-[calc(100vh-108px)]">
+    <!-- Sidebar Body - Scrollable Menu Area -->
+    <div class="sidebar-body overflow-style-none relative z-30 flex-1 w-full overflow-y-auto pl-[48px] pt-[14px]">
         <div class="nav-wrapper mb-[36px] pr-[50px]">
             <!-- Menu Utama -->
             <div class="item-wrapper mb-5">
@@ -270,9 +272,10 @@
             </div>
             @endcan
         </div>
+    </div>
 
-        <!-- Bottom Section: User Profile & Actions -->
-        <div class="absolute bottom-0 left-0 right-0 border-t border-bgray-200 bg-white dark:border-darkblack-400 dark:bg-darkblack-600">
+    <!-- Bottom Section: User Profile & Actions - Always at bottom -->
+    <div class="shrink-0 border-t border-bgray-200 bg-white dark:border-darkblack-400 dark:bg-darkblack-600">
             <!-- User Profile -->
             <div class="flex items-center gap-3 p-4 border-b border-bgray-100 dark:border-darkblack-400">
                 <div class="h-10 w-10 flex-shrink-0 overflow-hidden rounded-xl border border-bgray-200 dark:border-darkblack-400">
@@ -316,5 +319,4 @@
                 </form>
             </div>
         </div>
-    </div>
 </aside>
