@@ -5,7 +5,13 @@
         <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-bgray-900 dark:text-white">Daftar Servis Kendaraan</h2>
-                <p class="text-sm text-bgray-600 dark:text-bgray-50">Kelola riwayat dan jadwal servis</p>
+                <p class="text-sm text-bgray-600 dark:text-bgray-50">
+                    @if(isset($isUserPemegang) && $isUserPemegang)
+                        Servis kendaraan yang Anda pegang
+                    @else
+                        Kelola riwayat dan jadwal servis
+                    @endif
+                </p>
             </div>
             <a href="{{ route('servis.create') }}"
                 class="inline-flex items-center justify-center rounded-lg bg-accent-300 px-4 py-3 font-semibold text-white transition-all hover:bg-accent-400">

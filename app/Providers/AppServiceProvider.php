@@ -34,9 +34,17 @@ class AppServiceProvider extends ServiceProvider
             return $user->role === 'super_admin';
         });
 
-        // Gate untuk akses servis (admin_servis hanya bisa akses servis)
+        // Gate untuk akses servis (admin_servis dan user pemegang kendaraan)
         Gate::define('manage-servis', function ($user) {
-            return in_array($user->role, ['super_admin', 'admin', 'admin_servis']);
+            // Admin roles always have access
+            if (in_array($user->role, ['super_admin', 'admin', 'admin_servis'])) {
+                return true;
+            }
+            // User role can access if they're holding at least one kendaraan
+            if ($user->role === 'user' && $user->riwayatPemakaiAktif()->exists()) {
+                return true;
+            }
+            return false;
         });
 
         // Gate untuk akses menu utama (kendaraan, pajak, dll) - full access

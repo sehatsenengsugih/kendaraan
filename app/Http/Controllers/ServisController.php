@@ -12,11 +12,36 @@ use Illuminate\Support\Facades\Storage;
 class ServisController extends Controller
 {
     /**
+     * Check if current user is a regular user (pemegang).
+     */
+    private function isUserPemegang(): bool
+    {
+        $user = Auth::user();
+        return $user->role === 'user';
+    }
+
+    /**
+     * Get kendaraan IDs that user is currently holding.
+     */
+    private function getUserKendaraanIds(): array
+    {
+        return Auth::user()->riwayatPemakaiAktif()
+            ->pluck('kendaraan_id')
+            ->toArray();
+    }
+
+    /**
      * Display a listing of servis.
      */
     public function index(Request $request)
     {
         $query = Servis::with(['kendaraan.merk', 'createdBy']);
+
+        // Filter untuk user pemegang - hanya tampilkan servis kendaraan mereka
+        if ($this->isUserPemegang()) {
+            $kendaraanIds = $this->getUserKendaraanIds();
+            $query->whereIn('kendaraan_id', $kendaraanIds);
+        }
 
         // Search filter
         if ($request->filled('search')) {
@@ -59,24 +84,48 @@ class ServisController extends Controller
 
         $servis = $query->orderBy($sortColumn, $sortDirection)->paginate(15)->withQueryString();
 
-        $kendaraan = Kendaraan::aktif()->with('merk')->orderBy('plat_nomor')->get();
+        // Kendaraan dropdown - filter untuk user pemegang
+        if ($this->isUserPemegang()) {
+            $kendaraanIds = $this->getUserKendaraanIds();
+            $kendaraan = Kendaraan::aktif()->with('merk')
+                ->whereIn('id', $kendaraanIds)
+                ->orderBy('plat_nomor')->get();
 
-        // Stats
-        $stats = [
-            'total' => Servis::count(),
-            'dijadwalkan' => Servis::dijadwalkan()->count(),
-            'dalam_proses' => Servis::dalamProses()->count(),
-            'selesai_bulan_ini' => Servis::selesai()
-                ->whereMonth('tanggal_selesai', now()->month)
-                ->whereYear('tanggal_selesai', now()->year)
-                ->count(),
-            'total_biaya_bulan_ini' => Servis::selesai()
-                ->whereMonth('tanggal_selesai', now()->month)
-                ->whereYear('tanggal_selesai', now()->year)
-                ->sum('biaya'),
-        ];
+            // Stats for user's kendaraan only
+            $stats = [
+                'total' => Servis::whereIn('kendaraan_id', $kendaraanIds)->count(),
+                'dijadwalkan' => Servis::whereIn('kendaraan_id', $kendaraanIds)->dijadwalkan()->count(),
+                'dalam_proses' => Servis::whereIn('kendaraan_id', $kendaraanIds)->dalamProses()->count(),
+                'selesai_bulan_ini' => Servis::whereIn('kendaraan_id', $kendaraanIds)->selesai()
+                    ->whereMonth('tanggal_selesai', now()->month)
+                    ->whereYear('tanggal_selesai', now()->year)
+                    ->count(),
+                'total_biaya_bulan_ini' => Servis::whereIn('kendaraan_id', $kendaraanIds)->selesai()
+                    ->whereMonth('tanggal_selesai', now()->month)
+                    ->whereYear('tanggal_selesai', now()->year)
+                    ->sum('biaya'),
+            ];
+        } else {
+            $kendaraan = Kendaraan::aktif()->with('merk')->orderBy('plat_nomor')->get();
 
-        return view('servis.index', compact('servis', 'kendaraan', 'stats', 'sortColumn', 'sortDirection'));
+            // Stats for all kendaraan
+            $stats = [
+                'total' => Servis::count(),
+                'dijadwalkan' => Servis::dijadwalkan()->count(),
+                'dalam_proses' => Servis::dalamProses()->count(),
+                'selesai_bulan_ini' => Servis::selesai()
+                    ->whereMonth('tanggal_selesai', now()->month)
+                    ->whereYear('tanggal_selesai', now()->year)
+                    ->count(),
+                'total_biaya_bulan_ini' => Servis::selesai()
+                    ->whereMonth('tanggal_selesai', now()->month)
+                    ->whereYear('tanggal_selesai', now()->year)
+                    ->sum('biaya'),
+            ];
+        }
+
+        $isUserPemegang = $this->isUserPemegang();
+        return view('servis.index', compact('servis', 'kendaraan', 'stats', 'sortColumn', 'sortDirection', 'isUserPemegang'));
     }
 
     /**
@@ -84,10 +133,20 @@ class ServisController extends Controller
      */
     public function create(Request $request)
     {
-        $kendaraan = Kendaraan::aktif()->with('merk')->orderBy('plat_nomor')->get();
-        $selectedKendaraanId = $request->kendaraan_id;
+        // Filter kendaraan untuk user pemegang
+        if ($this->isUserPemegang()) {
+            $kendaraanIds = $this->getUserKendaraanIds();
+            $kendaraan = Kendaraan::aktif()->with('merk')
+                ->whereIn('id', $kendaraanIds)
+                ->orderBy('plat_nomor')->get();
+        } else {
+            $kendaraan = Kendaraan::aktif()->with('merk')->orderBy('plat_nomor')->get();
+        }
 
-        return view('servis.create', compact('kendaraan', 'selectedKendaraanId'));
+        $selectedKendaraanId = $request->kendaraan_id;
+        $isUserPemegang = $this->isUserPemegang();
+
+        return view('servis.create', compact('kendaraan', 'selectedKendaraanId', 'isUserPemegang'));
     }
 
     /**
@@ -111,6 +170,14 @@ class ServisController extends Controller
             'km_berikutnya' => 'nullable|integer|min:0',
             'catatan' => 'nullable|string',
         ]);
+
+        // Cek otorisasi untuk user pemegang
+        if ($this->isUserPemegang()) {
+            $kendaraanIds = $this->getUserKendaraanIds();
+            if (!in_array($validated['kendaraan_id'], $kendaraanIds)) {
+                return back()->with('error', 'Anda tidak memiliki akses untuk menambah servis kendaraan ini.');
+            }
+        }
 
         DB::beginTransaction();
         try {
@@ -139,9 +206,18 @@ class ServisController extends Controller
      */
     public function show(Servis $servis)
     {
-        $servis->load(['kendaraan.merk', 'kendaraan.garasi', 'createdBy']);
+        // Cek otorisasi untuk user pemegang
+        if ($this->isUserPemegang()) {
+            $kendaraanIds = $this->getUserKendaraanIds();
+            if (!in_array($servis->kendaraan_id, $kendaraanIds)) {
+                abort(403, 'Anda tidak memiliki akses untuk melihat servis ini.');
+            }
+        }
 
-        return view('servis.show', compact('servis'));
+        $servis->load(['kendaraan.merk', 'kendaraan.garasi', 'createdBy']);
+        $isUserPemegang = $this->isUserPemegang();
+
+        return view('servis.show', compact('servis', 'isUserPemegang'));
     }
 
     /**
@@ -149,9 +225,22 @@ class ServisController extends Controller
      */
     public function edit(Servis $servis)
     {
-        $kendaraan = Kendaraan::aktif()->with('merk')->orderBy('plat_nomor')->get();
+        // Cek otorisasi untuk user pemegang
+        if ($this->isUserPemegang()) {
+            $kendaraanIds = $this->getUserKendaraanIds();
+            if (!in_array($servis->kendaraan_id, $kendaraanIds)) {
+                abort(403, 'Anda tidak memiliki akses untuk mengedit servis ini.');
+            }
+            $kendaraan = Kendaraan::aktif()->with('merk')
+                ->whereIn('id', $kendaraanIds)
+                ->orderBy('plat_nomor')->get();
+        } else {
+            $kendaraan = Kendaraan::aktif()->with('merk')->orderBy('plat_nomor')->get();
+        }
 
-        return view('servis.edit', compact('servis', 'kendaraan'));
+        $isUserPemegang = $this->isUserPemegang();
+
+        return view('servis.edit', compact('servis', 'kendaraan', 'isUserPemegang'));
     }
 
     /**
@@ -159,6 +248,14 @@ class ServisController extends Controller
      */
     public function update(Request $request, Servis $servis)
     {
+        // Cek otorisasi untuk user pemegang
+        if ($this->isUserPemegang()) {
+            $kendaraanIds = $this->getUserKendaraanIds();
+            if (!in_array($servis->kendaraan_id, $kendaraanIds)) {
+                abort(403, 'Anda tidak memiliki akses untuk mengedit servis ini.');
+            }
+        }
+
         $validated = $request->validate([
             'kendaraan_id' => 'required|exists:kendaraan,id',
             'jenis' => 'required|in:rutin,perbaikan,darurat,overhaul',
@@ -175,6 +272,13 @@ class ServisController extends Controller
             'km_berikutnya' => 'nullable|integer|min:0',
             'catatan' => 'nullable|string',
         ]);
+
+        // Cek kendaraan_id baru juga harus milik user
+        if ($this->isUserPemegang()) {
+            if (!in_array($validated['kendaraan_id'], $kendaraanIds)) {
+                return back()->with('error', 'Anda tidak memiliki akses untuk kendaraan ini.');
+            }
+        }
 
         DB::beginTransaction();
         try {
@@ -204,6 +308,11 @@ class ServisController extends Controller
      */
     public function destroy(Servis $servis)
     {
+        // User pemegang tidak boleh hapus servis
+        if ($this->isUserPemegang()) {
+            abort(403, 'Anda tidak memiliki akses untuk menghapus servis.');
+        }
+
         $servis->delete();
 
         return redirect()
@@ -216,6 +325,14 @@ class ServisController extends Controller
      */
     public function selesai(Request $request, Servis $servis)
     {
+        // Cek otorisasi untuk user pemegang
+        if ($this->isUserPemegang()) {
+            $kendaraanIds = $this->getUserKendaraanIds();
+            if (!in_array($servis->kendaraan_id, $kendaraanIds)) {
+                abort(403, 'Anda tidak memiliki akses untuk menyelesaikan servis ini.');
+            }
+        }
+
         $validated = $request->validate([
             'tanggal_selesai' => 'required|date|after_or_equal:' . $servis->tanggal_servis->format('Y-m-d'),
             'biaya' => 'nullable|numeric|min:0',

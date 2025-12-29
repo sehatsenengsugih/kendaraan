@@ -147,7 +147,43 @@ $kendaraan->load(['pemakaiSaatIni.paroki', 'pemakaiSaatIni.lembaga']);
 | super_admin | Full access + audit log |
 | admin | CRUD semua data, kelola user (bukan admin) |
 | admin_servis | Kelola servis, lihat kendaraan (read-only) |
-| user | Lihat kendaraan sendiri, input servis |
+| user | Lihat kendaraan, input servis untuk kendaraan yang dipegang |
+
+### User Pemegang Kendaraan
+
+User dengan role `user` yang sedang memegang kendaraan (ada riwayat_pemakai aktif) dapat:
+- Melihat daftar servis kendaraan yang mereka pegang
+- Menambah servis baru untuk kendaraan yang dipegang
+- Mengedit servis yang sudah ada (milik kendaraan mereka)
+- Menandai servis sebagai selesai
+
+Yang **tidak bisa** dilakukan user pemegang:
+- Menghapus data servis
+- Mengakses servis kendaraan lain
+- Mengakses menu master data
+
+### Penentuan User Pemegang
+
+User dikaitkan dengan kendaraan melalui field `pengguna_id` di tabel `riwayat_pemakai`:
+
+```php
+// Di RiwayatPemakai
+public function pengguna(): BelongsTo
+{
+    return $this->belongsTo(Pengguna::class, 'pengguna_id');
+}
+
+// Di Pengguna
+public function kendaraanDipegang()
+{
+    return Kendaraan::whereHas('riwayatPemakaiAktif', function ($query) {
+        $query->where('pengguna_id', $this->id);
+    });
+}
+
+// Cek apakah user memegang kendaraan tertentu
+$user->isHoldingKendaraan($kendaraanId);
+```
 
 ## Konvensi Kode
 

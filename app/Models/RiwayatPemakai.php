@@ -18,6 +18,7 @@ class RiwayatPemakai extends Model
         'nama_pemakai',
         'paroki_id',
         'lembaga_id',
+        'pengguna_id',
         'jenis_pemakai',
         'tanggal_mulai',
         'tanggal_selesai',
@@ -62,6 +63,14 @@ class RiwayatPemakai extends Model
     public function lembaga(): BelongsTo
     {
         return $this->belongsTo(Lembaga::class, 'lembaga_id');
+    }
+
+    /**
+     * Get the pengguna (user aplikasi) for this riwayat.
+     */
+    public function pengguna(): BelongsTo
+    {
+        return $this->belongsTo(Pengguna::class, 'pengguna_id');
     }
 
     /**

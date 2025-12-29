@@ -234,8 +234,8 @@
                 </dl>
             </div>
 
-            <!-- Delete Button -->
-            @if(!$servis->isSelesai())
+            <!-- Delete Button - Hidden for user pemegang -->
+            @if(!$servis->isSelesai() && !(isset($isUserPemegang) && $isUserPemegang))
                 <form method="POST" action="{{ route('servis.destroy', $servis) }}"
                     onsubmit="return confirm('Apakah Anda yakin ingin menghapus data servis ini?')">
                     @csrf

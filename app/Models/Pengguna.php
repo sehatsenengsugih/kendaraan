@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -288,5 +289,39 @@ class Pengguna extends Authenticatable
         // Fallback to ui-avatars.com with user's accent color
         $bgColor = ltrim($this->getAccentColor(), '#');
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=' . $bgColor . '&color=fff';
+    }
+
+    /**
+     * Get riwayat pemakai yang terkait dengan user ini.
+     */
+    public function riwayatPemakai(): HasMany
+    {
+        return $this->hasMany(RiwayatPemakai::class, 'pengguna_id');
+    }
+
+    /**
+     * Get riwayat pemakai aktif (kendaraan yang sedang dipegang user ini).
+     */
+    public function riwayatPemakaiAktif(): HasMany
+    {
+        return $this->hasMany(RiwayatPemakai::class, 'pengguna_id')->whereNull('tanggal_selesai');
+    }
+
+    /**
+     * Get kendaraan yang sedang dipegang/digunakan user ini.
+     */
+    public function kendaraanDipegang()
+    {
+        return Kendaraan::whereHas('riwayatPemakaiAktif', function ($query) {
+            $query->where('pengguna_id', $this->id);
+        });
+    }
+
+    /**
+     * Check if user is currently holding a specific kendaraan.
+     */
+    public function isHoldingKendaraan(int $kendaraanId): bool
+    {
+        return $this->riwayatPemakaiAktif()->where('kendaraan_id', $kendaraanId)->exists();
     }
 }
