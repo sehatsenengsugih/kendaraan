@@ -139,6 +139,25 @@
                         @enderror
                     </div>
 
+                    <!-- Kota -->
+                    <div>
+                        <label for="kota_id" class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">
+                            Kota
+                        </label>
+                        <select name="kota_id" id="kota_id"
+                            class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('kota_id') border-error-300 @enderror">
+                            <option value="">Pilih Kota</option>
+                            @foreach(\App\Models\Paroki::getKotaList() as $id => $nama)
+                                <option value="{{ $id }}" {{ old('kota_id', $paroki->kota_id) == $id ? 'selected' : '' }}>
+                                    {{ $nama }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('kota_id')
+                            <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <!-- Telepon -->
                     <div>
                         <label for="telepon" class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">
