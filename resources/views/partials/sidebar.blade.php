@@ -1,9 +1,8 @@
 <aside class="sidebar-wrapper fixed top-0 z-30 block h-full w-[308px] bg-white dark:bg-darkblack-600 sm:hidden xl:block transition-all duration-300">
     <!-- Logo -->
-    <div class="sidebar-header relative z-30 flex h-[108px] w-full items-center border-b border-r border-b-bgray-200 border-r-bgray-200 pl-[50px] dark:border-darkblack-400">
+    <div class="sidebar-header relative z-30 flex h-[108px] w-full items-center border-b border-r border-b-bgray-200 border-r-bgray-200 pl-[30px] dark:border-darkblack-400">
         <a href="{{ route('dashboard') }}" class="flex items-center">
-            <span class="text-2xl font-bold text-accent-300">Kendaraan</span>
-            <span class="text-xl font-medium text-bgray-900 dark:text-white">KAS</span>
+            <img src="{{ asset('images/logo.png') }}" alt="motoreKAS" class="h-20 w-auto">
         </a>
         <!-- Close Button (Mobile) -->
         <button type="button" class="drawer-btn absolute right-4 top-1/2 -translate-y-1/2 xl:hidden flex h-8 w-8 items-center justify-center rounded-lg hover:bg-bgray-100 dark:hover:bg-darkblack-500">

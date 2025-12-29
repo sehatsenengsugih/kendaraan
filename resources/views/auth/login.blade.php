@@ -2,12 +2,9 @@
     <x-slot name="title">Login</x-slot>
 
     <header class="mb-8 text-center">
-        <h2 class="mb-2 font-poppins text-4xl font-semibold text-bgray-900 dark:text-white">
-            Masuk ke Sistem
-        </h2>
-        <p class="text-base font-medium text-bgray-600 dark:text-bgray-50">
-            Kelola kendaraan dengan mudah dan efisien
-        </p>
+        <div class="flex justify-center">
+            <img src="{{ asset('images/logo.png') }}" alt="motoreKAS" class="h-48 w-auto">
+        </div>
     </header>
 
     <!-- Google SSO Button -->
