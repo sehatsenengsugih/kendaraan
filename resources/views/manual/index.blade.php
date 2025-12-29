@@ -149,7 +149,7 @@
                         @endcan
                     </div>
 
-                    <div class="prose prose-sm max-w-none dark:prose-invert prose-headings:text-bgray-900 dark:prose-headings:text-white prose-p:text-bgray-700 dark:prose-p:text-bgray-300 prose-a:text-accent-400 prose-strong:text-bgray-900 dark:prose-strong:text-white">
+                    <div class="prose prose-base max-w-none dark:prose-invert prose-headings:text-bgray-900 dark:prose-headings:text-white prose-p:text-bgray-700 dark:prose-p:text-bgray-300 prose-a:text-accent-400 prose-strong:text-bgray-900 dark:prose-strong:text-white">
                         {!! $section->content !!}
                     </div>
 
@@ -169,7 +169,7 @@
                                 </a>
                                 @endcan
                             </div>
-                            <div class="prose prose-sm max-w-none dark:prose-invert prose-headings:text-bgray-900 dark:prose-headings:text-white prose-p:text-bgray-700 dark:prose-p:text-bgray-300 prose-a:text-accent-400 ml-8">
+                            <div class="prose prose-base max-w-none dark:prose-invert prose-headings:text-bgray-900 dark:prose-headings:text-white prose-p:text-bgray-700 dark:prose-p:text-bgray-300 prose-a:text-accent-400 ml-8">
                                 {!! $child->content !!}
                             </div>
                         </div>

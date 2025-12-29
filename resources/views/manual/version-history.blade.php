@@ -105,8 +105,8 @@
     <div class="lg:pr-80">
         <div class="rounded-lg bg-white dark:bg-darkblack-600 shadow-sm">
             <div class="px-6 py-4 border-b border-bgray-200 dark:border-darkblack-400">
-                <h3 class="font-semibold text-bgray-900 dark:text-white">Changelog</h3>
-                <p class="text-sm text-bgray-500 dark:text-bgray-400 mt-1">Dokumentasi lengkap perubahan setiap versi</p>
+                <h3 class="text-lg font-semibold text-bgray-900 dark:text-white">Changelog</h3>
+                <p class="text-base text-bgray-500 dark:text-bgray-400 mt-1">Dokumentasi lengkap perubahan setiap versi</p>
             </div>
 
             <div class="p-6">
@@ -129,10 +129,10 @@
                             <div id="v{{ $ver }}" class="version-block mb-8 pb-8 border-b border-bgray-200 dark:border-darkblack-400 last:border-0 scroll-mt-24">
                                 <!-- Version Header -->
                                 <div class="flex flex-wrap items-center gap-3 mb-4">
-                                    <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold {{ $ver === $currentVersion ? 'bg-accent-300 text-white' : 'bg-bgray-100 dark:bg-darkblack-500 text-bgray-700 dark:text-bgray-300' }}">
+                                    <span class="inline-flex items-center rounded-full px-4 py-1.5 text-base font-semibold {{ $ver === $currentVersion ? 'bg-accent-300 text-white' : 'bg-bgray-100 dark:bg-darkblack-500 text-bgray-700 dark:text-bgray-300' }}">
                                         v{{ $ver }}
                                     </span>
-                                    <span class="text-sm text-bgray-500 dark:text-bgray-400">
+                                    <span class="text-base text-bgray-500 dark:text-bgray-400">
                                         {{ \Carbon\Carbon::parse($date)->format('d F Y') }}
                                     </span>
                                     @if($ver === $currentVersion)
@@ -170,11 +170,11 @@
                                         @endphp
 
                                         <div class="mb-4">
-                                            <h4 class="flex items-center gap-2 text-sm font-semibold text-bgray-700 dark:text-bgray-300 mb-2">
+                                            <h4 class="flex items-center gap-2 text-base font-semibold text-bgray-700 dark:text-bgray-300 mb-2">
                                                 <i class="fa {{ $icon }}"></i>
                                                 {{ $label }}
                                             </h4>
-                                            <ul class="space-y-1 text-sm text-bgray-600 dark:text-bgray-400">
+                                            <ul class="space-y-1.5 text-base text-bgray-600 dark:text-bgray-400">
                                                 @foreach(explode("\n", trim($items)) as $item)
                                                     @if(str_starts_with(trim($item), '-'))
                                                         <li class="flex items-start gap-2">
