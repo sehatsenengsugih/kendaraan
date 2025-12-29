@@ -7,6 +7,18 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ---
 
+## [2.4.1] - 2025-12-30
+
+### Added
+- Deployment ke production server (kendaraan.anu.fyi)
+- SSL certificate dengan Let's Encrypt
+- CI/CD pipeline dengan GitHub Actions
+
+### Fixed
+- Perbaikan assets Vite untuk production (hapus file hot)
+
+---
+
 ## [2.4.0] - 2025-12-29
 
 ### Added
