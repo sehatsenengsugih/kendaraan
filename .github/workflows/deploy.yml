@@ -50,25 +50,19 @@ jobs:
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
-            php artisan queue:restart
+            php artisan event:cache
+            systemctl restart php8.3-fpm
             echo "Deployment completed at $(date)"
 
 # ===========================================
 # SETUP INSTRUCTIONS:
 # ===========================================
-# 1. Go to GitHub repo > Settings > Secrets and variables > Actions
-# 2. Add the following secrets:
-#    - SSH_HOST: Your server IP or hostname
-#    - SSH_USERNAME: SSH username (e.g., root, ubuntu)
-#    - SSH_PRIVATE_KEY: Your SSH private key (content of ~/.ssh/id_rsa)
-#    - SSH_PORT: SSH port (default: 22)
-#    - DEPLOY_PATH: Path to your Laravel app on server (e.g., /var/www/kendaraan)
+# Go to GitHub repo > Settings > Secrets and variables > Actions
+# Add these Repository Secrets:
 #
-# 3. On your server, make sure:
-#    - Git is installed
-#    - PHP 8.3+ is installed
-#    - Composer is installed
-#    - Node.js 20+ is installed
-#    - The deploy path exists and has proper permissions
-#    - SSH key authentication is set up
+#   SSH_HOST         = 203.175.10.109
+#   SSH_USERNAME     = root
+#   SSH_PORT         = 22
+#   DEPLOY_PATH      = /var/www/kendaraan
+#   SSH_PRIVATE_KEY  = (see deploy key in server or contact admin)
 # ===========================================
