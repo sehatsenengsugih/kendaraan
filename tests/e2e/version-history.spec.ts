@@ -25,15 +25,24 @@ test.describe('Version History', () => {
     // Check page title
     await expect(page.locator('h2:has-text("Riwayat Versi")')).toBeVisible();
 
-    // Check current version badge
-    await expect(page.locator('text=Versi Saat Ini')).toBeVisible();
-    await expect(page.locator('text=v2.4.0').first()).toBeVisible();
+    // On desktop: Check fixed TOC with current version
+    // On mobile: Check floating button
+    const isDesktop = (await page.viewportSize())?.width >= 1024;
 
-    // Check version list
-    await expect(page.locator('text=Semua Versi')).toBeVisible();
+    if (isDesktop) {
+      await expect(page.locator('#desktop-version-toc')).toBeVisible();
+      await expect(page.locator('#desktop-version-toc').locator('text=Versi Saat Ini')).toBeVisible();
+    } else {
+      // Mobile: floating button visible
+      await expect(page.locator('#floating-version-btn')).toBeVisible();
+    }
 
-    // Check changelog content
+    // Check changelog content (visible on all viewports)
     await expect(page.locator('text=Changelog')).toBeVisible();
+
+    // Check version badge in changelog area
+    const changelogArea = page.locator('.changelog-content');
+    await expect(changelogArea.locator('text=v2.4.0').first()).toBeVisible();
   });
 
   test('Can navigate to version history from manual page', async ({ page }) => {
