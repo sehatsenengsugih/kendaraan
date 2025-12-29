@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Kendaraan extends Model
 {
@@ -18,6 +19,8 @@ class Kendaraan extends Model
     protected $fillable = [
         'plat_nomor',
         'nomor_bpkb',
+        'dokumen_bpkb_path',
+        'dokumen_stnk_path',
         'status_bpkb_id',
         'nomor_rangka',
         'nomor_mesin',
@@ -33,6 +36,7 @@ class Kendaraan extends Model
         'status_kepemilikan',
         'nama_pemilik_lembaga',
         'pemilik_lembaga_id',
+        'pemilik_paroki_id',
         'tanggal_perolehan',
         'tanggal_beli',
         'harga_beli',
@@ -89,10 +93,12 @@ class Kendaraan extends Model
     ];
 
     public const KEPEMILIKAN_KAS = 'milik_kas';
+    public const KEPEMILIKAN_PAROKI = 'milik_paroki';
     public const KEPEMILIKAN_LEMBAGA_LAIN = 'milik_lembaga_lain';
 
     public const KEPEMILIKAN_OPTIONS = [
         self::KEPEMILIKAN_KAS => 'Milik KAS',
+        self::KEPEMILIKAN_PAROKI => 'Milik Paroki',
         self::KEPEMILIKAN_LEMBAGA_LAIN => 'Milik Lembaga Lain',
     ];
 
@@ -126,6 +132,14 @@ class Kendaraan extends Model
     public function pemilikLembaga(): BelongsTo
     {
         return $this->belongsTo(Lembaga::class, 'pemilik_lembaga_id');
+    }
+
+    /**
+     * Get the paroki pemilik of this kendaraan.
+     */
+    public function pemilikParoki(): BelongsTo
+    {
+        return $this->belongsTo(Paroki::class, 'pemilik_paroki_id');
     }
 
     /**
@@ -222,6 +236,60 @@ class Kendaraan extends Model
     public function riwayatPemakaiAktif(): HasMany
     {
         return $this->hasMany(RiwayatPemakai::class, 'kendaraan_id')->whereNull('tanggal_selesai');
+    }
+
+    /**
+     * Get the current active pemakai (single record).
+     * Returns the most recent riwayat where tanggal_selesai is null.
+     */
+    public function pemakaiSaatIni(): HasOne
+    {
+        return $this->hasOne(RiwayatPemakai::class, 'kendaraan_id')
+            ->whereNull('tanggal_selesai')
+            ->latest('tanggal_mulai');
+    }
+
+    /**
+     * Get pengguna/pemegang saat ini dari riwayat pemakai aktif.
+     * Ini adalah accessor yang menggantikan field pemegang_nama.
+     */
+    public function getPenggunaSaatIniAttribute(): ?string
+    {
+        $aktif = $this->pemakaiSaatIni;
+
+        if (!$aktif) {
+            return null;
+        }
+
+        // Return nama berdasarkan jenis pemakai
+        if ($aktif->jenis_pemakai === RiwayatPemakai::JENIS_PAROKI && $aktif->paroki) {
+            return $aktif->paroki->nama;
+        }
+
+        if ($aktif->jenis_pemakai === RiwayatPemakai::JENIS_LEMBAGA && $aktif->lembaga) {
+            return $aktif->lembaga->nama;
+        }
+
+        return $aktif->nama_pemakai;
+    }
+
+    /**
+     * Get detail pengguna saat ini (jenis + nama).
+     */
+    public function getDetailPenggunaSaatIniAttribute(): ?array
+    {
+        $aktif = $this->pemakaiSaatIni;
+
+        if (!$aktif) {
+            return null;
+        }
+
+        return [
+            'jenis' => $aktif->jenis_pemakai,
+            'nama' => $this->pengguna_saat_ini,
+            'tanggal_mulai' => $aktif->tanggal_mulai,
+            'riwayat_id' => $aktif->id,
+        ];
     }
 
     /**

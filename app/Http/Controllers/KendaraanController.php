@@ -159,9 +159,12 @@ class KendaraanController extends Controller
             'garasi_id' => 'nullable|exists:garasi,id',
             'pemegang_nama' => 'nullable|string|max:255',
             'status' => 'required|in:aktif,nonaktif,dihibahkan,dijual',
-            'status_kepemilikan' => 'required|in:milik_kas,milik_lembaga_lain',
+            'status_kepemilikan' => 'required|in:milik_kas,milik_paroki,milik_lembaga_lain',
+            'pemilik_paroki_id' => 'nullable|exists:paroki,id',
             'pemilik_lembaga_id' => 'nullable|exists:lembaga,id',
             'nama_pemilik_lembaga' => 'nullable|string|max:255',
+            'dokumen_bpkb' => 'nullable|file|mimes:pdf|max:5120',
+            'dokumen_stnk' => 'nullable|file|mimes:pdf|max:5120',
             'tanggal_perolehan' => 'nullable|date',
             'tanggal_beli' => 'nullable|date',
             'harga_beli' => 'nullable|numeric|min:0',
@@ -192,6 +195,7 @@ class KendaraanController extends Controller
             'riwayat_pemakai.*.tanggal_mulai' => 'nullable|date',
             'riwayat_pemakai.*.tanggal_selesai' => 'nullable|date|after_or_equal:riwayat_pemakai.*.tanggal_mulai',
             'riwayat_pemakai.*.catatan' => 'nullable|string',
+            'riwayat_pemakai.*.dokumen_serah_terima' => 'nullable|file|mimes:pdf|max:5120',
         ]);
 
         // Convert checkbox values
@@ -232,9 +236,19 @@ class KendaraanController extends Controller
                 $validated['avatar_path'] = $this->uploadImage($request->file('avatar'), 'kendaraan/avatars');
             }
 
+            // Handle dokumen BPKB upload
+            if ($request->hasFile('dokumen_bpkb')) {
+                $validated['dokumen_bpkb_path'] = $this->uploadDocument($request->file('dokumen_bpkb'), 'kendaraan/dokumen/bpkb');
+            }
+
+            // Handle dokumen STNK upload
+            if ($request->hasFile('dokumen_stnk')) {
+                $validated['dokumen_stnk_path'] = $this->uploadDocument($request->file('dokumen_stnk'), 'kendaraan/dokumen/stnk');
+            }
+
             // Remove non-model fields
             $riwayatPemakaiData = $validated['riwayat_pemakai'] ?? [];
-            unset($validated['avatar'], $validated['gambar'], $validated['riwayat_pemakai']);
+            unset($validated['avatar'], $validated['gambar'], $validated['riwayat_pemakai'], $validated['dokumen_bpkb'], $validated['dokumen_stnk']);
 
             $kendaraan = Kendaraan::create($validated);
 
@@ -267,7 +281,7 @@ class KendaraanController extends Controller
             }
 
             // Handle riwayat pemakai
-            foreach ($riwayatPemakaiData as $riwayat) {
+            foreach ($riwayatPemakaiData as $index => $riwayat) {
                 $jenisPemakai = $riwayat['jenis_pemakai'] ?? 'paroki';
                 $namaPemakai = null;
                 $parokiId = null;
@@ -287,6 +301,25 @@ class KendaraanController extends Controller
                 }
 
                 if (!empty($namaPemakai) && !empty($riwayat['tanggal_mulai'])) {
+                    $tanggalSelesai = $riwayat['tanggal_selesai'] ?? null;
+
+                    // Jika riwayat baru ini aktif (tanggal_selesai null),
+                    // tutup semua riwayat aktif sebelumnya
+                    if (empty($tanggalSelesai)) {
+                        // Set tanggal_selesai = sehari sebelum tanggal_mulai riwayat baru
+                        $tanggalClose = date('Y-m-d', strtotime($riwayat['tanggal_mulai'] . ' -1 day'));
+                        $this->closeActiveRiwayat($kendaraan->id, $tanggalClose);
+                    }
+
+                    // Handle dokumen serah terima upload
+                    $dokumenPath = null;
+                    if ($request->hasFile("riwayat_pemakai.{$index}.dokumen_serah_terima")) {
+                        $dokumenPath = $this->uploadDocument(
+                            $request->file("riwayat_pemakai.{$index}.dokumen_serah_terima"),
+                            'kendaraan/dokumen/serah-terima'
+                        );
+                    }
+
                     RiwayatPemakai::create([
                         'kendaraan_id' => $kendaraan->id,
                         'nama_pemakai' => $namaPemakai,
@@ -294,8 +327,9 @@ class KendaraanController extends Controller
                         'paroki_id' => $parokiId,
                         'lembaga_id' => $lembagaId,
                         'tanggal_mulai' => $riwayat['tanggal_mulai'],
-                        'tanggal_selesai' => $riwayat['tanggal_selesai'] ?? null,
+                        'tanggal_selesai' => $tanggalSelesai,
                         'catatan' => $riwayat['catatan'] ?? null,
+                        'dokumen_serah_terima_path' => $dokumenPath,
                     ]);
                 }
             }
@@ -330,7 +364,7 @@ class KendaraanController extends Controller
             abort(403, 'Anda tidak memiliki akses ke kendaraan ini.');
         }
 
-        $kendaraan->load(['merk', 'garasi.kevikepan', 'pemegang', 'gambar', 'riwayatPemakai', 'statusBpkb']);
+        $kendaraan->load(['merk', 'garasi.kevikepan', 'pemegang', 'gambar', 'riwayatPemakai', 'statusBpkb', 'pemakaiSaatIni.paroki', 'pemakaiSaatIni.lembaga']);
 
         return view('kendaraan.show', compact('kendaraan'));
     }
@@ -346,7 +380,7 @@ class KendaraanController extends Controller
             abort(403, 'Anda tidak memiliki akses ke kendaraan ini.');
         }
 
-        $kendaraan->load(['gambar', 'riwayatPemakai', 'statusBpkb']);
+        $kendaraan->load(['gambar', 'riwayatPemakai', 'statusBpkb', 'pemakaiSaatIni.paroki', 'pemakaiSaatIni.lembaga']);
 
         $merk = Merk::orderBy('nama')->get();
         $garasi = Garasi::with('kevikepan')->orderBy('nama')->get();
@@ -389,9 +423,12 @@ class KendaraanController extends Controller
             'pemegang_id' => 'nullable|exists:pengguna,id',
             'pemegang_nama' => 'nullable|string|max:255',
             'status' => 'required|in:aktif,nonaktif,dihibahkan,dijual',
-            'status_kepemilikan' => 'required|in:milik_kas,milik_lembaga_lain',
+            'status_kepemilikan' => 'required|in:milik_kas,milik_paroki,milik_lembaga_lain',
+            'pemilik_paroki_id' => 'nullable|exists:paroki,id',
             'pemilik_lembaga_id' => 'nullable|exists:lembaga,id',
             'nama_pemilik_lembaga' => 'nullable|string|max:255',
+            'dokumen_bpkb' => 'nullable|file|mimes:pdf|max:5120',
+            'dokumen_stnk' => 'nullable|file|mimes:pdf|max:5120',
             'tanggal_perolehan' => 'nullable|date',
             'tanggal_beli' => 'nullable|date',
             'harga_beli' => 'nullable|numeric|min:0',
@@ -425,6 +462,7 @@ class KendaraanController extends Controller
             'riwayat_pemakai.*.tanggal_mulai' => 'nullable|date',
             'riwayat_pemakai.*.tanggal_selesai' => 'nullable|date|after_or_equal:riwayat_pemakai.*.tanggal_mulai',
             'riwayat_pemakai.*.catatan' => 'nullable|string',
+            'riwayat_pemakai.*.dokumen_serah_terima' => 'nullable|file|mimes:pdf|max:5120',
             'delete_riwayat' => 'nullable|array',
             'delete_riwayat.*' => 'exists:riwayat_pemakai,id',
         ]);
@@ -471,9 +509,27 @@ class KendaraanController extends Controller
                 $validated['avatar_path'] = $this->uploadImage($request->file('avatar'), 'kendaraan/avatars');
             }
 
+            // Handle dokumen BPKB upload
+            if ($request->hasFile('dokumen_bpkb')) {
+                // Delete old dokumen
+                if ($kendaraan->dokumen_bpkb_path) {
+                    Storage::disk('public')->delete($kendaraan->dokumen_bpkb_path);
+                }
+                $validated['dokumen_bpkb_path'] = $this->uploadDocument($request->file('dokumen_bpkb'), 'kendaraan/dokumen/bpkb');
+            }
+
+            // Handle dokumen STNK upload
+            if ($request->hasFile('dokumen_stnk')) {
+                // Delete old dokumen
+                if ($kendaraan->dokumen_stnk_path) {
+                    Storage::disk('public')->delete($kendaraan->dokumen_stnk_path);
+                }
+                $validated['dokumen_stnk_path'] = $this->uploadDocument($request->file('dokumen_stnk'), 'kendaraan/dokumen/stnk');
+            }
+
             // Remove non-model fields
             $riwayatPemakaiData = $validated['riwayat_pemakai'] ?? [];
-            unset($validated['avatar'], $validated['gambar'], $validated['delete_gambar'], $validated['riwayat_pemakai'], $validated['delete_riwayat']);
+            unset($validated['avatar'], $validated['gambar'], $validated['delete_gambar'], $validated['riwayat_pemakai'], $validated['delete_riwayat'], $validated['dokumen_bpkb'], $validated['dokumen_stnk']);
 
             // Auto-create history when pengguna (pemegang_nama) changes
             $oldPengguna = $kendaraan->pemegang_nama;
@@ -537,7 +593,7 @@ class KendaraanController extends Controller
             }
 
             // Handle riwayat pemakai (update existing or create new)
-            foreach ($riwayatPemakaiData as $riwayat) {
+            foreach ($riwayatPemakaiData as $index => $riwayat) {
                 $jenisPemakai = $riwayat['jenis_pemakai'] ?? 'paroki';
                 $namaPemakai = null;
                 $parokiId = null;
@@ -557,6 +613,38 @@ class KendaraanController extends Controller
                 }
 
                 if (!empty($namaPemakai) && !empty($riwayat['tanggal_mulai'])) {
+                    $tanggalSelesai = $riwayat['tanggal_selesai'] ?? null;
+                    $isNewRecord = empty($riwayat['id']);
+                    $isActive = empty($tanggalSelesai);
+
+                    // Jika ini adalah record baru yang aktif, tutup riwayat aktif lainnya
+                    if ($isNewRecord && $isActive) {
+                        $tanggalClose = date('Y-m-d', strtotime($riwayat['tanggal_mulai'] . ' -1 day'));
+                        $this->closeActiveRiwayat($kendaraan->id, $tanggalClose);
+                    }
+                    // Jika ini adalah update record existing menjadi aktif
+                    elseif (!$isNewRecord && $isActive) {
+                        // Tutup riwayat aktif lain, kecuali record ini sendiri
+                        $tanggalClose = date('Y-m-d', strtotime($riwayat['tanggal_mulai'] . ' -1 day'));
+                        $this->closeActiveRiwayat($kendaraan->id, $tanggalClose, (int) $riwayat['id']);
+                    }
+
+                    // Handle dokumen serah terima upload
+                    $dokumenPath = null;
+                    if ($request->hasFile("riwayat_pemakai.{$index}.dokumen_serah_terima")) {
+                        // Delete old dokumen if updating existing riwayat
+                        if (!empty($riwayat['id'])) {
+                            $existingRiwayat = RiwayatPemakai::find($riwayat['id']);
+                            if ($existingRiwayat && $existingRiwayat->dokumen_serah_terima_path) {
+                                Storage::disk('public')->delete($existingRiwayat->dokumen_serah_terima_path);
+                            }
+                        }
+                        $dokumenPath = $this->uploadDocument(
+                            $request->file("riwayat_pemakai.{$index}.dokumen_serah_terima"),
+                            'kendaraan/dokumen/serah-terima'
+                        );
+                    }
+
                     $riwayatData = [
                         'kendaraan_id' => $kendaraan->id,
                         'nama_pemakai' => $namaPemakai,
@@ -564,11 +652,16 @@ class KendaraanController extends Controller
                         'paroki_id' => $parokiId,
                         'lembaga_id' => $lembagaId,
                         'tanggal_mulai' => $riwayat['tanggal_mulai'],
-                        'tanggal_selesai' => $riwayat['tanggal_selesai'] ?? null,
+                        'tanggal_selesai' => $tanggalSelesai,
                         'catatan' => $riwayat['catatan'] ?? null,
                     ];
 
-                    if (!empty($riwayat['id'])) {
+                    // Only update dokumen_serah_terima_path if new file uploaded
+                    if ($dokumenPath) {
+                        $riwayatData['dokumen_serah_terima_path'] = $dokumenPath;
+                    }
+
+                    if (!$isNewRecord) {
                         // Update existing
                         RiwayatPemakai::where('id', $riwayat['id'])
                             ->where('kendaraan_id', $kendaraan->id)
@@ -681,9 +774,40 @@ class KendaraanController extends Controller
     }
 
     /**
+     * Close all active riwayat pemakai for a kendaraan.
+     * Called when a new active riwayat is created.
+     *
+     * @param int $kendaraanId
+     * @param string|null $tanggalSelesai Date to set as tanggal_selesai (defaults to today)
+     * @param int|null $excludeId Riwayat ID to exclude from closing (for update scenarios)
+     */
+    private function closeActiveRiwayat(int $kendaraanId, ?string $tanggalSelesai = null, ?int $excludeId = null): void
+    {
+        $query = RiwayatPemakai::where('kendaraan_id', $kendaraanId)
+            ->whereNull('tanggal_selesai');
+
+        if ($excludeId) {
+            $query->where('id', '!=', $excludeId);
+        }
+
+        $query->update([
+            'tanggal_selesai' => $tanggalSelesai ?? now()->toDateString(),
+        ]);
+    }
+
+    /**
      * Upload image helper.
      */
     private function uploadImage($file, string $directory): string
+    {
+        $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+        return $file->storeAs($directory, $filename, 'public');
+    }
+
+    /**
+     * Upload document (PDF) helper.
+     */
+    private function uploadDocument($file, string $directory): string
     {
         $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
         return $file->storeAs($directory, $filename, 'public');

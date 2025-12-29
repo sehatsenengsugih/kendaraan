@@ -163,6 +163,32 @@
                             @enderror
                         </div>
 
+                        <!-- Upload Dokumen BPKB -->
+                        <div>
+                            <label for="dokumen_bpkb" class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">
+                                Upload Dokumen BPKB (PDF)
+                            </label>
+                            <input type="file" name="dokumen_bpkb" id="dokumen_bpkb" accept="application/pdf"
+                                class="w-full text-sm text-bgray-600 file:mr-4 file:rounded-lg file:border-0 file:bg-accent-300 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-accent-400">
+                            <p class="mt-1 text-xs text-bgray-500">Format PDF, maksimal 5MB</p>
+                            @error('dokumen_bpkb')
+                                <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Upload Dokumen STNK -->
+                        <div>
+                            <label for="dokumen_stnk" class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">
+                                Upload Dokumen STNK (PDF)
+                            </label>
+                            <input type="file" name="dokumen_stnk" id="dokumen_stnk" accept="application/pdf"
+                                class="w-full text-sm text-bgray-600 file:mr-4 file:rounded-lg file:border-0 file:bg-accent-300 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-accent-400">
+                            <p class="mt-1 text-xs text-bgray-500">Format PDF, maksimal 5MB</p>
+                            @error('dokumen_stnk')
+                                <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <!-- Nomor Rangka -->
                         <div>
                             <label for="nomor_rangka" class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">
@@ -198,11 +224,16 @@
                     <div class="grid gap-4 md:grid-cols-2">
                         <!-- Status Kepemilikan Radio -->
                         <div class="md:col-span-2">
-                            <div class="flex gap-6">
+                            <div class="flex flex-wrap gap-4">
                                 <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-bgray-200 px-4 py-3 transition-all hover:border-accent-300 dark:border-darkblack-400">
                                     <input type="radio" name="status_kepemilikan" value="milik_kas" {{ old('status_kepemilikan', 'milik_kas') === 'milik_kas' ? 'checked' : '' }}
                                         class="h-5 w-5 text-accent-300 focus:ring-accent-300">
                                     <span class="text-bgray-900 dark:text-white">Milik KAS</span>
+                                </label>
+                                <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-bgray-200 px-4 py-3 transition-all hover:border-accent-300 dark:border-darkblack-400">
+                                    <input type="radio" name="status_kepemilikan" value="milik_paroki" {{ old('status_kepemilikan') === 'milik_paroki' ? 'checked' : '' }}
+                                        class="h-5 w-5 text-accent-300 focus:ring-accent-300">
+                                    <span class="text-bgray-900 dark:text-white">Milik Paroki</span>
                                 </label>
                                 <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-bgray-200 px-4 py-3 transition-all hover:border-accent-300 dark:border-darkblack-400">
                                     <input type="radio" name="status_kepemilikan" value="milik_lembaga_lain" {{ old('status_kepemilikan') === 'milik_lembaga_lain' ? 'checked' : '' }}
@@ -211,6 +242,25 @@
                                 </label>
                             </div>
                             @error('status_kepemilikan')
+                                <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Paroki Pemilik (conditional) -->
+                        <div id="paroki-pemilik-field" class="md:col-span-2 {{ old('status_kepemilikan') === 'milik_paroki' ? '' : 'hidden' }}">
+                            <label for="pemilik_paroki_id" class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">
+                                Paroki Pemilik <span class="text-error-300">*</span>
+                            </label>
+                            <select name="pemilik_paroki_id" id="pemilik_paroki_id"
+                                class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('pemilik_paroki_id') border-error-300 @enderror">
+                                <option value="">Pilih Paroki</option>
+                                @foreach($paroki as $p)
+                                    <option value="{{ $p->id }}" {{ old('pemilik_paroki_id') == $p->id ? 'selected' : '' }}>
+                                        {{ $p->nama }} ({{ $p->kevikepan->nama ?? '-' }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('pemilik_paroki_id')
                                 <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
                             @enderror
                         </div>
@@ -261,18 +311,17 @@
                             @enderror
                         </div>
 
-                        <!-- Pengguna Saat Ini -->
+                        <!-- Pengguna Saat Ini (Info) -->
                         <div>
-                            <label for="pemegang_nama" class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">
+                            <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">
                                 Pengguna Saat Ini
                             </label>
-                            <input type="text" name="pemegang_nama" id="pemegang_nama"
-                                value="{{ old('pemegang_nama') }}"
-                                placeholder="Nama pengguna kendaraan saat ini..."
-                                class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white @error('pemegang_nama') border-error-300 @enderror">
-                            @error('pemegang_nama')
-                                <p class="mt-1 text-sm text-error-300">{{ $message }}</p>
-                            @enderror
+                            <div class="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 dark:border-blue-800 dark:bg-blue-900/20">
+                                <p class="text-sm text-blue-700 dark:text-blue-300">
+                                    <i class="fa fa-info-circle mr-1"></i>
+                                    Pengguna saat ini diambil otomatis dari <strong>Riwayat Pengguna</strong> yang aktif (tanpa tanggal selesai).
+                                </p>
+                            </div>
                         </div>
 
                         <!-- Status -->
@@ -624,6 +673,12 @@
                                                 class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
                                                 placeholder="Catatan tentang penggunaan">{{ $riwayat['catatan'] ?? '' }}</textarea>
                                         </div>
+                                        <div class="md:col-span-2">
+                                            <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Dokumen Serah Terima (PDF)</label>
+                                            <input type="file" name="riwayat_pemakai[{{ $index }}][dokumen_serah_terima]" accept="application/pdf"
+                                                class="w-full text-sm text-bgray-600 file:mr-4 file:rounded-lg file:border-0 file:bg-blue-500 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-600">
+                                            <p class="mt-1 text-xs text-bgray-500">Format PDF, maksimal 5MB</p>
+                                        </div>
                                     </div>
                                 </div>
                             @endforeach
@@ -714,10 +769,11 @@
             }
         });
 
-        // Toggle Lembaga field
+        // Toggle Lembaga and Paroki field
         document.querySelectorAll('input[name="status_kepemilikan"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 document.getElementById('lembaga-field').classList.toggle('hidden', this.value !== 'milik_lembaga_lain');
+                document.getElementById('paroki-pemilik-field').classList.toggle('hidden', this.value !== 'milik_paroki');
             });
         });
 
@@ -818,6 +874,12 @@
                             <textarea name="riwayat_pemakai[${riwayatIndex}][catatan]" rows="2"
                                 class="w-full rounded-lg border border-bgray-200 px-4 py-3 text-bgray-900 focus:border-accent-300 focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-500 dark:text-white"
                                 placeholder="Catatan tentang penggunaan"></textarea>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="mb-2 block text-sm font-medium text-bgray-900 dark:text-white">Dokumen Serah Terima (PDF)</label>
+                            <input type="file" name="riwayat_pemakai[${riwayatIndex}][dokumen_serah_terima]" accept="application/pdf"
+                                class="w-full text-sm text-bgray-600 file:mr-4 file:rounded-lg file:border-0 file:bg-blue-500 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-600">
+                            <p class="mt-1 text-xs text-bgray-500">Format PDF, maksimal 5MB</p>
                         </div>
                     </div>
                 </div>

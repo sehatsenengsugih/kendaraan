@@ -123,6 +123,28 @@
                                 @endif
                             </dd>
                         </div>
+                        @if($kendaraan->dokumen_bpkb_path)
+                            <div class="flex justify-between items-center">
+                                <dt class="text-bgray-500 dark:text-bgray-50">Dokumen BPKB</dt>
+                                <dd>
+                                    <a href="{{ asset('storage/' . $kendaraan->dokumen_bpkb_path) }}" target="_blank"
+                                        class="inline-flex items-center gap-1 rounded-lg bg-red-50 px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-100">
+                                        <i class="fa fa-file-pdf"></i> Lihat PDF
+                                    </a>
+                                </dd>
+                            </div>
+                        @endif
+                        @if($kendaraan->dokumen_stnk_path)
+                            <div class="flex justify-between items-center">
+                                <dt class="text-bgray-500 dark:text-bgray-50">Dokumen STNK</dt>
+                                <dd>
+                                    <a href="{{ asset('storage/' . $kendaraan->dokumen_stnk_path) }}" target="_blank"
+                                        class="inline-flex items-center gap-1 rounded-lg bg-red-50 px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-100">
+                                        <i class="fa fa-file-pdf"></i> Lihat PDF
+                                    </a>
+                                </dd>
+                            </div>
+                        @endif
                         @if($kendaraan->nomor_rangka)
                             <div class="flex justify-between">
                                 <dt class="text-bgray-500 dark:text-bgray-50">No. Rangka</dt>
@@ -152,6 +174,10 @@
                                     <span class="inline-flex items-center rounded-full bg-accent-50 px-2 py-0.5 text-xs font-medium text-accent-400">
                                         Milik KAS
                                     </span>
+                                @elseif($kendaraan->status_kepemilikan === 'milik_paroki')
+                                    <span class="inline-flex items-center rounded-full bg-purple-50 px-2 py-0.5 text-xs font-medium text-purple-600">
+                                        Milik Paroki
+                                    </span>
                                 @else
                                     <span class="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600">
                                         Milik Lembaga Lain
@@ -159,6 +185,17 @@
                                 @endif
                             </dd>
                         </div>
+                        @if($kendaraan->status_kepemilikan === 'milik_paroki' && $kendaraan->pemilikParoki)
+                            <div class="flex justify-between">
+                                <dt class="text-bgray-500 dark:text-bgray-50">Paroki Pemilik</dt>
+                                <dd class="font-medium text-bgray-900 dark:text-white">
+                                    {{ $kendaraan->pemilikParoki->nama }}
+                                    @if($kendaraan->pemilikParoki->kevikepan)
+                                        <span class="text-sm text-bgray-500">({{ $kendaraan->pemilikParoki->kevikepan->nama }})</span>
+                                    @endif
+                                </dd>
+                            </div>
+                        @endif
                         @if($kendaraan->status_kepemilikan === 'milik_lembaga_lain' && $kendaraan->nama_pemilik_lembaga)
                             <div class="flex justify-between">
                                 <dt class="text-bgray-500 dark:text-bgray-50">Nama Lembaga</dt>
@@ -311,6 +348,7 @@
                                     <th class="py-3 font-semibold text-bgray-900 dark:text-white">Periode</th>
                                     <th class="py-3 font-semibold text-bgray-900 dark:text-white">Durasi</th>
                                     <th class="py-3 font-semibold text-bgray-900 dark:text-white">Status</th>
+                                    <th class="py-3 font-semibold text-bgray-900 dark:text-white">Dokumen</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-bgray-100 dark:divide-darkblack-400">
@@ -323,7 +361,11 @@
                                             @endif
                                         </td>
                                         <td class="py-3 text-bgray-600 dark:text-bgray-50">
-                                            @if($riwayat->jenis_pemakai === 'lembaga')
+                                            @if($riwayat->jenis_pemakai === 'paroki')
+                                                <span class="inline-flex items-center rounded-full bg-accent-50 px-2 py-0.5 text-xs font-medium text-accent-400">
+                                                    Paroki
+                                                </span>
+                                            @elseif($riwayat->jenis_pemakai === 'lembaga')
                                                 <span class="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600">
                                                     Lembaga
                                                 </span>
@@ -353,6 +395,16 @@
                                                 <span class="inline-flex items-center rounded-full bg-bgray-100 px-2 py-0.5 text-xs font-medium text-bgray-600">
                                                     Selesai
                                                 </span>
+                                            @endif
+                                        </td>
+                                        <td class="py-3">
+                                            @if($riwayat->dokumen_serah_terima_path)
+                                                <a href="{{ asset('storage/' . $riwayat->dokumen_serah_terima_path) }}" target="_blank"
+                                                    class="inline-flex items-center gap-1 rounded-lg bg-red-50 px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-100">
+                                                    <i class="fa fa-file-pdf"></i> Serah Terima
+                                                </a>
+                                            @else
+                                                <span class="text-bgray-400">-</span>
                                             @endif
                                         </td>
                                     </tr>
@@ -450,27 +502,38 @@
                 </dl>
             </div>
 
-            <!-- Pengguna Saat Ini -->
+            <!-- Pengguna Saat Ini (dari Riwayat Aktif) -->
             <div class="rounded-lg bg-white p-6 dark:bg-darkblack-600">
                 <h3 class="mb-4 text-lg font-semibold text-bgray-900 dark:text-white">Pengguna Saat Ini</h3>
-                @if($kendaraan->pemegang_nama || $kendaraan->pemegang)
+                @if($kendaraan->pemakaiSaatIni)
                     <div class="flex items-center gap-3">
                         <div class="flex h-12 w-12 items-center justify-center rounded-full bg-accent-50 text-accent-400">
-                            <i class="fa fa-user"></i>
+                            @if($kendaraan->pemakaiSaatIni->jenis_pemakai === 'paroki')
+                                <i class="fa fa-church"></i>
+                            @elseif($kendaraan->pemakaiSaatIni->jenis_pemakai === 'lembaga')
+                                <i class="fa fa-building"></i>
+                            @else
+                                <i class="fa fa-user"></i>
+                            @endif
                         </div>
                         <div>
                             <p class="font-medium text-bgray-900 dark:text-white">
-                                {{ $kendaraan->pemegang_nama ?? $kendaraan->pemegang->name }}
+                                {{ $kendaraan->pengguna_saat_ini }}
                             </p>
-                            @if($kendaraan->pemegang)
-                                <p class="text-sm text-bgray-500 dark:text-bgray-50">
-                                    {{ $kendaraan->pemegang->organization_name ?? ucfirst($kendaraan->pemegang->user_type) }}
-                                </p>
-                            @endif
+                            <p class="text-sm text-bgray-500 dark:text-bgray-50">
+                                {{ ucfirst($kendaraan->pemakaiSaatIni->jenis_pemakai) }}
+                                &bull; Sejak {{ $kendaraan->pemakaiSaatIni->tanggal_mulai->format('d M Y') }}
+                                ({{ $kendaraan->pemakaiSaatIni->durasi }} hari)
+                            </p>
                         </div>
                     </div>
                 @else
-                    <p class="text-bgray-500 dark:text-bgray-50">Tidak ada pengguna</p>
+                    <div class="flex items-center gap-3 text-bgray-500 dark:text-bgray-50">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-bgray-100 dark:bg-darkblack-500">
+                            <i class="fa fa-user-slash"></i>
+                        </div>
+                        <p>Tidak ada pengguna aktif</p>
+                    </div>
                 @endif
             </div>
 

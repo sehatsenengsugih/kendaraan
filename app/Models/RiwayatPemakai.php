@@ -22,6 +22,7 @@ class RiwayatPemakai extends Model
         'tanggal_mulai',
         'tanggal_selesai',
         'catatan',
+        'dokumen_serah_terima_path',
     ];
 
     protected $casts = [
