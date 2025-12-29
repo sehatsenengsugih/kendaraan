@@ -93,6 +93,14 @@
                     <!-- Main Content Slot -->
                     {{ $slot }}
                 </main>
+
+                <!-- Footer -->
+                <footer class="px-6 py-4 text-center text-sm text-bgray-500 dark:text-bgray-400 border-t border-bgray-200 dark:border-darkblack-400">
+                    <span class="font-medium text-bgray-700 dark:text-bgray-300">Kendaraan</span>
+                    <span class="mx-1">v{{ trim(file_get_contents(base_path('VERSION'))) }}</span>
+                    <span class="mx-2">•</span>
+                    <span>&copy; {{ date('Y') }} Keuskupan Agung Semarang</span>
+                </footer>
             </div>
         </div>
     </div>
