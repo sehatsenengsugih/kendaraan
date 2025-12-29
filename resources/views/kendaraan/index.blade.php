@@ -124,8 +124,72 @@
         </form>
     </div>
 
-    <!-- Table Card -->
-    <div class="rounded-lg bg-white dark:bg-darkblack-600">
+    <!-- Mobile Cards -->
+    <div class="space-y-3 md:hidden">
+        @forelse($kendaraan as $k)
+            <div class="rounded-lg bg-white p-4 dark:bg-darkblack-600">
+                <div class="flex items-start gap-3">
+                    <div class="h-14 w-14 flex-shrink-0 overflow-hidden rounded-lg bg-bgray-100">
+                        @if($k->avatar_path)
+                            <img src="{{ asset('storage/' . $k->avatar_path) }}" alt="{{ $k->display_name }}" class="h-full w-full object-cover">
+                        @else
+                            <div class="flex h-full w-full items-center justify-center text-bgray-400">
+                                <i class="fa {{ $k->jenis === 'motor' ? 'fa-motorcycle' : 'fa-car' }} text-xl"></i>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <a href="{{ route('kendaraan.show', $k) }}" class="font-semibold text-bgray-900 dark:text-white">
+                                    {{ $k->merk->nama ?? '' }} {{ $k->nama_model }}
+                                </a>
+                                <p class="font-mono text-sm font-medium text-accent-400">{{ $k->plat_nomor }}</p>
+                            </div>
+                            @if($k->status === 'aktif')
+                                <span class="inline-flex shrink-0 rounded-full bg-accent-50 px-2 py-0.5 text-xs font-medium text-accent-400">Aktif</span>
+                            @elseif($k->status === 'dijual')
+                                <span class="inline-flex shrink-0 rounded-full bg-error-50 px-2 py-0.5 text-xs font-medium text-error-300">Dijual</span>
+                            @elseif($k->status === 'dihibahkan')
+                                <span class="inline-flex shrink-0 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600">Dihibahkan</span>
+                            @else
+                                <span class="inline-flex shrink-0 rounded-full bg-warning-50 px-2 py-0.5 text-xs font-medium text-warning-400">{{ ucfirst($k->status) }}</span>
+                            @endif
+                        </div>
+                        <div class="mt-2 space-y-1 text-xs text-bgray-500 dark:text-bgray-300">
+                            <p><i class="fa fa-tag mr-1 w-4"></i>{{ ucfirst($k->jenis) }} • {{ $k->tahun_pembuatan }} • {{ $k->warna }}</p>
+                            <p><i class="fa fa-warehouse mr-1 w-4"></i>{{ $k->garasi->nama ?? '-' }}</p>
+                            <p><i class="fa fa-user mr-1 w-4"></i>{{ $k->pemegang_nama ?? $k->pemegang->name ?? '-' }}</p>
+                        </div>
+                        <div class="mt-3 flex items-center gap-2 border-t border-bgray-100 pt-3 dark:border-darkblack-400">
+                            <a href="{{ route('kendaraan.show', $k) }}" class="flex-1 rounded-lg bg-bgray-100 px-3 py-2 text-center text-xs font-medium text-bgray-700 dark:bg-darkblack-500 dark:text-white">
+                                <i class="fa fa-eye mr-1"></i> Detail
+                            </a>
+                            <a href="{{ route('kendaraan.edit', $k) }}" class="flex-1 rounded-lg bg-accent-50 px-3 py-2 text-center text-xs font-medium text-accent-400">
+                                <i class="fa fa-edit mr-1"></i> Edit
+                            </a>
+                            <form method="POST" action="{{ route('kendaraan.destroy', $k) }}" class="flex-1" onsubmit="return confirm('Yakin ingin menghapus kendaraan {{ $k->plat_nomor }}?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="w-full rounded-lg bg-error-50 px-3 py-2 text-xs font-medium text-error-300">
+                                    <i class="fa fa-trash mr-1"></i> Hapus
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="rounded-lg bg-white p-8 text-center dark:bg-darkblack-600">
+                <i class="fa fa-car mb-4 text-4xl text-bgray-300"></i>
+                <p class="text-bgray-500 dark:text-bgray-50">Belum ada data kendaraan</p>
+                <a href="{{ route('kendaraan.create') }}" class="mt-2 inline-block text-accent-300 hover:underline">Tambah kendaraan pertama</a>
+            </div>
+        @endforelse
+    </div>
+
+    <!-- Desktop Table -->
+    <div class="hidden rounded-lg bg-white dark:bg-darkblack-600 md:block">
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead class="border-b border-bgray-200 dark:border-darkblack-400">
@@ -151,9 +215,7 @@
                                 <div class="flex items-center gap-3">
                                     <div class="h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg bg-bgray-100">
                                         @if($k->avatar_path)
-                                            <img src="{{ asset('storage/' . $k->avatar_path) }}"
-                                                alt="{{ $k->display_name }}"
-                                                class="h-full w-full object-cover">
+                                            <img src="{{ asset('storage/' . $k->avatar_path) }}" alt="{{ $k->display_name }}" class="h-full w-full object-cover">
                                         @else
                                             <div class="flex h-full w-full items-center justify-center text-bgray-400">
                                                 <i class="fa {{ $k->jenis === 'motor' ? 'fa-motorcycle' : 'fa-car' }}"></i>
@@ -170,57 +232,34 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 font-mono text-bgray-900 dark:text-white">
-                                {{ $k->plat_nomor }}
-                            </td>
-                            <td class="px-6 py-4 text-bgray-900 dark:text-white">
-                                {{ $k->garasi->nama ?? '-' }}
-                            </td>
-                            <td class="px-6 py-4 text-bgray-900 dark:text-white">
-                                {{ $k->pemegang_nama ?? $k->pemegang->name ?? '-' }}
-                            </td>
+                            <td class="px-6 py-4 font-mono text-bgray-900 dark:text-white">{{ $k->plat_nomor }}</td>
+                            <td class="px-6 py-4 text-bgray-900 dark:text-white">{{ $k->garasi->nama ?? '-' }}</td>
+                            <td class="px-6 py-4 text-bgray-900 dark:text-white">{{ $k->pemegang_nama ?? $k->pemegang->name ?? '-' }}</td>
                             <td class="px-6 py-4">
                                 @if($k->status === 'aktif')
-                                    <span class="inline-flex rounded-full bg-accent-50 px-2 py-1 text-xs font-medium text-accent-400">
-                                        Aktif
-                                    </span>
+                                    <span class="inline-flex rounded-full bg-accent-50 px-2 py-1 text-xs font-medium text-accent-400">Aktif</span>
                                 @elseif($k->status === 'nonaktif')
-                                    <span class="inline-flex rounded-full bg-warning-50 px-2 py-1 text-xs font-medium text-warning-400">
-                                        Non-Aktif
-                                    </span>
+                                    <span class="inline-flex rounded-full bg-warning-50 px-2 py-1 text-xs font-medium text-warning-400">Non-Aktif</span>
                                 @elseif($k->status === 'dijual')
-                                    <span class="inline-flex rounded-full bg-error-50 px-2 py-1 text-xs font-medium text-error-300">
-                                        Dijual
-                                    </span>
+                                    <span class="inline-flex rounded-full bg-error-50 px-2 py-1 text-xs font-medium text-error-300">Dijual</span>
                                 @elseif($k->status === 'dihibahkan')
-                                    <span class="inline-flex rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-600">
-                                        Dihibahkan
-                                    </span>
+                                    <span class="inline-flex rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-600">Dihibahkan</span>
                                 @else
-                                    <span class="inline-flex rounded-full bg-bgray-100 px-2 py-1 text-xs font-medium text-bgray-600">
-                                        {{ ucfirst($k->status) }}
-                                    </span>
+                                    <span class="inline-flex rounded-full bg-bgray-100 px-2 py-1 text-xs font-medium text-bgray-600">{{ ucfirst($k->status) }}</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('kendaraan.show', $k) }}"
-                                        class="rounded-lg p-2 text-bgray-600 hover:bg-bgray-100 dark:text-bgray-50 dark:hover:bg-darkblack-500"
-                                        title="Lihat Detail">
+                                    <a href="{{ route('kendaraan.show', $k) }}" class="rounded-lg p-2 text-bgray-600 hover:bg-bgray-100 dark:text-bgray-50 dark:hover:bg-darkblack-500" title="Lihat Detail">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('kendaraan.edit', $k) }}"
-                                        class="rounded-lg p-2 text-bgray-600 hover:bg-bgray-100 dark:text-bgray-50 dark:hover:bg-darkblack-500"
-                                        title="Edit">
+                                    <a href="{{ route('kendaraan.edit', $k) }}" class="rounded-lg p-2 text-bgray-600 hover:bg-bgray-100 dark:text-bgray-50 dark:hover:bg-darkblack-500" title="Edit">
                                         <i class="fa fa-edit"></i>
                                     </a>
-                                    <form method="POST" action="{{ route('kendaraan.destroy', $k) }}"
-                                        onsubmit="return confirm('Yakin ingin menghapus kendaraan {{ $k->plat_nomor }}?')">
+                                    <form method="POST" action="{{ route('kendaraan.destroy', $k) }}" onsubmit="return confirm('Yakin ingin menghapus kendaraan {{ $k->plat_nomor }}?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit"
-                                            class="rounded-lg p-2 text-error-300 hover:bg-error-50"
-                                            title="Hapus">
+                                        <button type="submit" class="rounded-lg p-2 text-error-300 hover:bg-error-50" title="Hapus">
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </form>
@@ -232,21 +271,19 @@
                             <td colspan="6" class="px-6 py-12 text-center text-bgray-500 dark:text-bgray-50">
                                 <i class="fa fa-car mb-4 text-4xl text-bgray-300"></i>
                                 <p>Belum ada data kendaraan</p>
-                                <a href="{{ route('kendaraan.create') }}" class="mt-2 inline-block text-accent-300 hover:underline">
-                                    Tambah kendaraan pertama
-                                </a>
+                                <a href="{{ route('kendaraan.create') }}" class="mt-2 inline-block text-accent-300 hover:underline">Tambah kendaraan pertama</a>
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-
-        <!-- Pagination -->
-        @if($kendaraan->hasPages())
-            <div class="border-t border-bgray-200 px-6 py-4 dark:border-darkblack-400">
-                {{ $kendaraan->links() }}
-            </div>
-        @endif
     </div>
+
+    <!-- Pagination -->
+    @if($kendaraan->hasPages())
+        <div class="mt-4 rounded-lg bg-white px-4 py-3 dark:bg-darkblack-600 md:px-6 md:py-4">
+            {{ $kendaraan->links() }}
+        </div>
+    @endif
 </x-app-layout>
