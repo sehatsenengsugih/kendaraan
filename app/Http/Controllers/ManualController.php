@@ -24,6 +24,33 @@ class ManualController extends Controller
     }
 
     /**
+     * Show version history page.
+     */
+    public function versionHistory(): View
+    {
+        $sections = ManualSection::getTree();
+        $changelogPath = base_path('CHANGELOG.md');
+        $changelog = '';
+        $versions = [];
+
+        if (file_exists($changelogPath)) {
+            $changelog = file_get_contents($changelogPath);
+            // Parse versions from changelog
+            preg_match_all('/## \[(\d+\.\d+\.\d+)\] - (\d{4}-\d{2}-\d{2})/', $changelog, $matches, PREG_SET_ORDER);
+            foreach ($matches as $match) {
+                $versions[] = [
+                    'version' => $match[1],
+                    'date' => $match[2],
+                ];
+            }
+        }
+
+        $currentVersion = trim(file_get_contents(base_path('VERSION')));
+
+        return view('manual.version-history', compact('sections', 'changelog', 'versions', 'currentVersion'));
+    }
+
+    /**
      * Show specific section of the manual.
      */
     public function section(string $slug): View

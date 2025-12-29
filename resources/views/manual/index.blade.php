@@ -69,6 +69,15 @@
                         @endforeach
                     @endif
                     @endforeach
+
+                    <!-- Riwayat Versi Link -->
+                    <div class="mt-4 pt-4 border-t border-bgray-200 dark:border-darkblack-400">
+                        <a href="{{ route('manual.version-history') }}" class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm text-bgray-700 hover:bg-accent-50 hover:text-accent-400 dark:text-bgray-300 dark:hover:bg-darkblack-500">
+                            <span class="w-5 h-5 flex items-center justify-center text-accent-400"><i class="fa fa-history"></i></span>
+                            <span>Riwayat Versi</span>
+                            <span class="ml-auto text-[10px] bg-accent-100 text-accent-400 px-1.5 py-0.5 rounded dark:bg-accent-300/20">v{{ trim(file_get_contents(base_path('VERSION'))) }}</span>
+                        </a>
+                    </div>
                 </nav>
             </div>
         </div>
@@ -100,7 +109,12 @@
                 </div>
 
                 {{-- Quick Actions --}}
-                <div class="border-t border-bgray-100 dark:border-darkblack-400 px-4 py-3">
+                <div class="border-t border-bgray-100 dark:border-darkblack-400 px-4 py-3 space-y-2">
+                    <a href="{{ route('manual.version-history') }}" class="flex items-center gap-2 text-xs text-bgray-500 hover:text-accent-400 dark:text-bgray-400 transition-colors">
+                        <i class="fa fa-history"></i>
+                        <span>Riwayat Versi</span>
+                        <span class="ml-auto text-[10px] bg-accent-100 text-accent-400 px-1.5 py-0.5 rounded dark:bg-accent-300/20">v{{ trim(file_get_contents(base_path('VERSION'))) }}</span>
+                    </a>
                     <a href="#" onclick="document.getElementById('manual-content').scrollTo({top: 0, behavior: 'smooth'}); return false;" class="flex items-center gap-2 text-xs text-bgray-500 hover:text-accent-400 dark:text-bgray-400 transition-colors">
                         <i class="fa fa-arrow-up"></i>
                         <span>Kembali ke atas</span>

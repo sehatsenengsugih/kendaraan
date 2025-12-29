@@ -121,6 +121,7 @@ Route::middleware('auth')->group(function () {
     // Manual / Panduan Pengguna (Public read)
     Route::get('manual', [ManualController::class, 'index'])->name('manual.index');
     Route::get('manual/section/{section}', [ManualController::class, 'section'])->name('manual.section');
+    Route::get('manual/riwayat-versi', [ManualController::class, 'versionHistory'])->name('manual.version-history');
 
     // Manual Admin (Super Admin only)
     Route::middleware('can:manage-users')->prefix('manual/admin')->name('manual.admin.')->group(function () {
