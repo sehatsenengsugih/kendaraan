@@ -1,17 +1,17 @@
 <x-app-layout title="Kalender">
     <x-slot name="header">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
                 <h2 class="text-2xl font-bold text-bgray-900 dark:text-white">Kalender Kendaraan</h2>
                 <p class="text-sm text-bgray-600 dark:text-bgray-400 mt-1">Jadwal pajak dan servis kendaraan</p>
             </div>
             <div class="flex gap-2">
                 <button type="button" onclick="openAddModal('pajak')"
-                    class="inline-flex items-center rounded-lg bg-warning-300 px-4 py-2 text-sm font-medium text-white hover:bg-warning-400 transition-colors">
+                    class="flex-1 sm:flex-none inline-flex items-center justify-center rounded-lg bg-warning-300 px-4 py-2.5 text-sm font-medium text-white hover:bg-warning-400 transition-colors">
                     <i class="fa fa-plus mr-2"></i>Tambah Pajak
                 </button>
                 <button type="button" onclick="openAddModal('servis')"
-                    class="inline-flex items-center rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 transition-colors">
+                    class="flex-1 sm:flex-none inline-flex items-center justify-center rounded-lg bg-blue-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-600 transition-colors">
                     <i class="fa fa-plus mr-2"></i>Tambah Servis
                 </button>
             </div>

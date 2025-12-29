@@ -57,8 +57,77 @@
         </form>
     </div>
 
-    <!-- Table Card -->
-    <div class="rounded-lg bg-white dark:bg-darkblack-600">
+    <!-- Mobile Card View -->
+    <div class="md:hidden space-y-4">
+        @forelse($paroki as $p)
+            <div class="mobile-card bg-white rounded-xl p-4 shadow-sm dark:bg-darkblack-600">
+                <div class="mobile-card-header">
+                    <div class="flex-1">
+                        <a href="{{ route('paroki.show', $p) }}" class="mobile-card-title text-bgray-900 hover:text-accent-300 dark:text-white">
+                            {{ $p->nama }}
+                        </a>
+                        @if($p->alamat)
+                            <p class="text-sm text-bgray-500 dark:text-bgray-400 mt-1">{{ Str::limit($p->alamat, 60) }}</p>
+                        @endif
+                    </div>
+                    @if($p->is_active)
+                        <span class="inline-flex items-center rounded-full bg-accent-50 px-2.5 py-1 text-xs font-medium text-accent-400">
+                            Aktif
+                        </span>
+                    @else
+                        <span class="inline-flex items-center rounded-full bg-bgray-100 px-2.5 py-1 text-xs font-medium text-bgray-600">
+                            Non-aktif
+                        </span>
+                    @endif
+                </div>
+
+                <div class="mobile-card-body mt-3 space-y-2">
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Kevikepan</span>
+                        <span class="mobile-card-value">{{ $p->kevikepan->nama ?? '-' }}</span>
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Kota</span>
+                        <span class="mobile-card-value">{{ $p->kota ?? '-' }}</span>
+                    </div>
+                    @if($p->telepon)
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Telepon</span>
+                        <span class="mobile-card-value">{{ $p->telepon }}</span>
+                    </div>
+                    @endif
+                </div>
+
+                <div class="mobile-card-actions">
+                    <a href="{{ route('paroki.show', $p) }}"
+                        class="flex-1 inline-flex items-center justify-center rounded-lg bg-bgray-100 px-3 py-2.5 text-sm font-medium text-bgray-700 hover:bg-bgray-200 dark:bg-darkblack-500 dark:text-white dark:hover:bg-darkblack-400">
+                        <i class="fa fa-eye mr-2"></i> Lihat
+                    </a>
+                    <a href="{{ route('paroki.edit', $p) }}"
+                        class="flex-1 inline-flex items-center justify-center rounded-lg bg-accent-300 px-3 py-2.5 text-sm font-medium text-white hover:bg-accent-400">
+                        <i class="fa fa-edit mr-2"></i> Edit
+                    </a>
+                </div>
+            </div>
+        @empty
+            <div class="rounded-xl bg-white p-8 text-center dark:bg-darkblack-600">
+                <i class="fa fa-church mb-4 text-4xl text-bgray-300"></i>
+                <p class="text-bgray-500 dark:text-bgray-400">Belum ada data paroki</p>
+                <a href="{{ route('paroki.create') }}" class="mt-2 inline-block text-accent-300 hover:underline">
+                    Tambah paroki pertama
+                </a>
+            </div>
+        @endforelse
+
+        @if($paroki->hasPages())
+            <div class="mt-4">
+                {{ $paroki->links() }}
+            </div>
+        @endif
+    </div>
+
+    <!-- Desktop Table View -->
+    <div class="hidden md:block rounded-lg bg-white dark:bg-darkblack-600">
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead class="border-b border-bgray-200 dark:border-darkblack-400">

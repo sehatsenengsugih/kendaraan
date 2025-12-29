@@ -1,4 +1,9 @@
 $(function () {
+  // On mobile, remove active class so sidebar starts hidden
+  if (window.innerWidth < 1280) {
+    $(".layout-wrapper").removeClass("active");
+  }
+
   // Search shortcut (Ctrl+K)
   $(document).on("keydown", (e) => {
     if (e.key === "k" && e.ctrlKey) {

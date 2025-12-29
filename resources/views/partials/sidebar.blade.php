@@ -1,17 +1,21 @@
-<aside class="sidebar-wrapper fixed top-0 z-30 block h-full w-[308px] bg-white dark:bg-darkblack-600 sm:hidden xl:block transition-all duration-300">
-    <!-- Logo -->
-    <div class="sidebar-header relative z-30 flex h-[108px] w-full items-center border-b border-r border-b-bgray-200 border-r-bgray-200 pl-[30px] dark:border-darkblack-400">
-        <a href="{{ route('dashboard') }}" class="flex items-center">
-            <img src="{{ asset('images/logo.png') }}" alt="motoreKAS" class="h-20 w-auto">
-        </a>
-        <!-- Close Button (Mobile) -->
-        <button type="button" class="drawer-btn absolute right-4 top-1/2 -translate-y-1/2 xl:hidden flex h-8 w-8 items-center justify-center rounded-lg hover:bg-bgray-100 dark:hover:bg-darkblack-500">
-            <svg class="w-5 h-5 text-bgray-600 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<aside class="sidebar-wrapper fixed top-[72px] z-30 flex h-[calc(100%-72px)] w-[308px] flex-col bg-white dark:bg-darkblack-600 sm:hidden xl:top-0 xl:block xl:h-full transition-all duration-300">
+    <!-- Mobile Close Button Header -->
+    <div class="sidebar-close-header flex h-14 w-full shrink-0 items-center justify-between border-b border-bgray-200 px-4 xl:hidden dark:border-darkblack-400">
+        <span class="text-sm font-medium text-bgray-600 dark:text-bgray-300">Menu</span>
+        <button type="button" class="drawer-btn flex h-9 w-9 items-center justify-center rounded-full bg-error-50 text-error-300 hover:bg-error-100">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
         </button>
-        <!-- Toggle Button (Desktop) - moved inside sidebar boundary -->
-        <button type="button" class="drawer-btn absolute right-2 top-1/2 -translate-y-1/2 hidden xl:flex items-center justify-center w-8 h-8 bg-accent-300 rounded-full hover:bg-accent-400 transition-colors" title="Toggle Sidebar (Ctrl+B)">
+    </div>
+
+    <!-- Logo (Desktop only) -->
+    <div class="sidebar-header relative z-30 hidden h-[108px] w-full items-center justify-between border-b border-r border-b-bgray-200 border-r-bgray-200 px-4 xl:flex dark:border-darkblack-400">
+        <a href="{{ route('dashboard') }}" class="flex items-center">
+            <img src="{{ asset('images/logo.png') }}" alt="motoreKAS" class="h-16 w-auto">
+        </a>
+        <!-- Toggle Button (Desktop) -->
+        <button type="button" class="drawer-btn flex items-center justify-center w-8 h-8 bg-accent-300 rounded-full hover:bg-accent-400 transition-colors" title="Toggle Sidebar (Ctrl+B)">
             <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
@@ -19,7 +23,7 @@
     </div>
 
     <!-- Sidebar Body -->
-    <div class="sidebar-body overflow-style-none relative z-30 h-[calc(100vh-108px)] w-full overflow-y-scroll pl-[48px] pt-[14px]">
+    <div class="sidebar-body overflow-style-none relative z-30 flex-1 w-full overflow-y-auto pl-[48px] pt-[14px] xl:h-[calc(100vh-108px)]">
         <div class="nav-wrapper mb-[36px] pr-[50px]">
             <!-- Menu Utama -->
             <div class="item-wrapper mb-5">

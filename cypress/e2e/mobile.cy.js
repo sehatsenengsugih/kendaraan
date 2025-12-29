@@ -8,24 +8,25 @@ describe('Mobile View Test', () => {
   })
 
   it('Dashboard mobile view', () => {
-    cy.screenshot('mobile-dashboard', { capture: 'fullPage' })
+    cy.wait(1000)
+    cy.screenshot('mobile-dashboard')
   })
 
   it('Kendaraan table mobile view', () => {
     cy.visit('/kendaraan')
     cy.wait(1000)
-    cy.screenshot('mobile-kendaraan', { capture: 'fullPage' })
+    cy.screenshot('mobile-kendaraan')
   })
 
   it('Pajak table mobile view', () => {
     cy.visit('/pajak')
     cy.wait(1000)
-    cy.screenshot('mobile-pajak', { capture: 'fullPage' })
+    cy.screenshot('mobile-pajak')
   })
 
   it('Paroki table mobile view', () => {
     cy.visit('/paroki')
     cy.wait(1000)
-    cy.screenshot('mobile-paroki', { capture: 'fullPage' })
+    cy.screenshot('mobile-paroki')
   })
 })
